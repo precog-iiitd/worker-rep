@@ -1,10 +1,10 @@
 pragma solidity ^0.4.2;
 
-import "./crowdSourcing.sol"
+import "./crowdSourcing.sol";
 
-contract TaskPoster is user{
+contract TaskPoster is User{
 
-    address owner;
+     //address owner ; already implemented by Ownable
     taskStruct[] public tasks;
     uint taskContractCount;
   //address[] public taskContractList;
@@ -114,11 +114,7 @@ contract TaskPoster is user{
         acceptedContractsList.push(contractAddress);
         }
 
-    function kill() onlyOwner{
-        /* pre defined function */
-        /* argument is required to send back if there are any ether in the contract when it is killed */
-        suicide(owner);
-        }
+  
 
 
 }

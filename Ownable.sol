@@ -39,4 +39,13 @@ contract Ownable {
     owner = newOwner;
   }
 
+
+  //added here, not a standard part of the Ownable contract.
+  
+  function kill() onlyOwner{
+       /* pre defined function */
+       /* argument is required to send back if there are any ether in the contract when it is killed */
+       suicide(owner);
+       }
+
 }

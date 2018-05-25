@@ -1,12 +1,12 @@
 pragma solidity ^0.4.2;
 
-import "./crowdSourcing.sol"
+import "./crowdSourcing.sol";
 
 
-contract Worker is user{
+contract Worker is User{
 
     // declares various class variables
-    address owner ;
+    //address owner ; already implemented by Ownable
     string workerSkills;
     address[] public receivedContractList;
     address[] public acceptedContractList;
@@ -41,12 +41,6 @@ contract Worker is user{
         contractToAccept.notifyTaskPoster();
         }
 
-    // self destructs the contract
-    function kill() onlyOwner{
-        /* pre defined function */
-        /* argument is required to send back if there are any ether in the contract when it is killed */
-        suicide(owner);
-        }
 
     // used by the task poster to send the task contract to worker upon being selected
     function receiveContract(address contractAddress, string taskTitle) public returns(uint){
