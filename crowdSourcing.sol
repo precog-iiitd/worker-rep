@@ -6,7 +6,7 @@ import "./Ownable.sol";
 
 // common things between worker and user put into base class
 contract User is Ownable{
-    uint256 joiningFee = 0.000000001 ether;  //potential for intergerence
+    uint256 joiningFee = 0.000000001 ether;  //potential for interference
     string public userName ;
     int repScore ;
     bytes fileHash;
@@ -16,7 +16,7 @@ contract User is Ownable{
         
         require(msg.value >= joiningFee); //if fees are less than transaction will be rejected
         userName = _userName ;
-        repScore = 0 ; // repScore should be 0 by default //potential for intergerence
+        repScore = 0 ; // repScore should be 0 by default //potential for interference
         fileHash = _fileHash ; //stores IPFS hash to profile data
         }
 
