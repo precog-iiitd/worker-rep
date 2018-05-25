@@ -9,4 +9,5 @@
 * corrected missing semicolons from import statements & commited
 * Added joiningfee parameter in User, does not allow contract to be deployed if joiningfees are not Payed.
 * User contract is now upto spec1 (spec1 means 1 User 1 Contract!!! )
-*
+* TaskPoster is also upto Spec1
+
