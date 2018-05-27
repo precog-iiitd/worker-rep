@@ -2,7 +2,7 @@ pragma solidity ^0.4.2;
 
 import "./crowdSourcing.sol";
 
-contract TaskPoster is User{
+contract TaskPosterContract is UserContract {
 
 
     // groups together various information regarding the task contracts created by the task poster
@@ -12,7 +12,7 @@ contract TaskPoster is User{
         string taskTitle;
         }
 
-     // not needed as per spec1
+    
     //stores information related to the task registrations received by the task poster
     /* struct registrationStruct{
         uint taskId ;
@@ -21,63 +21,81 @@ contract TaskPoster is User{
  */
     // stores various information of the task
     struct taskStruct{
-        uint taskId ;
+        //uint taskId ;
         string taskTitle ;
-        bytes taskHash ;
-        string taskSkills;
-        string taskStatus;
+        string taskMaterialsHash ;
+        //string taskSkills;
+        bool isTaskComplete; //asses requirement of this param
+        bool isTaskAssigned;
         uint256 taskReward ; //stored in wei
+        address TP_creator;
+        address[] registeredAddresses; //people who have applied for this task
         }
 
 
 
-     //address owner ; already implemented by Ownable
+     
     taskStruct[] public tasks;
-    uint taskContractCount;
-  //address[] public taskContractList;
-    address[] public acceptedContractsList;
-    taskContractStruct[] public contracts;
-
-    //not needed as per spec1
-    //registrationStruct[] public registrations;
     
-    address[] public registrationList;
-
-    //not needed as per spec1
-    //event addressregistered(address addy);
+    uint public tasksCount;
     
-    event addressAssigned(address Addyy);
-
-
-
-
-    function TaskPoster(string _userName, bytes _fileHash) user(_userName, _fileHash) {
-        //owner = msg.sender; //done in Ownable
-        }
+    //mapping (taskposterID => uint[] ) taskposter_to_tasks  //could need
 
     // called when task poster wants to post a task
-    function taskPost(uint _taskId , string _taskTitle , bytes _taskHash , string _taskSkills , string _taskStatus , uint _taskReward) onlyOwner public returns(uint)  {
-        tasks.length++ ;
-        tasks[tasks.length-1].taskId = _taskId ;
-        tasks[tasks.length-1].taskTitle = _taskTitle;
-        tasks[tasks.length-1].taskHash = _taskHash ;
-        tasks[tasks.length-1].taskSkills = _taskSkills;
-        tasks[tasks.length-1].taskStatus = _taskStatus ;
-        tasks[tasks.length-1].taskReward = _taskReward ;
-        return tasks.length;
+    function postTask( string _taskTitle , string _taskHash, uint256 _taskReward) external {
+        require(isTaskPoster[msg.sender]);
+        taskStruct tempTask;
+        tempTask.taskTitle = _taskTitle;
+        tempTask.taskMaterialsHash = _taskHash;
+        tempTask.taskReward = _taskReward;
+        tempTask.isTaskAssigned = false;
+        tempTask.isTaskComplete = false;
+        
+        uint id = tasks.push(tempTask) - 1;
+        //uint id = tasks.push(taskStruct(_taskTitle, _taskHash, false, false, _taskReward, msg.sender,[])) - 1;
+        tasksCount++;
+        
         }
 
-    // get the number of task posted by the worker
-    function getTaskCount() public constant returns(uint) {
-        return tasks.length;
-        }
 
-    // gets the details of the task whose index is index
+   function showAvailableTasks() public view returns(uint[]) {
+
+        uint counter = 0;
+        
+        uint[] memory temp_task_struct = new uint[](tasksCount);
+        
+        for(uint i = 0; i<tasks.length;i++){
+            if (tasks[i].isTaskAssigned == false) {
+             temp_task_struct[counter] = i;
+             counter++;  
+                }
+            }
+            return temp_task_struct;
+        }
+ 
+
+
+    function markTaskComplete(uint _id) public { //public for testing
+        require(isTaskPoster[msg.sender]);  //BEWARE: any task poster can do this
+        tasks[_id].isTaskComplete = true;
+    }
+
+    function markTaskAssigned(uint _id) public { //public for testing
+        require(isTaskPoster[msg.sender]); //BEWARE: any task poster can do this
+        tasks[_id].isTaskAssigned = true;
+    }
+
+    function registerForTask(uint _taskId) external {
+        require(isTaskPoster[msg.sender] == false);
+        tasks[_taskId].registeredAddresses.push(msg.sender);
+    }
+
+/*     // gets the details of the task whose index is index
     function getTask(uint index) public constant returns(uint, string, bytes, string, string, uint) {
         return (tasks[index].taskId, tasks[index].taskTitle, tasks[index].taskHash, tasks[index].taskSkills, tasks[index].taskStatus, tasks[index].taskReward);
         }
 
-
+ */
        // Now worker can't register/APPLY for task as per spec1
     /*  
     // called by the worker when he wants to register for a task, requires taskId to be specified by the worker
@@ -91,6 +109,7 @@ contract TaskPoster is User{
  */
     
 
+/*
 
     // function called by the task poster after the worker is selected by the task poster
     function assignTask(address workerAddress, uint256 reward, string taskTitle) public returns(uint) {
@@ -135,6 +154,6 @@ contract TaskPoster is User{
         }
 
   
-
+*/
 
 }

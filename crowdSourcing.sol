@@ -22,10 +22,12 @@ contract UserContract is Ownable{
     User[] public workers;
     User[] public taskPosters;
 
+    uint workersCount = 0; //darkworkers accomodation + prevent Task Poster 2 workers
+
 
     mapping (address => bool) public isTaskPoster; //public for testing
 
-    mapping (address => uint256 ) public addressToBalance; //public for testing
+    mapping (address => uint256 ) public addressToBalance; //public for testing //keeps one address one person (worker or Tp)
 
     mapping (address => uint) public addressToIdWorker; //public for testing
     //mapping (uint => uint256) IdToBalanceWorker;
@@ -34,20 +36,23 @@ contract UserContract is Ownable{
     //mapping (uint => uint256) IdToBalanceTaskPoster;
 
     //constructor to initialize class variables
-    function makeWorker(string _userName, string _fileHash) public payable {//payable modifier added to allow contract to recieve ETHER
+    function makeWorker(string _userName, string _fileHash) public payable {
         
         require(msg.value >= joiningFee); //if fees are less than transaction will be rejected
         uint id = workers.push(User(_userName, 0, _fileHash)) - 1;
         addressToIdWorker[msg.sender] = id;
 
+
         darkBalance = darkBalance + addressToBalance[msg.sender];
         addressToBalance[msg.sender] = msg.value; 
 
         isTaskPoster[msg.sender] = false;
+
+        //CAN ADD EVENT HERE FOR FRONT END
      }
 
 
-    function makeTaskPoster(string _userName, string _fileHash) public payable {//payable modifier added to allow contract to recieve ETHER
+    function makeTaskPoster(string _userName, string _fileHash) public payable {
         
         require(msg.value >= joiningFee); //if fees are less than transaction will be rejected
         uint id = taskPosters.push(User(_userName, 0, _fileHash)) - 1;
@@ -58,6 +63,8 @@ contract UserContract is Ownable{
         addressToBalance[msg.sender] = msg.value; 
 
         isTaskPoster[msg.sender] = true;
+
+        //CAN ADD EVENT HERE FOR FRONT END
      }
 
     //allows changing joining fee by owner    
@@ -66,6 +73,12 @@ contract UserContract is Ownable{
     }
 
 
+
+function withdrawDarkBalance() external onlyOwner {
+
+    owner.transfer(darkBalance); 
+    darkBalance = 0;
+  }
     function withdraw() external onlyOwner {
 
     owner.transfer(this.balance); //can set to withdraw only darkBalance so no ones security is withdrawn
