@@ -5,11 +5,12 @@ contract TaskPosterContract is UserContract {
 
 
     // groups together various information regarding the task contracts created by the task poster
-    struct taskContractStruct{
-        address contractAddress ;
-        address workerAddress ;
-        string taskTitle;
-        }
+    
+    // struct taskContractStruct{
+    //     address contractAddress ;
+    //     address workerAddress ;
+    //     string taskTitle;
+    //     }
 
     
     //stores information related to the task registrations received by the task poster
@@ -19,6 +20,7 @@ contract TaskPosterContract is UserContract {
         }
  */
     // stores various information of the task
+
     struct taskStruct{
         //uint taskId ;
         string taskTitle ;
@@ -27,8 +29,8 @@ contract TaskPosterContract is UserContract {
         bool isTaskComplete; //asses requirement of this param
         bool isTaskAssigned;
         uint256 taskReward ; //stored in wei
-        address TP_creator;
-        address[] registeredAddresses; //people who have applied for this task
+        uint TP_creator_id;
+        //uint[] registeredWorkersId; //people who have applied for this task
         }
 
 
@@ -36,28 +38,34 @@ contract TaskPosterContract is UserContract {
      
     taskStruct[] public tasks;
     
-    uint public tasksCount;
+    uint public tasksCount = 0;
     
     //mapping (taskposterID => uint[] ) taskposter_to_tasks  //could need
 
+
+
+
+
     // called when task poster wants to post a task
-    function postTask( string _taskTitle , string _taskHash, uint256 _taskReward) external {
-        require(isTaskPoster[msg.sender]);
-        taskStruct tempTask;
+      function postTask( string _taskTitle , string _taskHash, uint256 _taskReward) external {
+        require(isTaskPoster[msg.sender] == true);
+        /* taskStruct tempTask;
         tempTask.taskTitle = _taskTitle;
         tempTask.taskMaterialsHash = _taskHash;
         tempTask.taskReward = _taskReward;
         tempTask.isTaskAssigned = false;
         tempTask.isTaskComplete = false;
-        
-        uint id = tasks.push(tempTask) - 1;
-        //uint id = tasks.push(taskStruct(_taskTitle, _taskHash, false, false, _taskReward, msg.sender,[])) - 1;
+        ////tempTask.registeredWorkersId.push(addressToIdTaskPoster[msg.sender]);
+
+        uint id = tasks.push(tempTask) - 1; */
+        uint id = tasks.push(taskStruct(_taskTitle, _taskHash, false, false, _taskReward, addressToIdTaskPoster[msg.sender])) - 1;
         tasksCount++;
         
         }
 
+    mapping (uint => uint[]) public taskIdToRegisteredWorkersId; //public for testing
 
-   function showAvailableTasks() public view returns(uint[]) {
+   /* function showAvailableTasks() public view returns(uint[]) {
 
         uint counter = 0;
         
@@ -71,7 +79,7 @@ contract TaskPosterContract is UserContract {
             }
             return temp_task_struct;
         }
- 
+  */
 
 
     function markTaskComplete(uint _id) public { //public for testing
@@ -84,13 +92,12 @@ contract TaskPosterContract is UserContract {
         tasks[_id].isTaskAssigned = true;
     }
 
+
+
     function registerForTask(uint _taskId) external {
         require(isTaskPoster[msg.sender] == false);
-        tasks[_taskId].registeredAddresses.push(msg.sender);
-    }
-
-
-
-
+        //tasks[_taskId].registeredWorkersId.push(addressToIdWorker[msg.sender]);
+        taskIdToRegisteredWorkersId[_taskId].push(addressToIdWorker[msg.sender]);
+    } 
 
 }
