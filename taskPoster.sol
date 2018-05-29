@@ -30,8 +30,7 @@ contract TaskPosterContract is UserContract {
         bool isTaskAssigned;
         uint256 taskReward ; //stored in wei
         uint TP_creator_id;
-        //uint[] registeredWorkersId; //people who have applied for this task
-        }
+    }
 
 
 
@@ -49,37 +48,28 @@ contract TaskPosterContract is UserContract {
     // called when task poster wants to post a task
       function postTask( string _taskTitle , string _taskHash, uint256 _taskReward) external {
         require(isTaskPoster[msg.sender] == true);
-        /* taskStruct tempTask;
-        tempTask.taskTitle = _taskTitle;
-        tempTask.taskMaterialsHash = _taskHash;
-        tempTask.taskReward = _taskReward;
-        tempTask.isTaskAssigned = false;
-        tempTask.isTaskComplete = false;
-        ////tempTask.registeredWorkersId.push(addressToIdTaskPoster[msg.sender]);
-
-        uint id = tasks.push(tempTask) - 1; */
         uint id = tasks.push(taskStruct(_taskTitle, _taskHash, false, false, _taskReward, addressToIdTaskPoster[msg.sender])) - 1;
         tasksCount++;
         
         }
 
-    mapping (uint => uint[]) public taskIdToRegisteredWorkersId; //public for testing
+    mapping (uint => uint[]) public taskIdToRegisteredWorkersId; //people who have applied for this task //public for testing
 
-   /* function showAvailableTasks() public view returns(uint[]) {
+    function showAvailableTasks() public view returns(uint[]) {
 
         uint counter = 0;
         
-        uint[] memory temp_task_struct = new uint[](tasksCount);
+        uint[] memory ids_of_unassignedTasks = new uint[](tasksCount);
         
         for(uint i = 0; i<tasks.length;i++){
             if (tasks[i].isTaskAssigned == false) {
-             temp_task_struct[counter] = i;
-             counter++;  
+                ids_of_unassignedTasks[counter] = i;
+                counter++;
                 }
             }
-            return temp_task_struct;
+            return ids_of_unassignedTasks;
         }
-  */
+  
 
 
     function markTaskComplete(uint _id) public { //public for testing
@@ -90,6 +80,7 @@ contract TaskPosterContract is UserContract {
     function markTaskAssigned(uint _id) public { //public for testing
         //require(isTaskPoster[msg.sender] ); //BEWARE: any task poster can do this
         tasks[_id].isTaskAssigned = true;
+        tasksCount--;
     }
 
 
