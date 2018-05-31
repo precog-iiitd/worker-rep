@@ -9,22 +9,36 @@
     <script language="javascript" type="text/javascript" src="contract_abi.js"></script>
   </head>
   <body>
-
+  	<h1> WorkerRep : No body works here :P</h1>
   	<script>
   		var crowdRep;
+  		var myContract;
+
+  		function getWorker(id){
+  			return myContract.methods.taskPosters(id).call()
+  		}
 
   		function startApp(){
   			var myContractAddress = "0x62e919A8a771EDB0d89AA9578069CAB974D67eD2";
-  			var myContract = new web3js.eth.Contract(myABI, myContractAddress);
+  			myContract = new web3js.eth.Contract(myABI, myContractAddress);
 
+  			getWorker(0).then(function(result){
+  				alert(result);
+  			});
   		}
 
 		window.addEventListener('load', function() {
 
+	var web3 = new Web3(new Web3.providers.WebsocketProvider("wss://rinkeby.infura.io/_ws"));
+
+	console.log(web3);
 	  // Checking if Web3 has been injected by the browser (Mist/MetaMask)
 	  if (typeof web3 !== 'undefined') {
 	    // Use Mist/MetaMask's provider
 	    web3js = new Web3(web3.currentProvider);
+
+
+
 	  } else {
 	    // Handle the case where the user doesn't have web3. Probably 
 	    // show them a message telling them to install Metamask in 
