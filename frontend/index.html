@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>CryptoZombies front-end</title>
+    <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Include web3.js here -->
+    <script language="javascript" type="text/javascript" src="web3.min.js"></script>
+    <script language="javascript" type="text/javascript" src="contract_abi.js"></script>
+  </head>
+  <body>
+
+  	<script>
+  		var crowdRep;
+
+  		function startApp(){
+  			var myContractAddress = "0x62e919A8a771EDB0d89AA9578069CAB974D67eD2";
+  			var myContract = new web3js.eth.Contract(myABI, myContractAddress);
+
+  		}
+
+		window.addEventListener('load', function() {
+
+	  // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+	  if (typeof web3 !== 'undefined') {
+	    // Use Mist/MetaMask's provider
+	    web3js = new Web3(web3.currentProvider);
+	  } else {
+	    // Handle the case where the user doesn't have web3. Probably 
+	    // show them a message telling them to install Metamask in 
+	    // order to use our app.
+
+	    alert("You Don't have MetaMask or a Web3 provider available in your browser. Please install Meta MetaMask.");
+	  }
+
+	  // Now you can start your app & access web3js freely:
+	  startApp()
+
+	})
+
+
+
+	</script>
+
+  </body>
+</html>
