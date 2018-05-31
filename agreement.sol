@@ -43,6 +43,9 @@ contract workerTaskPosterContract is TaskPosterContract {
 		// not finished penalty amount ? could define as a % of reward
 		//require( nonFinishPenaltyAMount == msg.value);
 
+		//IF TERMINATED THEN CAN NOT ACCEPT
+		require(agreements[_agreementId].isTerminated == false);
+
 		//can add consition for single accept
 
 		//adds penalty as a part of the reward
