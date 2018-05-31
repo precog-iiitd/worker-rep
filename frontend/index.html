@@ -1,59 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <title>CryptoZombies front-end</title>
     <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- Include web3.js here -->
     <script language="javascript" type="text/javascript" src="web3.min.js"></script>
     <script language="javascript" type="text/javascript" src="contract_abi.js"></script>
-  </head>
-  <body>
-  	<h1> WorkerRep : Nobody works here :P</h1>
-  	<script>
-  		var crowdRep;
-  		var myContract;
+</head>
 
-  		function getWorker(id){
-  			return myContract.methods.taskPosters(id).call()
-  		}
-
-  		function startApp(){
-  			var myContractAddress = "0x62e919A8a771EDB0d89AA9578069CAB974D67eD2";
-  			myContract = new web3js.eth.Contract(myABI, myContractAddress);
-
-  			getWorker(0).then(function(result){
-  				alert(result);
-  			});
-  		}
-
-		window.addEventListener('load', function() {
-
-	//var web3 = new Web3(new Web3.providers.WebsocketProvider("wss://rinkeby.infura.io/_ws"));
-
-	  // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-	  if (typeof web3 !== 'undefined') {
-	    // Use Mist/MetaMask's provider
-	    web3js = new Web3(web3.currentProvider);
-	    startApp();
-
-
-	  } else {
-	    // Handle the case where the user doesn't have web3. Probably 
-	    // show them a message telling them to install Metamask in 
-	    // order to use our app.
-
-	    alert("You Don't have MetaMask or a Web3 provider available in your browser. Please install Meta MetaMask.");
-	  }
-
-	  // Now you can start your app & access web3js freely:
-	  //startApp();
-
-	})
+<body>
+    <h1> WorkerRep : Nobody works here :P</h1>
+    <script>
+        var crowdRep;
+        var myContract;
 
 
 
-	</script>
+            function getWorker(id) {
+              return  myContract.methods.taskPosters(id).call()//.then(function(result1){
+             }
 
-  </body>
+
+
+             function createWorker() {
+
+
+              var userName = $("#userName").val();
+              var FileHash = $("#FileHash").val();
+              var amount = $("amount").val();
+              $("#userName").clear();
+              $("#fileHash").clear();
+              $("#amount").clear();
+
+  // This is going to take a while, so update the UI to let the user know
+  // the transaction has been sent
+  $("#txStatus").text("Creating new worker on the blockchain. This may take a while...");
+  // Send the tx to our contract:
+  return myContract.methods.makeWorker(userName,FileHash)
+  .send({ from: userAccount })
+  .on("receipt", function(receipt) {
+    $("#txStatus").text("Successfully created " + userName + "!");
+    // Transaction was accepted into the blockchain, let's redraw the UI
+    getZombiesByOwner(userAccount).then(displayZombies);
+  })
+  .on("error", function(error) {
+    // Do something to alert the user their transaction has failed
+    $("#txStatus").text(error);
+  });
+}
+
+
+
+
+        function startApp() {
+            var myContractAddress = "0x62e919A8a771EDB0d89AA9578069CAB974D67eD2";
+            myContract = new web3js.eth.Contract(myABI, myContractAddress);
+
+            console.log("hi");
+            console.log(myContract);
+
+
+           for(var i = 0;i<1;i++){
+            getWorker(i).then(function(result){
+              
+              console.log(result);
+              $('#workers').append("<li>"+result.userName+"</li>");
+                            
+
+            });}
+        }
+
+        window.addEventListener('load', function() {
+
+            //var web3 = new Web3(new Web3.providers.WebsocketProvider("wss://rinkeby.infura.io/_ws"));
+
+            // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+            if (typeof web3 !== 'undefined') {
+                // Use Mist/MetaMask's provider
+                web3js = new Web3(web3.currentProvider);
+                startApp();
+
+            } else {
+                // Handle the case where the user doesn't have web3. Probably 
+                // show them a message telling them to install Metamask in 
+                // order to use our app.
+
+                alert("You Don't have MetaMask or a Web3 provider available in your browser. Please install Meta MetaMask.");
+            }
+
+            // Now you can start your app & access web3js freely:
+            //startApp();
+
+        })
+    </script>
+
+<p id="txtStatus"></p>
+<h2> Workers</h2>
+<ul id= "workers" ></ul>
+
+<form>
+  Name:<input id="userName"type=text /><br>
+  FileHash:<input id="FileHash"type=text /><br>
+  Amount:<input id="amount"type=text /><br>
+  <input type = submit onclick = "createWorker()" />
+</form>
+
+</body>
+
 </html>
