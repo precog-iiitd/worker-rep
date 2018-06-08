@@ -4,6 +4,10 @@ import './agreement.sol';
 
 contract evaluation is workerTaskPosterContract {
 
+
+
+    	uint[][] public workerInRepRange;
+
 	uint randNonce = 0;
 	// we can store the number of evaluator and who will be the evaluator before hand (as the task agreement is created but without consuming gas ? some sort of view function )
 	function _numberOfEvalutor() returns (uint){
@@ -27,19 +31,17 @@ contract evaluation is workerTaskPosterContract {
     	return uint(keccak256((now+randNonce), msg.sender, randNonce)) % _modulus;
   	}
 
-  	// function getEvaluatorIndex(uint randIndex, uint lowerRep, uint upperRep) returns (uint){
-  	// 	//loop through all workers check if the reputation score is within the limits , check their skills ,
-  	// 	// count the number of such workers that have passsed and stop on the number that equals randIndex
 
-  	// }
 
-////should onlyworker modifier be specified here ?
-  	function _findingEvaluator(uint _numberOfEvalutor, uint _agreementId) private {
+	function _findingEvaluator(uint _numberOfEvalutor, uint _agreementId) returns(uint[],uint[],uint[]) {
   		
   		uint8 MaxRep = 100;
 
   		//looping over the worker array 
-  		uint[][] workerInRepRange;
+  		
+  		//uint[][] workerInRepRange;
+  		
+  		
   		//// see how division can be done in such a scenario
   		uint RepInterval = MaxRep / _numberOfEvalutor;
   		//fixed lowerRep = 0 ;
@@ -69,33 +71,23 @@ contract evaluation is workerTaskPosterContract {
   			}
 
   		}
+  		return (workerInRepRange[0],workerInRepRange[1],workerInRepRange[2]);
+	    
+	}
+  	// function getEvaluatorIndex(uint randIndex, uint lowerRep, uint upperRep) returns (uint){
+  	// 	//loop through all workers check if the reputation score is within the limits , check their skills ,
+  	// 	// count the number of such workers that have passsed and stop on the number that equals randIndex
 
-  		for (uint j = 0 ; j < _numberOfEvalutor; j++){
-			//finding number of worker in range 
-			// generating a random number 
-			uint randNum = randomNumberGen(workerInRepRange[j].length);
-			//uint numberOfWorkerInRepRange = numberOfWorkerInRepRangeFunc(lowerRep,upperRep);
-			uint evaluatorIndex = workerInRepRange[j][randNum];
-			//uint evaluatorIndex = getEvaluatorIndex(uint randNum, uint lowerRep, uint upperRep);
-			// what if one range has very less number of worker
-			// find that randNum indexed worker from a list of workers
-			
-			//agreements[_agreementId].evaluatorId.push(evaluatorIndex); //changed to Push
-			
-			agreementToEvaluators[_agreementId].push(evaluatorIndex);
-			// lowerRep = upperRep;
-			// upperRep = upperRep + RepInterval;
+  	// }
 
-		}
-  		
+////should onlyworker modifier be specified here ?
 
-  	}
 
 	function submitHash(string _solutionHash, uint _agreementId) onlyWorker(_agreementId){
 		uint numberOfEvalutor = _numberOfEvalutor();
 		agreements[_agreementId].solutionHash = _solutionHash;
 
-		_findingEvaluator(numberOfEvalutor, _agreementId);
+		//_findingEvaluator(numberOfEvalutor, _agreementId);
 		
 		////shall we just send the id of the worker who is the evaluator for that task or should we send the public key of the evaluator ?
 

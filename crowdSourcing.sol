@@ -15,7 +15,7 @@ contract UserContract is Ownable{
     int repScore;
     string fileHash;
     address publicAddress; //added field to store address
-    string[] evaluations;
+    //string[] evaluations;
 
 }
 
@@ -41,7 +41,7 @@ contract UserContract is Ownable{
     function makeWorker(string _userName, string _fileHash) public payable {
         
         require(msg.value >= joiningFee); //if fees are less than transaction will be rejected
-        uint id = workers.push(User(_userName, 0, _fileHash,msg.sender,"")) - 1;
+        uint id = workers.push(User(_userName, 0, _fileHash,msg.sender)) - 1;
         addressToIdWorker[msg.sender] = id;
 
 
@@ -57,7 +57,7 @@ contract UserContract is Ownable{
     function makeTaskPoster(string _userName, string _fileHash) public payable {
         
         require(msg.value >= joiningFee); //if fees are less than transaction will be rejected
-        uint id = taskPosters.push(User(_userName, 0, _fileHash,msg.sender,"")) - 1;
+        uint id = taskPosters.push(User(_userName, 0, _fileHash,msg.sender)) - 1;
         addressToIdTaskPoster[msg.sender] = id;
 
         
