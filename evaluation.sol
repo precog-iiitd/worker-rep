@@ -10,7 +10,7 @@ contract evaluation is workerTaskPosterContract {
 		// depends on difficulty of the task 
 		// reputation of the worker 
 		// number of worker for that skill 
-		return 2;
+		return 3;
 
 	}
 
@@ -34,14 +34,20 @@ contract evaluation is workerTaskPosterContract {
   	// }
 
 ////should onlyworker modifier be specified here ?
-  	function findingEvaluator(uint _numberOfEvalutor, uint _agreementId) private {
-  		//looping over the worker array 
+  	function _findingEvaluator(uint _numberOfEvalutor, uint _agreementId) private {
   		
+  		uint8 MaxRep = 100;
+
+  		//looping over the worker array 
   		uint[][] workerInRepRange;
   		//// see how division can be done in such a scenario
-  		uint breakPointRep = 5 / _numberOfEvalutor;
+  		uint RepInterval = MaxRep / _numberOfEvalutor;
   		//fixed lowerRep = 0 ;
-		uint upperRep = breakPointRep;
+		 
+		uint upperRep = RepInterval;
+
+
+
 
   		for (uint i = 0 ; i< workers.length; i++){
   			// if (worker[i].repScore >= lowerRep && worker[i].repScore < upperRep){
@@ -49,14 +55,15 @@ contract evaluation is workerTaskPosterContract {
   			// }
   			// else if (worker[i].repScore >= lowerRep+count && worker[i].repScore < upperRep)
   			uint count = 0 ;
-  			while (upperRep<= 5){
+  			while (upperRep<= MaxRep){
   			    
-  				if (uint(workers[i].repScore) >= uint256(count*breakPointRep)  && uint256(workers[i].repScore) < uint256(upperRep) ){
-  					workerInRepRange[count].push(addressToIdWorker[(workers[i].publicAddress)]);
+  				if (uint(workers[i].repScore) >= uint256(count*RepInterval)  && uint256(workers[i].repScore) < uint256(upperRep) ){
+  					workerInRepRange[count].push(i); //i is id of worker
   					break;
   				}
-  				upperRep = ((count+1)*breakPointRep);
   				count++;
+  				upperRep = ((count+1)*RepInterval);
+  				
   				
 
   			}
@@ -72,9 +79,12 @@ contract evaluation is workerTaskPosterContract {
 			//uint evaluatorIndex = getEvaluatorIndex(uint randNum, uint lowerRep, uint upperRep);
 			// what if one range has very less number of worker
 			// find that randNum indexed worker from a list of workers
-			agreements[_agreementId].evaluatorId[j] = evaluatorIndex;
+			
+			//agreements[_agreementId].evaluatorId.push(evaluatorIndex); //changed to Push
+			
+			agreementToEvaluators[_agreementId].push(evaluatorIndex);
 			// lowerRep = upperRep;
-			// upperRep = upperRep + breakPointRep;
+			// upperRep = upperRep + RepInterval;
 
 		}
   		
@@ -84,7 +94,9 @@ contract evaluation is workerTaskPosterContract {
 	function submitHash(string _solutionHash, uint _agreementId) onlyWorker(_agreementId){
 		uint numberOfEvalutor = _numberOfEvalutor();
 		agreements[_agreementId].solutionHash = _solutionHash;
-		findingEvaluator(numberOfEvalutor, _agreementId);
+
+		_findingEvaluator(numberOfEvalutor, _agreementId);
+		
 		////shall we just send the id of the worker who is the evaluator for that task or should we send the public key of the evaluator ?
 
 		//division is not floating point how to handle this then ?
@@ -94,10 +106,13 @@ contract evaluation is workerTaskPosterContract {
 		// send an event to the worker that the evaluator list of the task has been updated
 	}
 		// number of hash received in the parameters will depend on the number of evaluator for that agreement 
+
+
+/*
 	function sendToEvaluator(uint _agreementId, string submissionHash) onlyWorker(_agreementId){
 		//send the hashes to evaluators 
 		// function called by worker and a transaction is sent to the evaluators with the hash 
-		uint evalWorker = agreements[_agreementId].evaluatorId;
+		uint[] evalWorker = agreementToEvaluators[_agreementId];
 		for (uint i = 0 ; i < evalWorker.length; i++){
 			workers[evalWorker[i]].push(submissionHash);
 
@@ -106,8 +121,9 @@ contract evaluation is workerTaskPosterContract {
 
 
 	}
+*/	
 	modifier onlyEvaluator(uint _agreementId){
-		uint[] evalArray = agreements[_agreementId].evaluatorId;
+		uint[] evalArray = agreementToEvaluators[_agreementId];
 		bool present = false;
 		for (uint i = 0; i < evalArray.length; i++){
 			if (msg.sender == workers[evalArray[i]].publicAddress){
@@ -126,7 +142,7 @@ contract evaluation is workerTaskPosterContract {
 
 			evaluationScoreMapping[_agreementId].push(evaluationScore) ;
 
-			if (evaluationScoreMapping[_agreementId].length == agreements[_agreementId].evaluatorId.length){
+			if (evaluationScoreMapping[_agreementId].length == agreementToEvaluators[_agreementId].length){
 				uint totalRepScore = 0;
 				for (uint i =0 ; i< evaluationScoreMapping[_agreementId].length ; i++){
 					totalRepScore = totalRepScore + evaluationScoreMapping[_agreementId][i];
