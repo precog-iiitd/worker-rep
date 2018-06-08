@@ -2,8 +2,11 @@ pragma solidity ^0.4.18;
 
 import './taskPoster.sol';
 
+//created modifer onlyWorker
+
 contract workerTaskPosterContract is TaskPosterContract {
-	
+
+
 	struct agreement {
 		uint taskId;
 		uint workerId;
@@ -14,8 +17,20 @@ contract workerTaskPosterContract is TaskPosterContract {
 		bool isAccepted;
 		bool isTerminated; // to kill or deactivate the agreement, and payout
 
+		//variable to store the index of the evaluator for the argreement 
+		uint[] evaluatorId;
+		//the hash of the solution intially sent by the worker is stored in this variable 
+		string solutionHash;
+
+
 	}
 
+
+	modifier onlyWorker(uint _agreementId){
+		//check to only the assigned worker can accept
+		require(agreements[_agreementId].workerId == addressToIdWorker[msg.sender]);
+		_;
+	}
 
 	agreement[] public agreements; //public for testing
 
@@ -30,16 +45,15 @@ contract workerTaskPosterContract is TaskPosterContract {
 
 		uint now_time = now;
 		uint end_time = now_time + (time_in_hours * 3600);
-		uint id = agreements.push(agreement(_taskId,_workerId,addressToIdTaskPoster[msg.sender],now_time,end_time,msg.value,false,false)) - 1;
+		uint id = agreements.push(agreement(_taskId,_workerId,addressToIdTaskPoster[msg.sender],now_time,end_time,msg.value,false,false,new uint[], "")) - 1;
 
 		//no longer available for others// will not show in available tasks
 		tasks[_taskId].isTaskAssigned = true; 
 
 	}
 
-	function acceptAgreement(uint _agreementId) external payable {
-		//check to only the assigned worker can accept
-		require(agreements[_agreementId].workerId == addressToIdWorker[msg.sender]);
+	function acceptAgreement(uint _agreementId) external payable onlyWorker(_agreementId){
+		
 		// not finished penalty amount ? could define as a % of reward
 		//require( nonFinishPenaltyAMount == msg.value);
 
