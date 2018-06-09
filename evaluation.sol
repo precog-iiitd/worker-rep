@@ -34,17 +34,22 @@ contract evaluation is workerTaskPosterContract {
   	uint public countForLoop;
   	uint public countWhileLoop;
   	uint public RepInterval;
-  	uint[] public repArrayPush;
+  	
   	uint[] public repArray;
   	mapping(uint => uint[]) public repMapping;
   	mapping(uint => uint[]) public generalMapping;
 
   	function repOfWorkerPushc(){
   		// change to some sonstant 
+  		uint[][3] repArrayPush;
   		for (uint i = 0 ; i< workers.length; i++){
-  			repArrayPush.push(workers[i].repScore);
+  			repArrayPush[1].push(workers[i].repScore);
   			//repMapping[1].push(workers[i].repScore);
   		}
+  		
+  		repArray.push(repArrayPush[1][7]);
+  	//	repArray.push(repArrayPush[3][1]);
+  		
 
   	}
   	
