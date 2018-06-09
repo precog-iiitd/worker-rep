@@ -34,15 +34,25 @@ contract evaluation is workerTaskPosterContract {
   	uint public countForLoop;
   	uint public countWhileLoop;
   	uint public RepInterval;
-  	
+  	uint[] public repArrayPush;
+  	uint[] public repArray;
   	mapping(uint => uint[]) public repMapping;
   	mapping(uint => uint[]) public generalMapping;
 
+  	function repOfWorkerPushc(){
+  		// change to some sonstant 
+  		for (uint i = 0 ; i< workers.length; i++){
+  			repArrayPush.push(workers[i].repScore);
+  			//repMapping[1].push(workers[i].repScore);
+  		}
+
+  	}
+  	
   	function repOfWorker(){
   		// change to some sonstant 
-  		for (uint i = 0 ; i< 2; i++){
-  			//repArrayPush.push(workers[i].repScore);
-  			repMapping[i] = workers[i].repScore;
+  		for (uint i = 0 ; i< workers.length; i++){
+  			repArray[i]=(workers[i].repScore);
+  			//repMapping[1].push(workers[i].repScore);
   		}
 
   	}
@@ -51,7 +61,7 @@ contract evaluation is workerTaskPosterContract {
   		// change to some sonstant 
   		for (uint i = 0 ; i< 2; i++){
   			//repArrayPush.push(workers[i].repScore);
-  			repMapping[i] = i;
+  			generalMapping[i].push(i);
   		}
 
   	}
@@ -64,7 +74,7 @@ contract evaluation is workerTaskPosterContract {
 
   		//looping over the worker array 
   		
-  		//uint[][] workerInRepRange;
+  		//mapping (uint => uint[]) memory workerInRepRange;
   		
   		
   		//// see how division can be done in such a scenario
