@@ -87,7 +87,7 @@ contract evaluation is workerTaskPosterContract {
 		uint numberOfEvalutor = _numberOfEvalutor();
 		agreements[_agreementId].solutionHash = _solutionHash;
 
-		//_findingEvaluator(numberOfEvalutor, _agreementId);
+		_findingEvaluator(numberOfEvalutor, _agreementId);
 		
 		////shall we just send the id of the worker who is the evaluator for that task or should we send the public key of the evaluator ?
 

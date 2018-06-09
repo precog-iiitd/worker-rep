@@ -7,12 +7,12 @@ import "./Ownable.sol";
 // common things between worker and user put into base class
 contract UserContract is Ownable{
 
-    uint256 joiningFee = 0.000000001 ether; 
+    uint256 joiningFee = 0.00000000 ether; 
     uint256 public darkBalance = 0 ether; //public for testing
    
     struct User {
     string userName;
-    int repScore;
+    uint repScore;
     string fileHash;
     address publicAddress; //added field to store address
     //string[] evaluations;
@@ -86,6 +86,31 @@ function withdrawDarkBalance() external onlyOwner {
     owner.transfer(this.balance); //can set to withdraw only darkBalance so no ones security is withdrawn
     darkBalance = 0;
   }
+
+
+  //temp testing function, to be removed after testing
+  function addnWorkers(uint _num){
+    for(uint i=0;i<_num;i++){
+
+    workers.push(User("worker_name", i*8, "gibberish_fileHash",msg.sender));
+    }
+    isTaskPoster[msg.sender] = false;
+
+  }
+
+  //temp testing function, to be removed after testing
+  function addnTaskposters(uint _num){
+    for(uint i=0;i<_num;i++){
+
+    taskposters.push(User("taskposter_name", i*8, "gibberish_fileHash",msg.sender));
+
+    }
+    isTaskPoster[msg.sender] = true;
+
+  }
+
+
+
 }
 
 
