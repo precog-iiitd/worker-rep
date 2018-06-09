@@ -31,11 +31,36 @@ contract evaluation is workerTaskPosterContract {
     	return uint(keccak256((now+randNonce), msg.sender, randNonce)) % _modulus;
   	}
 
+  	uint public countForLoop;
+  	uint public countWhileLoop;
+  	uint public RepInterval;
+  	
+  	mapping(uint => uint[]) public repMapping;
+  	mapping(uint => uint[]) public generalMapping;
 
+  	function repOfWorker(){
+  		// change to some sonstant 
+  		for (uint i = 0 ; i< 2; i++){
+  			//repArrayPush.push(workers[i].repScore);
+  			repMapping[i] = workers[i].repScore;
+  		}
 
-	function _findingEvaluator(uint _numberOfEvalutor, uint _agreementId) returns(uint[],uint[],uint[]) {
+  	}
+
+  	function repOfWorkerGeneral(){
+  		// change to some sonstant 
+  		for (uint i = 0 ; i< 2; i++){
+  			//repArrayPush.push(workers[i].repScore);
+  			repMapping[i] = i;
+  		}
+
+  	}
+
+	function _findingEvaluator(uint _numberOfEvalutor, uint _agreementId) {
   		
   		uint8 MaxRep = 100;
+  		countForLoop = 0;
+  		countWhileLoop = 0;
 
   		//looping over the worker array 
   		
@@ -43,7 +68,7 @@ contract evaluation is workerTaskPosterContract {
   		
   		
   		//// see how division can be done in such a scenario
-  		uint RepInterval = MaxRep / _numberOfEvalutor;
+  		RepInterval = MaxRep / _numberOfEvalutor;
   		//fixed lowerRep = 0 ;
 		 
 		uint upperRep = RepInterval;
@@ -52,26 +77,28 @@ contract evaluation is workerTaskPosterContract {
 
 
   		for (uint i = 0 ; i< workers.length; i++){
+  			countForLoop++;
   			// if (worker[i].repScore >= lowerRep && worker[i].repScore < upperRep){
   			// 		workerInRepRange[0].push(addressToIdWorker[worker[i].address])
   			// }
   			// else if (worker[i].repScore >= lowerRep+count && worker[i].repScore < upperRep)
   			uint count = 0 ;
-  			while (upperRep<= MaxRep){
+  			// while (upperRep<= MaxRep){
+  			// 	countWhileLoop++;
   			    
-  				if (uint(workers[i].repScore) >= uint256(count*RepInterval)  && uint256(workers[i].repScore) < uint256(upperRep) ){
-  					workerInRepRange[count].push(i); //i is id of worker
-  					break;
-  				}
-  				count++;
-  				upperRep = ((count+1)*RepInterval);
+  			// 	if (uint(workers[i].repScore) >= uint256(count*RepInterval)  && uint256(workers[i].repScore) < uint256(upperRep) ){
+  			// 		workerInRepRange[count].push(i); //i is id of worker
+  			// 		break;
+  			// 	}
+  			// 	count++;
+  			// 	upperRep = ((count+1)*RepInterval);
   				
   				
 
-  			}
+  			// }
 
   		}
-  		return (workerInRepRange[0],workerInRepRange[1],workerInRepRange[2]);
+  		//return (workerInRepRange[0],workerInRepRange[1],workerInRepRange[2]);
 	    
 	}
   	// function getEvaluatorIndex(uint randIndex, uint lowerRep, uint upperRep) returns (uint){
@@ -140,7 +167,7 @@ contract evaluation is workerTaskPosterContract {
 					totalRepScore = totalRepScore + evaluationScoreMapping[_agreementId][i];
 				}
 				uint idWorker = agreements[_agreementId].workerId;
-				workers[idWorker].repScore = workers[idWorker].repScore + int(totalRepScore);
+				workers[idWorker].repScore = workers[idWorker].repScore + (totalRepScore);
 				// add an event that the worker reputation has been updated
 				
 			}
