@@ -39,16 +39,31 @@ contract evaluation is workerTaskPosterContract {
   	mapping(uint => uint[]) public repMapping;
   	mapping(uint => uint[]) public generalMapping;
 
+  	uint[] public temparr;
+  	
+  	function getWorkersCount() public  returns(uint count) {
+    return workers.length;
+}
+  	
   	function repOfWorkerPushc(){
   		// change to some sonstant 
-  		for (uint i = 0 ; i< workers.length; i++){
-  			repArrayPush.push(workers[i].repScore);
+
+  		uint k = getWorkersCount();
+  		for (uint i = 0 ; i< k; i++){
+  			if(workers[i].repScore >=5){
+  				temparr.push(i);
+  			    
+  			}
+  			
+  			//repArrayPush.push(workers[i].repScore);
   			//repMapping[1].push(workers[i].repScore);
   		}
 
+
+  		workerInRepRange.push(temparr);
   	}
   	
-  	function repOfWorker(){
+/*   	function repOfWorker(){
   		// change to some sonstant 
   		for (uint i = 0 ; i< workers.length; i++){
   			repArray[i]=(workers[i].repScore);
@@ -56,7 +71,7 @@ contract evaluation is workerTaskPosterContract {
   		}
 
   	}
-
+ */
   	function repOfWorkerGeneral(){
   		// change to some sonstant 
   		for (uint i = 0 ; i< 2; i++){
