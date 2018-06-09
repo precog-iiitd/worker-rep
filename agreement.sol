@@ -96,4 +96,20 @@ contract workerTaskPosterContract is TaskPosterContract {
 		agreements[_agreementId].isTerminated  = true;
 	}
 
+
+	//testing mojo jojo just test
+	function MOJO_JOJO_t() external {
+		//adds task 0 and adds an accepted agreement for that tas
+
+		uint id = tasks.push(taskStruct("task random name", "gibberish taskHash", false, false, 0, 0)) - 1;
+        tasksCount++;
+        id = agreements.push(agreement(0,0,0,now,now+1000000,0,true,false, "")) - 1;
+
+		//no longer available for others// will not show in available tasks
+		tasks[0].isTaskAssigned = true;
+
+
+	}
+
+
 }
