@@ -102,7 +102,7 @@ function withdrawDarkBalance() external onlyOwner {
   function addnTaskposters(uint _num){
     for(uint i=0;i<_num;i++){
 
-    taskposters.push(User("taskposter_name", i*8, "gibberish_fileHash",msg.sender));
+    taskPosters.push(User("taskposter_name", i*8, "gibberish_fileHash",msg.sender));
 
     }
     isTaskPoster[msg.sender] = true;
