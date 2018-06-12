@@ -81,11 +81,11 @@ contract AgreementContract is TaskContract {
 	} 
 	*/
 
-	//terminate agreement anytime if not accepted 
-	function prematureAgreementTerminate(uint _agreementId) external {
+	//terminate agreement anytime if not accepted or time limit expires
+	function AgreementTerminate(uint _agreementId) external {
 		//check creator of agreement;
 		require( taskPosters[tasks[agreements[_agreementId].taskId].TP_creator_id].publicAddress == msg.sender );
-		require( agreements[_agreementId].isAccepted == false);
+		require( agreements[_agreementId].isAccepted == false || now > agreements[_agreementId].taskEnd_time);//allows terminate if time limit over
 
 		//send back reward
 		msg.sender.transfer(agreements[_agreementId].reward); //identity proven in 1st line of this function
