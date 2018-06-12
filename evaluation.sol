@@ -61,8 +61,33 @@ contract EvaluationContract is AgreementContract {
 
     _findingEvaluator(numberOfEvalutor, _agreementId);
     
-  }
+  } 
 
+  function getEvaluatorAddresses(uint _agreementId) view onlyWorker(_agreementId) returns(address[]) {
+
+
+  uint  numberOfEvalutor = 3;
+  address[] memory eval_adresses = new address[](numberOfEvalutor);
+  
+  for(uint8 i=0;i<numberOfEvalutor;i++){
+   uint eval_id = agreementToEvaluators[_agreementId][i];
+   eval_adresses[i] = workers[eval_id].publicAddress;
+  }
+  return eval_adresses;
+}
+
+function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWorker(_agreementId) returns(string) {
+
+
+  uint8 numberOfEvalutor = 3;
+ string[] memory eval_adresses = new string[](numberOfEvalutor);
+  
+  for(uint8 i=0;i<numberOfEvalutor;i++){
+   uint eval_id = agreementToEvaluators[_agreementId][i];
+   eval_adresses[i] = workers[eval_id].encryptionkeyAddress;
+  }
+  return eval_adresses[_evalNumber];
+}
 
 /*
   function sendToEvaluator(uint _agreementId, string submissionHash) onlyWorker(_agreementId){

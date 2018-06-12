@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import './taskPoster.sol';
+import './taskContract.sol';
 
 //created modifer onlyWorker
 
@@ -50,6 +50,9 @@ contract AgreementContract is TaskContract {
 		//no longer available for others// will not show in available tasks
 		tasks[_taskId].isTaskAssigned = true; 
 
+
+		//ADD EVENT For created agreement
+
 	}
 
 	function acceptAgreement(uint _agreementId) external payable onlyWorker(_agreementId){
@@ -66,6 +69,8 @@ contract AgreementContract is TaskContract {
 		agreements[_agreementId].reward = agreements[_agreementId].reward + msg.value;
 		
 		agreements[_agreementId].isAccepted = true ;
+
+		//ADD EVENT For accept agreement
 
 	}
 
@@ -87,6 +92,8 @@ contract AgreementContract is TaskContract {
 		
 		//declared terminated
 		agreements[_agreementId].isTerminated  = true;
+
+		//ADD EVENT For end agreement
 	}
 
 	function _sendRewardAndTerminateAgreement(uint _agreementId) private { //can test by making it public if required

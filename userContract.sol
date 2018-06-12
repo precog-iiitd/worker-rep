@@ -16,6 +16,7 @@ contract UserContract is Ownable{
     string fileHash;
     address publicAddress; //added field to store address
     //string[] evaluations;
+    string encryptionkeyAddress;
 
 }
 
@@ -38,10 +39,10 @@ contract UserContract is Ownable{
     //mapping (uint => uint256) IdToBalanceTaskPoster;
 
     //constructor to initialize class variables
-    function makeWorker(string _userName, string _fileHash) public payable {
+    function makeWorker(string _userName, string _fileHash, string _key) public payable {
         
         require(msg.value >= joiningFee); //if fees are less than transaction will be rejected
-        uint id = workers.push(User(_userName, 0, _fileHash,msg.sender)) - 1;
+        uint id = workers.push(User(_userName, 0, _fileHash,msg.sender,_key)) - 1;
         addressToIdWorker[msg.sender] = id;
 
 
@@ -54,10 +55,10 @@ contract UserContract is Ownable{
      }
 
 
-    function makeTaskPoster(string _userName, string _fileHash) public payable {
+    function makeTaskPoster(string _userName, string _fileHash, string _key) public payable {
         
         require(msg.value >= joiningFee); //if fees are less than transaction will be rejected
-        uint id = taskPosters.push(User(_userName, 0, _fileHash,msg.sender)) - 1;
+        uint id = taskPosters.push(User(_userName, 0, _fileHash,msg.sender,_key)) - 1;
         addressToIdTaskPoster[msg.sender] = id;
 
         
@@ -93,7 +94,7 @@ function withdrawDarkBalance() external onlyOwner {
     uint id;
     for(uint i=0;i<_num;i++){
 
-    id = workers.push(User("worker_name", i*8, "gibberish_fileHash",msg.sender)) - 1;
+    id = workers.push(User("worker_name", i*8, "gibberish_fileHash",msg.sender,"this is a public key address")) - 1;
     }
     isTaskPoster[msg.sender] = false;
     addressToIdWorker[msg.sender] = id;
@@ -104,7 +105,7 @@ function withdrawDarkBalance() external onlyOwner {
     uint id;
     for(uint i=0;i<_num;i++){
 
-    id = taskPosters.push(User("taskposter_name", i*8, "gibberish_fileHash",msg.sender)) - 1;
+    id = taskPosters.push(User("taskposter_name", i*8, "gibberish_fileHash",msg.sender,"this is a public key address")) - 1;
 
     }
     isTaskPoster[msg.sender] = true;

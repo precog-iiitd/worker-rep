@@ -1,6 +1,6 @@
 pragma solidity ^0.4.2;
 
-import "./crowdSourcing.sol";
+import "./userContract.sol";
 contract TaskContract is UserContract {
 
 
