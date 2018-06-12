@@ -4,7 +4,7 @@ import './taskPoster.sol';
 
 //created modifer onlyWorker
 
-contract workerTaskPosterContract is TaskPosterContract {
+contract AgreementContract is TaskContract {
 
 
 	struct agreement {

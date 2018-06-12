@@ -2,7 +2,7 @@ pragma solidity ^0.4.18;
 
 import './agreement.sol';
 
-contract evaluation is workerTaskPosterContract {
+contract EvaluationContract is AgreementContract {
 
   uint randNonce = 0;
 

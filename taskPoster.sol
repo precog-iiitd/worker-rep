@@ -1,7 +1,7 @@
 pragma solidity ^0.4.2;
 
 import "./crowdSourcing.sol";
-contract TaskPosterContract is UserContract {
+contract TaskContract is UserContract {
 
 
     // groups together various information regarding the task contracts created by the task poster
