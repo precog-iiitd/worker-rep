@@ -5,7 +5,11 @@ import './agreement.sol';
 contract evaluation is workerTaskPosterContract {
 
   uint randNonce = 0;
-  function _numberOfEvalutor() returns (uint){
+
+
+
+
+  function _numberOfEvalutor() private returns (uint){
     return 3;
   }
 
