@@ -26,6 +26,8 @@ contract AgreementContract is TaskContract {
 
 	mapping (uint => uint[]) public agreementToEvaluators;
 
+	mapping (uint => bool[]) public agreementToEvaluators_recievedStatus;
+
 	modifier onlyWorker(uint _agreementId){
 		//check to only the assigned worker can accept
 		require(agreements[_agreementId].workerId == addressToIdWorker[msg.sender]);
@@ -85,6 +87,7 @@ contract AgreementContract is TaskContract {
 	function AgreementTerminate(uint _agreementId) external {
 		//check creator of agreement;
 		require( taskPosters[tasks[agreements[_agreementId].taskId].TP_creator_id].publicAddress == msg.sender );
+		require(agreements[_agreementId].isTerminated == false); //not already finished task and given solution
 		require( agreements[_agreementId].isAccepted == false || now > agreements[_agreementId].taskEnd_time);//allows terminate if time limit over
 
 		//send back reward
