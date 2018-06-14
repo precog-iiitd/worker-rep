@@ -1,10 +1,12 @@
 pragma solidity ^0.4.18;
 
 import './evaluation.sol';
+//import './strings.sol';
 import "github.com/Arachnid/solidity-stringutils/strings.sol";
 
 contract  EvaluationHelper is EvaluationContract { 
-    using strings for *; 
+    
+using strings for *; 
 
 
 event pleaseEvaluate(
@@ -37,10 +39,10 @@ function submitToEvaluators(string _solutions_mergerd,address[] _evaluatorAddres
     
     
 
-	
-	for(i = 0;i<parts.length;i++){
-		pleaseEvaluate(parts[i],_agreementId,_evaluatorAddresses[i]);
-	}
+    
+    for(i = 0;i<parts.length;i++){
+        pleaseEvaluate(parts[i],_agreementId,_evaluatorAddresses[i]);
+    }
 
  }
 
@@ -48,9 +50,10 @@ function submitToEvaluators(string _solutions_mergerd,address[] _evaluatorAddres
  mapping (uint => uint) public agreementToRecievedEvaluationsCount;
 
 
- function simpleRecieveFromEvaluators(uint _rating,uint _agreementId)  public {
+ function _simpleRecieveFromEvaluators(uint _rating,uint _agreementId)  private {
+    //require(_rating<upperlimit);
 
- 	//added modifier body
+    //added modifier body
     uint[] evalArray = agreementToEvaluators[_agreementId];
     bool present = false;
     uint i;
@@ -62,21 +65,33 @@ function submitToEvaluators(string _solutions_mergerd,address[] _evaluatorAddres
     }
     require(present);
 
- 	agreementToRatings[_agreementId].push(_rating);
- 	agreementToEvaluators_recievedStatus[_agreementId][i] = true;
- 	agreementToRecievedEvaluationsCount[_agreementId]+=1;
+    agreementToRatings[_agreementId].push(_rating);
+    //agreementToEvaluators_recievedStatus[_agreementId][i] = true;
+    agreementToRecievedEvaluationsCount[_agreementId]+=1;
  }
 
 
 function recieveOrchestrator(uint _rating,uint _agreementId) external {
+    
+ _simpleRecieveFromEvaluators(_rating,_agreementId);
 
- simpleRecieveFromEvaluators(_rating,_agreementId);
+    if(agreementToRecievedEvaluationsCount[_agreementId] == agreementToEvaluators[_agreementId].length ){
+        //bool concencus = _RepCal(_agreementId); 
+        //if (concencus ){terminate and reward} else {add time and worker resubmits}
+        bool concencus = _RepCal(_agreementId);
 
-	if(agreementToRecievedEvaluationsCount[_agreementId] == agreementToEvaluators[_agreementId].length ){
-		//bool concencus = _RepCal(_agreementId); 
-		//if (concencus ){terminate and reward} else {add time and worker resubmits}
+        if (concencus){
+            //terminate and reward
+            _sendRewardAndTerminateAgreement(_agreementId);
+            //define event
+        }
+        else {
+            //re-evaluate by resubmit, increase submission timeine 
 
-	}
+            //def event
+        }
+
+    }
 
 
 }
@@ -84,14 +99,24 @@ function recieveOrchestrator(uint _rating,uint _agreementId) external {
 
 function _RepCal(uint _agreementId) private returns (bool) {
 
-	bool concensus = false;
+    bool concensus = false;
 
-	//calculating reputation
+    //calculating reputation
+    uint deltaRep;
 
-	//test
-	concensus = true;
+    uint[] ratingsArray = agreementToRatings[_agreementId];
+    bool present = false;    
+    for (uint i = 0; i < ratingsArray.length; i++){
+        deltaRep += ratingsArray[i];
+     }
 
-	return concensus;
+     deltaRep = deltaRep / ratingsArray.length;
+     workers[agreements[_agreementId].workerId].repScore += deltaRep;
+
+    //test
+    concensus = true;
+ 
+    return concensus;
 
 }
 
