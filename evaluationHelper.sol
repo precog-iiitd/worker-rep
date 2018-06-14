@@ -16,7 +16,7 @@ event pleaseEvaluate(
     );
 
 
-
+//TEST THIS
 function submitToEvaluators(string _solutions_mergerd,address[] _evaluatorAddresses,uint _agreementId) onlyWorker(_agreementId) {
     
     var s = _solutions_mergerd.toSlice();
@@ -66,7 +66,7 @@ function submitToEvaluators(string _solutions_mergerd,address[] _evaluatorAddres
     require(present);
 
     agreementToRatings[_agreementId].push(_rating);
-    //agreementToEvaluators_recievedStatus[_agreementId][i] = true;
+    //agreementToEvaluators_recievedStatus[_agreementId][i] = true; //THIS IS LEFT
     agreementToRecievedEvaluationsCount[_agreementId]+=1;
  }
 
@@ -84,10 +84,10 @@ function recieveOrchestrator(uint _rating,uint _agreementId) external {
             //terminate and reward
             _sendRewardAndTerminateAgreement(_agreementId);
             //define event
-        }
+        }7
         else {
             //re-evaluate by resubmit, increase submission timeine 
-
+            //THIS IS LEFT
             //def event
         }
 
