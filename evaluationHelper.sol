@@ -84,7 +84,7 @@ function recieveOrchestrator(uint _rating,uint _agreementId) external {
             //terminate and reward
             _sendRewardAndTerminateAgreement(_agreementId);
             //define event
-        }7
+        }
         else {
             //re-evaluate by resubmit, increase submission timeine 
             //THIS IS LEFT

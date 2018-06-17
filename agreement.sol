@@ -99,7 +99,7 @@ contract AgreementContract is TaskContract {
 		//ADD EVENT For end agreement
 	}
 
-	function _sendRewardAndTerminateAgreement(uint _agreementId) private { //can test by making it public if required
+	function _sendRewardAndTerminateAgreement(uint _agreementId) internal { //can test by making it public if required
 		//sends reward
 		workers[agreements[_agreementId].workerId].publicAddress.transfer(agreements[_agreementId].reward);
 		//terminates agreement
