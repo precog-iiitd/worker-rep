@@ -25,6 +25,16 @@ contract UserContract is Ownable{
     User[] public workers;
     User[] public taskPosters;
 
+
+    function getWorkersCount() public constant returns(uint count) {
+    return workers.length;
+}
+
+    function getTaskPostersCount() public constant returns(uint count) {
+    return taskPosters.length;
+}
+
+
     uint workersCount = 0; //darkworkers accomodation + prevent Task Poster 2 workers
 
 

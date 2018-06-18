@@ -41,7 +41,9 @@ contract TaskContract is UserContract {
     
     //mapping (taskposterID => uint[] ) taskposter_to_tasks  //could need
 
-
+        function getTasksCount() public constant returns(uint count) {
+    return tasks.length;
+}
 
 
 

@@ -36,6 +36,10 @@ contract AgreementContract is TaskContract {
 
 	agreement[] public agreements; //public for testing
 
+	    function getAgreementsCount() public constant returns(uint count) {
+    return agreements.length;
+}
+
 	function createAgreement(uint _taskId, uint _workerId,uint time_in_hours) external payable {
 		
 		//-----------------------------CONDITIONS---------------------------------
