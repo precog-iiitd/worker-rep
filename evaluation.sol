@@ -115,17 +115,31 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
     _;
   }
 
-  mapping (uint => uint[]) evaluationScoreMapping;
+  mapping (uint => uint[]) public evaluationScoreMapping;
+  mapping (uint => uint[]) public agreementToRecievedEvaluatorID;
 
-  function evaluationCompleted(uint evaluationScore, uint _agreementId) onlyEvaluator(_agreementId){
+  function evaluationCompleted(uint _completeness, uint _quality, uint _agreementId) onlyEvaluator(_agreementId){
+        agreements[_agreementId].evaluatorToQuality[addressToIdWorker[msg.sender]] = _quality;
+        agreements[_agreementId].evaluatorToCompletness[addressToIdWorker[msg.sender]] = _completeness;
+//      evaluationScoreMapping[_agreementId].push(evaluationScore) ;
+        
 
-      evaluationScoreMapping[_agreementId].push(evaluationScore) ;
+        agreementToRecievedEvaluatorID[_agreementId].push(addressToIdWorker[msg.sender]);
 
-      if (evaluationScoreMapping[_agreementId].length == agreementToEvaluators[_agreementId].length){
+      if (agreementToRecievedEvaluatorID[_agreementId].length == agreementToEvaluators[_agreementId].length){
         uint totalRepScore = 0;
-        for (uint i =0 ; i< evaluationScoreMapping[_agreementId].length ; i++){
-          totalRepScore = totalRepScore + evaluationScoreMapping[_agreementId][i];
-        }
+        uint meanCompletness;
+        uint meanQuality;
+        (meanCompletness, meanQuality) = meanCal(_agreementId);
+        uint complStandDev ;
+        uint qualtStandDev;
+        (complStandDev, qualtStandDev) = varianceCal(_agreementId, meanCompletness, meanQuality);
+        uint noConsensus;
+        noConsensus = consensus(meanCompletness, meanQuality,complStandDev, qualtStandDev , _agreementId);
+        uint finalCompletness;
+        uint finalQuality;
+        (finalCompletness,finalQuality) = finalScore(_agreementId);
+        totalRepScore = (finalCompletness + finalQuality)/2 ; 
         uint idWorker = agreements[_agreementId].workerId;
         workers[idWorker].repScore = workers[idWorker].repScore + (totalRepScore);
         // add an event that the worker reputation has been updated
@@ -139,6 +153,101 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
 
       //update  reputation of the worker , add function to worker and call that 
 
+  }
+  function finalScore(uint agreementId) returns(uint finalCompletness,uint finalQuality){
+      uint countFinal =0;
+      for (uint m =0 ; m< agreementToRecievedEvaluatorID[agreementId].length ; m++){
+          if (agreements[agreementId].outlier[m] == false){
+              countFinal++ ;
+              finalCompletness += agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][m]] * workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore;
+              finalQuality += agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][m]] * workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore; 
+          }
+        }
+        finalQuality = finalQuality/countFinal;
+      finalCompletness = finalCompletness/countFinal;
+      return (finalCompletness,finalQuality);
+  }
+  
+  function consensus(uint meanCompletness,uint meanQuality,uint complStandDev,uint qualtStandDev ,uint agreementId) returns(uint noNodesConsensus){
+      uint count = 0;
+      uint returnCount =0;
+      for (uint k =0; k< agreementToRecievedEvaluatorID[agreementId].length; k++){
+         if (agreements[agreementId].outlier[k] == false){
+            uint evalComp = agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][k]];
+             if ((evalComp > (meanCompletness - (5 * complStandDev)/4)) && (evalComp < (meanCompletness + (5 * complStandDev)/4))){
+                 count++;
+             }
+             else {
+                 agreements[agreementId].outlier[k] = true;
+             }
+                    
+        }
+    }
+    if (count>2){
+        for (uint l =0; l< agreementToRecievedEvaluatorID[agreementId].length; l++){
+         if (agreements[agreementId].outlier[l] == false){
+            uint evalqual = agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][l]];
+             if ((evalqual > (meanQuality - (5 * qualtStandDev)/4)) && (evalqual < (meanQuality + (5 * qualtStandDev)/4))){
+                 returnCount++;
+             }
+             else {
+                 agreements[agreementId].outlier[k] = true;
+             }
+                    
+        }
+    }
+        
+    }
+    return returnCount;
+  
+  }
+  
+  function meanCal(uint agreementId) returns (uint meanCompletness, uint meanQuality){
+    //   uint meanCompletness ;
+    //   uint meanQuality ;
+      uint count = 0;
+      for (uint k =0; k< agreementToRecievedEvaluatorID[agreementId].length; k++){
+         if (agreements[agreementId].outlier[k] == false){
+             count++;
+         meanQuality += agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][k]]; 
+          meanCompletness += agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][k]];
+        }
+      }
+      meanQuality = meanQuality/count;
+      meanCompletness = meanCompletness/count;
+
+    return (meanCompletness, meanQuality);
+  }
+  
+  function varianceCal(uint agreementId, uint meanCompletnessVar, uint meanQualityVar) returns (uint compStandDev,uint qualStandDev){
+    //   uint meanCompletness ;
+    //   uint meanQuality ;
+      uint count = 0;
+      uint varianceC = 0;
+      uint varianceQ = 0;
+      for (uint k =0; k< agreementToRecievedEvaluatorID[agreementId].length; k++){
+         if (agreements[agreementId].outlier[k] == false){
+             count++;
+         varianceQ += (meanQualityVar -  agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][k]]) ** 2 ;
+          varianceC += (meanCompletnessVar - agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][k]]) **  2;
+        }
+      }
+      varianceQ = varianceQ/count;
+      varianceC = varianceC/count;
+      compStandDev = sqrt(varianceC); 
+      qualStandDev = sqrt(varianceQ) ;
+
+    return (compStandDev, qualStandDev);
+  }
+  
+  function sqrt(uint x) returns (uint y) {
+    uint z = (x + 1) / 2;
+    y = x;
+    while (z < y) {
+        y = z;
+        z = (x / z + z) / 2;
+        }
+      
   }
 
 
