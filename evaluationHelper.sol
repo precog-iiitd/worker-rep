@@ -118,6 +118,22 @@ function _RepCal(uint _agreementId) private returns (bool) {
  
     return concensus;
 
+    }
+
+function sqrt(uint x) returns (uint y) {
+    uint z = (x + 1) / 2;
+    y = x;
+    while (z < y) {
+        y = z;
+        z = (x / z + z) / 2;
+    }
+}
+uint public stdDev = 0 ; 
+
+function _maths(uint _no1, uint _no2, uint _no3) {
+    uint avg = (_no3 + _no2 + _no1)/3 ;
+    uint variance = ((avg - _no2)* (avg - _no2) + (avg - _no1)*(avg - _no1) + (avg - _no3)*(avg - _no3)) /3 ;
+    stdDev = sqrt(variance) ;
 }
 
 

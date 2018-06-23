@@ -17,7 +17,9 @@ contract AgreementContract is TaskContract {
 		bool isAccepted;
 		bool isTerminated; // to kill or deactivate the agreement, and payout
 
-		
+	    mapping (uint => uint) evaluatorToCompletness;
+	    mapping (uint => uint) evaluatorToQuality;
+	    bool[] outlier;
 		//the hash of the solution intially sent by the worker is stored in this variable 
 		string solutionHash;
 
