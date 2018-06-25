@@ -6,17 +6,14 @@ contract EvaluationContract is AgreementContract {
 
   uint randNonce = 2;
 
-
-
-
   function _numberOfEvalutor() private returns (uint){
     return 3;
   }
 
 
-  function getEvaluatorAddress(uint _agreementId) onlyWorker(_agreementId) returns (address) {
-    require(bytes(agreements[_agreementId].solutionHash).length != 0);
-  }
+//   function getEvaluatorAddress(uint _agreementId) onlyWorker(_agreementId) returns (address) {
+//     require(bytes(agreements[_agreementId].solutionHash).length != 0);
+//   }
 
   
   function randomNumberGen(uint _modulus) internal returns(uint) {
@@ -64,9 +61,16 @@ contract EvaluationContract is AgreementContract {
 
   //  _findingEvaluator(numberOfEvalutor, _agreementId);
     workers[addressToIdWorker[msg.sender]].availableForEvaluation = true;
-    agreements[_agreementId].toEvalluateTaskCount = 3;
+    agreements[_agreementId].toEvalluateTaskCount = 0;
     
   } 
+  
+  function getEvaluators(uint agreementID){
+      require(agreements[agreementID].toEvalluateTaskCount == 0 && bytes(agreements[agreementID].solutionHash).length != 0);
+       _findingEvaluator(3, agreementID);
+        // (finalCompletness,finalQuality) = finalScore(agreementID);
+        //  updateRepWorkers(finalCompletness,finalQuality,agreementID);
+  }
 
   function getEvaluatorAddresses(uint _agreementId) view onlyWorker(_agreementId) returns(address[]) {
 
@@ -142,7 +146,7 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
          agreementToRecievedEvaluatorCount[_agreementId]++;
 
       if (agreementToRecievedEvaluatorID[_agreementId].length == agreementToEvaluators[_agreementId].length){
-        uint totalRepScore = 0;
+        
         
         (meanCompletness, meanQuality) = meanCal(_agreementId);
        
@@ -151,11 +155,11 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
         noConsensus = consensus(meanCompletness, meanQuality,complStandDev, qualtStandDev , _agreementId);
         
         (finalCompletness,finalQuality) = finalScore(_agreementId);
-         totalRepScore = ((finalCompletness + finalQuality) *3)/8 ; 
+         
+         updateRepWorkers(finalCompletness,finalQuality,_agreementId);
          //update reputation of the evaluators
          updateRepEvaluators(finalCompletness,finalQuality,_agreementId);
-         uint idWorker = agreements[_agreementId].workerId;
-        workers[idWorker].repScore = workers[idWorker].repScore + (totalRepScore);
+         
         // add an event that the worker reputation has been updated
         
       }
@@ -168,11 +172,20 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
       //update  reputation of the worker , add function to worker and call that 
 
   }
+  uint public totalRepScore = 0;
+  uint public existingRepScoreOfWorker = 0 ;
+  function updateRepWorkers(uint finalCompletnessW,uint finalQualityW,uint agreementIdW){
+      totalRepScore = ((finalCompletnessW + finalQualityW) *3)/8 ; 
+      uint idWorker = agreements[agreementIdW].workerId;
+      existingRepScoreOfWorker = workers[idWorker].repScore;
+      workers[idWorker].repScore = existingRepScoreOfWorker + (totalRepScore);
+  }
   
+  uint public updateRep;
+      uint public toUpdateComp;
+      uint public toUpdateQual;
   function updateRepEvaluators(uint finalCompletnessU, uint finalQualityU, uint agreementId ){
-      uint updateRep;
-      uint toUpdateComp;
-      uint toUpdateQual;
+      
       for (uint m =0 ; m< agreementToRecievedEvaluatorCount[agreementId] ; m++){
           if (agreements[agreementId].outlier[m] == false){
                
@@ -184,7 +197,7 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
                     agreements[agreementId].toEvalluateTaskCount -= 1;
                     if (agreements[agreementId].toEvalluateTaskCount == 0){
                           workers[agreementToRecievedEvaluatorID[agreementId][m]].availableForEvaluation == false;
-                          _findingEvaluator(3, agreementId);
+                        //   _findingEvaluator(3, agreementId);
                       }
                      updateRep = (toUpdateQual + toUpdateComp)/(6*4);
  
@@ -196,7 +209,7 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
                      updateRep = (toUpdateQual + toUpdateComp)/8;
                 }
                 
-                workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore = updateRep;
+                workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore += updateRep;
               
                
                     
@@ -230,6 +243,11 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
   function extraRepUpdate(uint workerID, uint rep){
       workers[workerID].repScore = rep;
   }
+  
+  function makingAvailableForEvaluation(uint workerID){
+      workers[workerID].availableForEvaluation = true;
+  }
+  
   
   uint[] public testArray;
   uint[] public testArrayRep;
