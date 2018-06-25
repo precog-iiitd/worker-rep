@@ -4,7 +4,7 @@ import './agreement.sol';
 
 contract EvaluationContract is AgreementContract {
 
-  uint randNonce = 0;
+  uint randNonce = 2;
 
 
 
@@ -25,6 +25,7 @@ contract EvaluationContract is AgreementContract {
     }
     
   function _findingEvaluator(uint _numberOfEvalutor, uint _agreementId) {
+      // should not be an evaluator himself
       uint MaxRep = 100;
   
       uint RepInterval = MaxRep / _numberOfEvalutor;
@@ -37,9 +38,10 @@ contract EvaluationContract is AgreementContract {
       
             
           if (uint(workers[i].repScore) >= uint256(count*RepInterval)  && uint256(workers[i].repScore) < uint256(upperRep) ){
-             
+            if (((workers[i].availableForEvaluation == true) || (workers[i].becomeEvaluator == true)) && (workers[i].assignedEvaluation == false)){
             workerInRepRange[count].push(i); //i is id of worker
             break;
+            }
           }
           count++;
           upperRep = ((count+1)*RepInterval);
@@ -49,6 +51,7 @@ contract EvaluationContract is AgreementContract {
       for(uint j = 0 ; j < _numberOfEvalutor; j++){
           uint randNum = randomNumberGen(workerInRepRange[j].length);
           agreementToEvaluators[_agreementId].push(workerInRepRange[j][randNum]);
+          workers[workerInRepRange[j][randNum]].assignedEvaluation = true;
       }
       
   }
@@ -59,7 +62,9 @@ contract EvaluationContract is AgreementContract {
     uint numberOfEvalutor = _numberOfEvalutor();
     agreements[_agreementId].solutionHash = _solutionHash;
 
-    _findingEvaluator(numberOfEvalutor, _agreementId);
+  //  _findingEvaluator(numberOfEvalutor, _agreementId);
+    workers[addressToIdWorker[msg.sender]].availableForEvaluation = true;
+    agreements[_agreementId].toEvalluateTaskCount = 3;
     
   } 
 
@@ -114,33 +119,42 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
     require(present);
     _;
   }
-
+  uint public meanCompletness;
+  uint public meanQuality;
+  uint public complStandDev ;
+  uint public qualtStandDev;
+  uint public noConsensus;
+  uint public finalCompletness;
+  uint public finalQuality;
   mapping (uint => uint[]) public evaluationScoreMapping;
   mapping (uint => uint[]) public agreementToRecievedEvaluatorID;
+  mapping (uint => uint) public agreementToRecievedEvaluatorCount;
+
 
   function evaluationCompleted(uint _completeness, uint _quality, uint _agreementId) onlyEvaluator(_agreementId){
         agreements[_agreementId].evaluatorToQuality[addressToIdWorker[msg.sender]] = _quality;
         agreements[_agreementId].evaluatorToCompletness[addressToIdWorker[msg.sender]] = _completeness;
 //      evaluationScoreMapping[_agreementId].push(evaluationScore) ;
         
-
+       
         agreementToRecievedEvaluatorID[_agreementId].push(addressToIdWorker[msg.sender]);
+         agreements[_agreementId].outlier[addressToIdWorker[msg.sender]] = false ;
+         agreementToRecievedEvaluatorCount[_agreementId]++;
 
       if (agreementToRecievedEvaluatorID[_agreementId].length == agreementToEvaluators[_agreementId].length){
         uint totalRepScore = 0;
-        uint meanCompletness;
-        uint meanQuality;
+        
         (meanCompletness, meanQuality) = meanCal(_agreementId);
-        uint complStandDev ;
-        uint qualtStandDev;
+       
         (complStandDev, qualtStandDev) = varianceCal(_agreementId, meanCompletness, meanQuality);
-        uint noConsensus;
+        
         noConsensus = consensus(meanCompletness, meanQuality,complStandDev, qualtStandDev , _agreementId);
-        uint finalCompletness;
-        uint finalQuality;
+        
         (finalCompletness,finalQuality) = finalScore(_agreementId);
-        totalRepScore = (finalCompletness + finalQuality)/2 ; 
-        uint idWorker = agreements[_agreementId].workerId;
+         totalRepScore = ((finalCompletness + finalQuality) *3)/8 ; 
+         //update reputation of the evaluators
+         updateRepEvaluators(finalCompletness,finalQuality,_agreementId);
+         uint idWorker = agreements[_agreementId].workerId;
         workers[idWorker].repScore = workers[idWorker].repScore + (totalRepScore);
         // add an event that the worker reputation has been updated
         
@@ -154,86 +168,152 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
       //update  reputation of the worker , add function to worker and call that 
 
   }
-  function finalScore(uint agreementId) returns(uint finalCompletness,uint finalQuality){
-      uint countFinal =0;
-      for (uint m =0 ; m< agreementToRecievedEvaluatorID[agreementId].length ; m++){
+  
+  function updateRepEvaluators(uint finalCompletnessU, uint finalQualityU, uint agreementId ){
+      uint updateRep;
+      uint toUpdateComp;
+      uint toUpdateQual;
+      for (uint m =0 ; m< agreementToRecievedEvaluatorCount[agreementId] ; m++){
           if (agreements[agreementId].outlier[m] == false){
-              countFinal++ ;
+               
+                toUpdateComp = (100 - (abso (int (finalCompletnessU - agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][m]] )))) ; 
+               toUpdateQual = (100 - (abso(int(finalQualityU - agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][m]] )))) ;
+             
+                if (workers[agreementToRecievedEvaluatorID[agreementId][m]].availableForEvaluation == true){
+                    workers[agreementToRecievedEvaluatorID[agreementId][m]].assignedEvaluation = false;
+                    agreements[agreementId].toEvalluateTaskCount -= 1;
+                    if (agreements[agreementId].toEvalluateTaskCount == 0){
+                          workers[agreementToRecievedEvaluatorID[agreementId][m]].availableForEvaluation == false;
+                          _findingEvaluator(3, agreementId);
+                      }
+                     updateRep = (toUpdateQual + toUpdateComp)/(6*4);
+ 
+                    
+                }
+                else {
+                    workers[agreementToRecievedEvaluatorID[agreementId][m]].assignedEvaluation = false;
+                    workers[agreementToRecievedEvaluatorID[agreementId][m]].becomeEvaluator = false;
+                     updateRep = (toUpdateQual + toUpdateComp)/8;
+                }
+                
+                workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore = updateRep;
+              
+               
+                    
+          }
+      }
+      
+  }
+  
+  function abso(int value) returns(uint retValue){
+      if (value <0){
+          retValue = uint(-1 * value);
+          return (retValue); 
+      }
+  }
+  
+  function avgRep() returns(uint avgRepScore){
+      avgRepScore = 0;
+      
+      for (uint i = 0 ; i< workers.length; i++){
+          avgRepScore += workers[i].repScore ; 
+      }
+      return (avgRepScore/workers.length);
+      
+  }
+  
+  function becomeEvaluator(){
+      require(workers[addressToIdWorker[msg.sender]].repScore > avgRep());
+      workers[addressToIdWorker[msg.sender]].becomeEvaluator = true;
+  }
+  
+  function extraRepUpdate(uint workerID, uint rep){
+      workers[workerID].repScore = rep;
+  }
+  
+  uint[] public testArray;
+  uint[] public testArrayRep;
+  uint[] public testRep;
+  function finalScore(uint agreementId) returns(uint finalCompletness,uint finalQuality){
+      uint repScoreTotal = 0;
+      finalCompletness = 0;
+      finalQuality = 0 ; 
+      
+      for (uint m =0 ; m< agreementToRecievedEvaluatorCount[agreementId] ; m++){
+          if (agreements[agreementId].outlier[m] == false){
+              testRep.push(workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore);
+              testArrayRep.push(agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][m]] * workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore);
+              testArray.push(agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][m]]);
               finalCompletness += agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][m]] * workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore;
               finalQuality += agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][m]] * workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore; 
+              repScoreTotal += workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore;
+              
           }
         }
-        finalQuality = finalQuality/countFinal;
-      finalCompletness = finalCompletness/countFinal;
+        finalQuality = finalQuality/repScoreTotal;
+      finalCompletness = finalCompletness/repScoreTotal;
       return (finalCompletness,finalQuality);
   }
   
   function consensus(uint meanCompletness,uint meanQuality,uint complStandDev,uint qualtStandDev ,uint agreementId) returns(uint noNodesConsensus){
       uint count = 0;
-      uint returnCount =0;
-      for (uint k =0; k< agreementToRecievedEvaluatorID[agreementId].length; k++){
+      noNodesConsensus =0;
+      for (uint k =0; k< agreementToRecievedEvaluatorCount[agreementId]; k++){
          if (agreements[agreementId].outlier[k] == false){
             uint evalComp = agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][k]];
-             if ((evalComp > (meanCompletness - (5 * complStandDev)/4)) && (evalComp < (meanCompletness + (5 * complStandDev)/4))){
-                 count++;
-             }
-             else {
-                 agreements[agreementId].outlier[k] = true;
-             }
+            uint evalqual = agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][k]];
+           
+             if ((evalComp >= (meanCompletness - (5 * complStandDev)/4)) && (evalComp <= (meanCompletness + (5 * complStandDev)/4))){
+                 if ((evalqual >= (meanQuality - (5 * qualtStandDev)/4)) && (evalqual <= (meanQuality + (5 * qualtStandDev)/4))){
+                 noNodesConsensus++;
+                 }
+                 else {
+                   agreements[agreementId].outlier[k] = true;
+                 }
+            }
+             
                     
         }
-    }
-    if (count>2){
-        for (uint l =0; l< agreementToRecievedEvaluatorID[agreementId].length; l++){
-         if (agreements[agreementId].outlier[l] == false){
-            uint evalqual = agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][l]];
-             if ((evalqual > (meanQuality - (5 * qualtStandDev)/4)) && (evalqual < (meanQuality + (5 * qualtStandDev)/4))){
-                 returnCount++;
-             }
-             else {
-                 agreements[agreementId].outlier[k] = true;
-             }
-                    
-        }
-    }
-        
-    }
-    return returnCount;
+      }
+    
+    return noNodesConsensus;
   
   }
   
   function meanCal(uint agreementId) returns (uint meanCompletness, uint meanQuality){
-    //   uint meanCompletness ;
-    //   uint meanQuality ;
+     uint meanCompletnessI = 0 ;
+     uint meanQualityI = 0  ;
       uint count = 0;
-      for (uint k =0; k< agreementToRecievedEvaluatorID[agreementId].length; k++){
+      for (uint k =0; k< agreementToRecievedEvaluatorCount[agreementId]; k++){
          if (agreements[agreementId].outlier[k] == false){
              count++;
-         meanQuality += agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][k]]; 
-          meanCompletness += agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][k]];
+         meanQualityI = meanQualityI+ agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][k]]; 
+          meanCompletnessI = meanCompletnessI + agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][k]];
         }
       }
-      meanQuality = meanQuality/count;
-      meanCompletness = meanCompletness/count;
+      meanQuality = meanQualityI/count;
+      meanCompletness = meanCompletnessI/count;
 
     return (meanCompletness, meanQuality);
   }
-  
+  uint public countInsideVar = 0;
+  uint public varianceC = 0;
+      uint public varianceQ = 0;
   function varianceCal(uint agreementId, uint meanCompletnessVar, uint meanQualityVar) returns (uint compStandDev,uint qualStandDev){
     //   uint meanCompletness ;
     //   uint meanQuality ;
-      uint count = 0;
-      uint varianceC = 0;
-      uint varianceQ = 0;
-      for (uint k =0; k< agreementToRecievedEvaluatorID[agreementId].length; k++){
+
+      compStandDev = 0 ;
+      qualStandDev = 0 ; 
+      for (uint k =0; k< agreementToRecievedEvaluatorCount[agreementId]; k++){
          if (agreements[agreementId].outlier[k] == false){
-             count++;
-         varianceQ += (meanQualityVar -  agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][k]]) ** 2 ;
-          varianceC += (meanCompletnessVar - agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][k]]) **  2;
+             countInsideVar++;
+         varianceQ += ((meanQualityVar -  agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][k]])*(meanQualityVar -  agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][k]]) );
+          varianceC += ((meanCompletnessVar - agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][k]])**2);
         }
       }
-      varianceQ = varianceQ/count;
-      varianceC = varianceC/count;
+      varianceQ = varianceQ/countInsideVar;
+      varianceC = varianceC/countInsideVar;
       compStandDev = sqrt(varianceC); 
       qualStandDev = sqrt(varianceQ) ;
 

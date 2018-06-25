@@ -16,12 +16,12 @@ contract AgreementContract is TaskContract {
 		uint reward;
 		bool isAccepted;
 		bool isTerminated; // to kill or deactivate the agreement, and payout
-
-	    mapping (uint => uint) evaluatorToCompletness;
-	    mapping (uint => uint) evaluatorToQuality;
-	    bool[] outlier;
 		//the hash of the solution intially sent by the worker is stored in this variable 
 		string solutionHash;
+		mapping (uint => uint)  evaluatorToCompletness;
+	    mapping (uint => uint) evaluatorToQuality;
+	    mapping(uint => bool) outlier;
+	    uint toEvalluateTaskCount;
 
 
 	}
@@ -53,7 +53,7 @@ contract AgreementContract is TaskContract {
 
 		uint now_time = now;
 		uint end_time = now_time + (time_in_hours * 3600);
-		uint id = agreements.push(agreement(_taskId,_workerId,addressToIdTaskPoster[msg.sender],now_time,end_time,msg.value,false,false, "")) - 1;
+		uint id = agreements.push(agreement(_taskId,_workerId,addressToIdTaskPoster[msg.sender],now_time,end_time,msg.value,false,false, "",0)) - 1;
 
 		//no longer available for others// will not show in available tasks
 		tasks[_taskId].isTaskAssigned = true; 
@@ -114,18 +114,18 @@ contract AgreementContract is TaskContract {
 
 
 	//testing mojo jojo just test
-	function MOJO_JOJO_t() external {
-		//adds task 0 and adds an accepted agreement for that tas
+// 	function MOJO_JOJO_t() external {
+// 		//adds task 0 and adds an accepted agreement for that tas
 
-		uint id = tasks.push(taskStruct("task random name", "gibberish taskHash", false, false, 0, 0)) - 1;
-        tasksCount++;
-        id = agreements.push(agreement(0,0,0,now,now+1000000,0,true,false, "")) - 1;
+// 		uint id = tasks.push(taskStruct("task random name", "gibberish taskHash", false, false, 0, 0)) - 1;
+//         tasksCount++;
+//         id = agreements.push(agreement(0,0,0,now,now+1000000,0,true,false, "")) - 1;
 
-		//no longer available for others// will not show in available tasks
-		tasks[0].isTaskAssigned = true;
+// 		//no longer available for others// will not show in available tasks
+// 		tasks[0].isTaskAssigned = true;
 
 
-	}
+// 	}
 
 
 }
