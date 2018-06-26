@@ -10,46 +10,60 @@ contract EvaluationContract is AgreementContract {
     return 3;
   }
 
-
-//   function getEvaluatorAddress(uint _agreementId) onlyWorker(_agreementId) returns (address) {
-//     require(bytes(agreements[_agreementId].solutionHash).length != 0);
-//   }
-
+//uint public waste;
   
-  function randomNumberGen(uint _modulus) internal returns(uint) {
+  function randomNumberGen(uint _modulus) public returns(uint) {
       randNonce++;
-      return uint(keccak256((now+randNonce), msg.sender, randNonce)) % _modulus;
+      uint waste;
+      waste = uint(keccak256((now+randNonce), msg.sender, randNonce)) % _modulus;
+      return waste;
     }
-    
+  uint[] public countInsidePush;
+   // uint[] public repRangelength;
+ // uint[] public randomN ; 
+   // uint public zeroId;
+
+
+
   function _findingEvaluator(uint _numberOfEvalutor, uint _agreementId) {
       // should not be an evaluator himself
       uint MaxRep = 100;
   
       uint RepInterval = MaxRep / _numberOfEvalutor;
+      uint[][4] workerInRepRange;
       
-    uint[][3] workerInRepRange;
       for (uint i = 0 ; i< workers.length; i++){
           uint upperRep = RepInterval;
         uint count = 0 ;
+         workerInRepRange[count].push(1);
+        count++; 
+        
          while (upperRep<= MaxRep){
-      
             
-          if (uint(workers[i].repScore) >= uint256(count*RepInterval)  && uint256(workers[i].repScore) < uint256(upperRep) ){
-            if (((workers[i].availableForEvaluation == true) || (workers[i].becomeEvaluator == true)) && (workers[i].assignedEvaluation == false)){
+          if (uint256(workers[i].repScore) >= uint256((count-1)*RepInterval)  && uint256(workers[i].repScore) < uint256(upperRep) ){
+            if (((workers[i].availableForEvaluation == true) || (workers[i].becomeEvaluator == true)) && (workers[i].assignedEvaluation == false) && (agreements[_agreementId].workerId != i)){
             workerInRepRange[count].push(i); //i is id of worker
+           countInsidePush.push(i);
             break;
             }
           }
           count++;
-          upperRep = ((count+1)*RepInterval);
+          upperRep = ((count+1-1)*RepInterval);
           
            }
       }
-      for(uint j = 0 ; j < _numberOfEvalutor; j++){
-          uint randNum = randomNumberGen(workerInRepRange[j].length);
-          agreementToEvaluators[_agreementId].push(workerInRepRange[j][randNum]);
-          workers[workerInRepRange[j][randNum]].assignedEvaluation = true;
-      }
+      
+     //zeroId = int(workerInRepRange[0][0]);
+       
+    //   for(uint j = 0 ; j < _numberOfEvalutor; j++){
+    //       uint randNum = randomNumberGen(workerInRepRange[j].length);
+          
+    //   //  repRangelength.push(workerInRepRange[j].length);
+         
+    //      // randomN.push(randNum); 
+    //      agreementToEvaluators[_agreementId].push(workerInRepRange[j][randNum]);
+    //       workers[workerInRepRange[j][randNum]].assignedEvaluation = true;
+    //   }
       
   }
   
@@ -71,6 +85,15 @@ contract EvaluationContract is AgreementContract {
         // (finalCompletness,finalQuality) = finalScore(agreementID);
         //  updateRepWorkers(finalCompletness,finalQuality,agreementID);
   }
+  
+  function notSubmitted(uint agreementID) returns(bool){
+      for(uint n = 0; n< agreementToRecievedEvaluatorID[agreementID].length;n++ ){
+          if (addressToIdWorker[msg.sender] == agreementToRecievedEvaluatorID[agreementID][n]){
+              return false;
+          }
+      }
+      return true;
+  }
 
   function getEvaluatorAddresses(uint _agreementId) view onlyWorker(_agreementId) returns(address[]) {
 
@@ -84,6 +107,7 @@ contract EvaluationContract is AgreementContract {
   }
   return eval_adresses;
 }
+
 
 function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWorker(_agreementId) returns(string) {
 
@@ -136,6 +160,7 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
 
 
   function evaluationCompleted(uint _completeness, uint _quality, uint _agreementId) onlyEvaluator(_agreementId){
+        require(notSubmitted(_agreementId));
         agreements[_agreementId].evaluatorToQuality[addressToIdWorker[msg.sender]] = _quality;
         agreements[_agreementId].evaluatorToCompletness[addressToIdWorker[msg.sender]] = _completeness;
 //      evaluationScoreMapping[_agreementId].push(evaluationScore) ;
@@ -172,6 +197,20 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
       //update  reputation of the worker , add function to worker and call that 
 
   }
+  function _sendRewardAndTerminateAgreement(uint _agreementId, uint completnessR, uint finalScoreR) internal { //can test by making it public if required
+    //sends reward
+    uint rewardToSend = (finalScoreR*agreements[_agreementId].reward)/100;
+    uint feeToSend = (completnessR * agreements[_agreementId].fee)/100;
+    
+    workers[agreements[_agreementId].workerId].publicAddress.transfer(rewardToSend + feeToSend);
+  //  workers[agreements[_agreementId].workerId].publicAddress.transfer(feeToSend);
+    taskPosters[agreements[_agreementId].taskPosterId].publicAddress.transfer(agreements[_agreementId].fee - feeToSend + agreements[_agreementId].reward - rewardToSend );
+   
+
+        //terminates agreement
+    agreements[_agreementId].isTerminated  = true;
+  }
+  
   uint public totalRepScore = 0;
   uint public existingRepScoreOfWorker = 0 ;
   function updateRepWorkers(uint finalCompletnessW,uint finalQualityW,uint agreementIdW){
@@ -179,7 +218,9 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
       uint idWorker = agreements[agreementIdW].workerId;
       existingRepScoreOfWorker = workers[idWorker].repScore;
       workers[idWorker].repScore = existingRepScoreOfWorker + (totalRepScore);
+      _sendRewardAndTerminateAgreement(agreementIdW,finalCompletnessW, totalRepScore);
   }
+  
   
   uint public updateRep;
       uint public toUpdateComp;
@@ -259,13 +300,10 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
       
       for (uint m =0 ; m< agreementToRecievedEvaluatorCount[agreementId] ; m++){
           if (agreements[agreementId].outlier[m] == false){
-              testRep.push(workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore);
-              testArrayRep.push(agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][m]] * workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore);
-              testArray.push(agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][m]]);
-              finalCompletness += agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][m]] * workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore;
-              finalQuality += agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][m]] * workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore; 
-              repScoreTotal += workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore;
-              
+             uint evalRep =  workers[agreementToRecievedEvaluatorID[agreementId][m]].repScore;
+                finalCompletness += agreements[agreementId].evaluatorToCompletness[agreementToRecievedEvaluatorID[agreementId][m]] * evalRep;
+              finalQuality += agreements[agreementId].evaluatorToQuality[agreementToRecievedEvaluatorID[agreementId][m]] * evalRep; 
+              repScoreTotal += evalRep;
           }
         }
         finalQuality = finalQuality/repScoreTotal;
