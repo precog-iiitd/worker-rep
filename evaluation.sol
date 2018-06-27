@@ -10,7 +10,6 @@ contract EvaluationContract is AgreementContract {
     return 3;
   }
 
-//uint public waste;
   
   function randomNumberGen(uint _modulus) public returns(uint) {
       randNonce++;
@@ -18,11 +17,11 @@ contract EvaluationContract is AgreementContract {
       waste = uint(keccak256((now+randNonce), msg.sender, randNonce)) % _modulus;
       return waste;
     }
-  uint[] public countInsidePush;
-   // uint[] public repRangelength;
- // uint[] public randomN ; 
-   // uint public zeroId;
-
+  //uint[] public countInsidePush;
+  //uint[] public randN;
+ //uint public zeoID;
+ //uint[] public dont;
+ uint[] public dont1;
 
 
   function _findingEvaluator(uint _numberOfEvalutor, uint _agreementId) {
@@ -31,19 +30,21 @@ contract EvaluationContract is AgreementContract {
   
       uint RepInterval = MaxRep / _numberOfEvalutor;
       uint[][4] workerInRepRange;
+      uint dd = 0;
+      workerInRepRange[dd].push(dd);
       
-      for (uint i = 0 ; i< workers.length; i++){
+      
+      
+      for (uint i = 0 ; i< workers.length; i++){// traverses all workers
           uint upperRep = RepInterval;
-        uint count = 0 ;
-         workerInRepRange[count].push(1);
-        count++; 
-        
-         while (upperRep<= MaxRep){
+        uint count = 1 ;
+
+         while (upperRep<= MaxRep){//adds to interval
             
           if (uint256(workers[i].repScore) >= uint256((count-1)*RepInterval)  && uint256(workers[i].repScore) < uint256(upperRep) ){
             if (((workers[i].availableForEvaluation == true) || (workers[i].becomeEvaluator == true)) && (workers[i].assignedEvaluation == false) && (agreements[_agreementId].workerId != i)){
             workerInRepRange[count].push(i); //i is id of worker
-           countInsidePush.push(i);
+        // countInsidePush.push(i);
             break;
             }
           }
@@ -53,17 +54,18 @@ contract EvaluationContract is AgreementContract {
            }
       }
       
-     //zeroId = int(workerInRepRange[0][0]);
-       
-    //   for(uint j = 0 ; j < _numberOfEvalutor; j++){
-    //       uint randNum = randomNumberGen(workerInRepRange[j].length);
+     // dont = workerInRepRange[2];
+      dont1 = workerInRepRange[3];
+      
+    // zeoID = workerInRepRange[3][0];
+       uint jValue = _numberOfEvalutor+1;
+      for(uint j = 1 ; j < jValue; j++){
+          uint randNum = randomNumberGen(workerInRepRange[j].length);
+        // randN.push(workerInRepRange[j].length);
           
-    //   //  repRangelength.push(workerInRepRange[j].length);
-         
-    //      // randomN.push(randNum); 
-    //      agreementToEvaluators[_agreementId].push(workerInRepRange[j][randNum]);
-    //       workers[workerInRepRange[j][randNum]].assignedEvaluation = true;
-    //   }
+        agreementToEvaluators[_agreementId].push(workerInRepRange[j][randNum]);
+        // workers[workerInRepRange[j][randNum]].assignedEvaluation = true;
+      }
       
   }
   
