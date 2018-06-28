@@ -17,51 +17,45 @@ contract EvaluationContract is AgreementContract {
       waste = uint(keccak256((now+randNonce), msg.sender, randNonce)) % _modulus;
       return waste;
     }
-  //uint[] public countInsidePush;
-  //uint[] public randN;
- //uint public zeoID;
- //uint[] public dont;
+ 
  uint[] public dont1;
+    uint[] public randN;
 
 
   function _findingEvaluator(uint _numberOfEvalutor, uint _agreementId) {
       // should not be an evaluator himself
       uint MaxRep = 100;
-  
+      uint Inlength;
+    uint[3] memory rangeCount = [uint(0),0,0]; 
       uint RepInterval = MaxRep / _numberOfEvalutor;
-      uint[][4] workerInRepRange;
-      uint dd = 0;
-      workerInRepRange[dd].push(dd);
-      
-      
-      
+      uint[1000][3] workerInRepRange;
       for (uint i = 0 ; i< workers.length; i++){// traverses all workers
           uint upperRep = RepInterval;
-        uint count = 1 ;
+        uint count = 0 ;
 
          while (upperRep<= MaxRep){//adds to interval
             
-          if (uint256(workers[i].repScore) >= uint256((count-1)*RepInterval)  && uint256(workers[i].repScore) < uint256(upperRep) ){
+          if (uint256(workers[i].repScore) >= uint256((count)*RepInterval)  && uint256(workers[i].repScore) < uint256(upperRep) ){
             if (((workers[i].availableForEvaluation == true) || (workers[i].becomeEvaluator == true)) && (workers[i].assignedEvaluation == false) && (agreements[_agreementId].workerId != i)){
-            workerInRepRange[count].push(i); //i is id of worker
-        // countInsidePush.push(i);
+                 Inlength =  rangeCount[count];
+            workerInRepRange[count][Inlength] = i; //i is id of worker
+            rangeCount[count]++;
             break;
             }
           }
           count++;
-          upperRep = ((count+1-1)*RepInterval);
+          upperRep = ((count+1)*RepInterval);
           
            }
       }
       
-     // dont = workerInRepRange[2];
-      dont1 = workerInRepRange[3];
-      
-    // zeoID = workerInRepRange[3][0];
-       uint jValue = _numberOfEvalutor+1;
-      for(uint j = 1 ; j < jValue; j++){
-          uint randNum = randomNumberGen(workerInRepRange[j].length);
-        // randN.push(workerInRepRange[j].length);
+      dont1 = rangeCount;
+
+       uint jValue = _numberOfEvalutor;
+      for(uint j = 0; j < jValue; j++){
+          uint randNum = randomNumberGen(rangeCount[j]);
+          randN.push(randNum);
+        
           
         agreementToEvaluators[_agreementId].push(workerInRepRange[j][randNum]);
         // workers[workerInRepRange[j][randNum]].assignedEvaluation = true;
@@ -100,15 +94,15 @@ contract EvaluationContract is AgreementContract {
   function getEvaluatorAddresses(uint _agreementId) view onlyWorker(_agreementId) returns(address[]) {
 
 
-  uint  numberOfEvalutor = 3;
-  address[] memory eval_adresses = new address[](numberOfEvalutor);
-  
-  for(uint8 i=0;i<numberOfEvalutor;i++){
-   uint eval_id = agreementToEvaluators[_agreementId][i];
-   eval_adresses[i] = workers[eval_id].publicAddress;
-  }
-  return eval_adresses;
-}
+      uint  numberOfEvalutor = 3;
+      address[] memory eval_adresses = new address[](numberOfEvalutor);
+      
+      for(uint8 i=0;i<numberOfEvalutor;i++){
+       uint eval_id = agreementToEvaluators[_agreementId][i];
+       eval_adresses[i] = workers[eval_id].publicAddress;
+      }
+      return eval_adresses;
+    }
 
 
 function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWorker(_agreementId) returns(string) {
@@ -149,19 +143,22 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
     require(present);
     _;
   }
-  uint public meanCompletness;
-  uint public meanQuality;
-  uint public complStandDev ;
-  uint public qualtStandDev;
-  uint public noConsensus;
-  uint public finalCompletness;
-  uint public finalQuality;
+  
   mapping (uint => uint[]) public evaluationScoreMapping;
   mapping (uint => uint[]) public agreementToRecievedEvaluatorID;
   mapping (uint => uint) public agreementToRecievedEvaluatorCount;
 
 
   function evaluationCompleted(uint _completeness, uint _quality, uint _agreementId) onlyEvaluator(_agreementId){
+    uint[4] memory meanStandardCompQual = [uint(0),0,0,0];
+
+// uint  meanCompletness;
+//   uint  meanQuality;
+//   uint  complStandDev ;
+//   uint  qualtStandDev;
+  uint  noConsensus;
+  uint  finalCompletness;
+  uint  finalQuality;
         require(notSubmitted(_agreementId));
         agreements[_agreementId].evaluatorToQuality[addressToIdWorker[msg.sender]] = _quality;
         agreements[_agreementId].evaluatorToCompletness[addressToIdWorker[msg.sender]] = _completeness;
@@ -175,11 +172,11 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
       if (agreementToRecievedEvaluatorID[_agreementId].length == agreementToEvaluators[_agreementId].length){
         
         
-        (meanCompletness, meanQuality) = meanCal(_agreementId);
+        (meanStandardCompQual[0], meanStandardCompQual[1]) = meanCal(_agreementId);
        
-        (complStandDev, qualtStandDev) = varianceCal(_agreementId, meanCompletness, meanQuality);
+        (meanStandardCompQual[2], meanStandardCompQual[3]) = varianceCal(_agreementId, meanStandardCompQual[0], meanStandardCompQual[1]);
         
-        noConsensus = consensus(meanCompletness, meanQuality,complStandDev, qualtStandDev , _agreementId);
+        noConsensus = consensus(meanStandardCompQual[0], meanStandardCompQual[1],meanStandardCompQual[2], meanStandardCompQual[3] , _agreementId);
         
         (finalCompletness,finalQuality) = finalScore(_agreementId);
          
@@ -190,14 +187,6 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
         // add an event that the worker reputation has been updated
         
       }
-      // check if the evaluator is one that has been assigned 
-
-      // check if all evaluators have submitted their evaluation score 
-
-      // if all have send their evalutation compute the reputation score of the the worker for this task 
-
-      //update  reputation of the worker , add function to worker and call that 
-
   }
   function _sendRewardAndTerminateAgreement(uint _agreementId, uint completnessR, uint finalScoreR) internal { //can test by making it public if required
     //sends reward
@@ -213,9 +202,10 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
     agreements[_agreementId].isTerminated  = true;
   }
   
-  uint public totalRepScore = 0;
-  uint public existingRepScoreOfWorker = 0 ;
+ 
   function updateRepWorkers(uint finalCompletnessW,uint finalQualityW,uint agreementIdW){
+       uint totalRepScore = 0;
+  uint existingRepScoreOfWorker = 0 ;
       totalRepScore = ((finalCompletnessW + finalQualityW) *3)/8 ; 
       uint idWorker = agreements[agreementIdW].workerId;
       existingRepScoreOfWorker = workers[idWorker].repScore;
@@ -224,11 +214,11 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
   }
   
   
-  uint public updateRep;
-      uint public toUpdateComp;
-      uint public toUpdateQual;
+  
   function updateRepEvaluators(uint finalCompletnessU, uint finalQualityU, uint agreementId ){
-      
+      uint  updateRep;
+      uint  toUpdateComp;
+      uint  toUpdateQual;
       for (uint m =0 ; m< agreementToRecievedEvaluatorCount[agreementId] ; m++){
           if (agreements[agreementId].outlier[m] == false){
                
@@ -292,9 +282,7 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
   }
   
   
-  uint[] public testArray;
-  uint[] public testArrayRep;
-  uint[] public testRep;
+
   function finalScore(uint agreementId) returns(uint finalCompletness,uint finalQuality){
       uint repScoreTotal = 0;
       finalCompletness = 0;
@@ -351,15 +339,19 @@ function getEvaluatorPublicKeys(uint _agreementId,uint _evalNumber) view onlyWor
       }
       meanQuality = meanQualityI/count;
       meanCompletness = meanCompletnessI/count;
+     
+    // return varianceCal(agreementId, meanCompletness, meanQuality);
 
-    return (meanCompletness, meanQuality);
+   return (meanCompletness, meanQuality);
   }
-  uint public countInsideVar = 0;
-  uint public varianceC = 0;
-      uint public varianceQ = 0;
+ 
+  
   function varianceCal(uint agreementId, uint meanCompletnessVar, uint meanQualityVar) returns (uint compStandDev,uint qualStandDev){
     //   uint meanCompletness ;
     //   uint meanQuality ;
+     uint countInsideVar = 0;
+     uint  varianceC = 0;
+      uint  varianceQ = 0;
 
       compStandDev = 0 ;
       qualStandDev = 0 ; 
