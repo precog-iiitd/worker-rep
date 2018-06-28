@@ -8,6 +8,7 @@ contract AgreementContract is TaskContract {
 
 
 	struct agreement {
+	    uint fee;
 		uint taskId;
 		uint workerId;
 		uint taskPosterId;
@@ -18,11 +19,11 @@ contract AgreementContract is TaskContract {
 		bool isTerminated; // to kill or deactivate the agreement, and payout
 		//the hash of the solution intially sent by the worker is stored in this variable 
 		string solutionHash;
-		 uint toEvalluateTaskCount;
+		uint toEvalluateTaskCount;
 		mapping (uint => uint)  evaluatorToCompletness;
 	    mapping (uint => uint) evaluatorToQuality;
 	    mapping(uint => bool) outlier;
-	   
+	    
 
 
 	}
@@ -51,10 +52,10 @@ contract AgreementContract is TaskContract {
 		//check is reward sent is atleast as much as the reward promised
 		require( msg.value >= tasks[_taskId].taskReward);
 		//----------------------------END of CONDITIONS----------------------------
-
+        uint fee = tasks[_taskId].taskReward/4;
 		uint now_time = now;
 		uint end_time = now_time + (time_in_hours * 3600);
-		uint id = agreements.push(agreement(_taskId,_workerId,addressToIdTaskPoster[msg.sender],now_time,end_time,msg.value,false,false, "",0)) - 1;
+		uint id = agreements.push(agreement(fee,_taskId,_workerId,addressToIdTaskPoster[msg.sender],now_time,end_time,msg.value,false,false, "",0)) - 1;
 
 		//no longer available for others// will not show in available tasks
 		tasks[_taskId].isTaskAssigned = true; 
@@ -71,11 +72,12 @@ contract AgreementContract is TaskContract {
 
 		//IF TERMINATED THEN CAN NOT ACCEPT
 		require(agreements[_agreementId].isTerminated == false);
+		require(msg.value >= agreements[_agreementId].fee);
 
 		//can add consition for single accept
 
 		//adds penalty as a part of the reward
-		agreements[_agreementId].reward = agreements[_agreementId].reward + msg.value;
+		agreements[_agreementId].fee = msg.value;
 		
 		agreements[_agreementId].isAccepted = true ;
 
