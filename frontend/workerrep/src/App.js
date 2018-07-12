@@ -274,16 +274,17 @@ console.log("--------------------------------------------------------------")
   </div>
 </section>
 
+
 {this.state.defaultUserType != '' ? <NavTabs type={this.state.defaultUserType} activeTab={this.state.CurrentactiveTab} setCurrentTab={this.setCurrentTab} /> : null}
 
 
 
 <br />
-{ this.state.CurrentactiveTab==2 ? <AvailableTasks /> : null }
+{ (this.state.CurrentactiveTab==2 && this.state.defaultUserType=="Worker") ? <AvailableTasks /> : null }
 
 <section type={this.state.defaultUserType} className={this.state.CurrentactiveTab==1?"is-medium":"is-invisible"}>
 
-{this.state.defaultUserType != ''? <Profile type={this.state.defaultUserType}/> : "" }
+{(this.state.defaultUserType != '' && this.state.defaultUserType != 'unregistered')? <Profile type={this.state.defaultUserType}/> : "" }
 
 </section>
 

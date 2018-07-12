@@ -51,8 +51,6 @@ storehash.methods.addressToIdTaskPoster(accounts[0]).call()
 	.then(function(result){	
 		console.log("the taskPoster id is", result);
 
-
-
 		storehash.methods.taskPosters(result).call()
 	.then(function(result){
 		console.log("getting profile details of taskposter ",result);
