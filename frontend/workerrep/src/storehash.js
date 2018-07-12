@@ -2,7 +2,7 @@ import web3 from './web3';
 
 //access our local copy to contract deployed on rinkeby testnet
 //use your own contract address
-const address = '0xFe0F194a7Fa201eFB9A6c3398F6a70B99e3aAdF7';
+const address = '0x87bfd10924e8334e103421A760f73bC648e8b4Cc';
 //use the ABI from your contract
 const abi = [
   {
@@ -17,6 +17,47 @@ const abi = [
     ],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_completeness",
+        "type": "uint256"
+      },
+      {
+        "name": "_quality",
+        "type": "uint256"
+      },
+      {
+        "name": "_agreementId",
+        "type": "uint256"
+      }
+    ],
+    "name": "evaluationCompleted",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "value",
+        "type": "int256"
+      }
+    ],
+    "name": "abso",
+    "outputs": [
+      {
+        "name": "retValue",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -90,6 +131,29 @@ const abi = [
     "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "evaluationScoreMapping",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "constant": false,
     "inputs": [
       {
@@ -105,9 +169,92 @@ const abi = [
   },
   {
     "constant": false,
-    "inputs": [],
-    "name": "MOJO_JOJO_t",
+    "inputs": [
+      {
+        "name": "workerID",
+        "type": "uint256"
+      },
+      {
+        "name": "rep",
+        "type": "uint256"
+      }
+    ],
+    "name": "extraRepUpdate",
     "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "agreementToRecievedEvaluatorID",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "workerID",
+        "type": "uint256"
+      }
+    ],
+    "name": "makingAvailableForEvaluation",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "stdDev",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "agreementId",
+        "type": "uint256"
+      }
+    ],
+    "name": "meanCal",
+    "outputs": [
+      {
+        "name": "meanCompletness",
+        "type": "uint256"
+      },
+      {
+        "name": "meanQuality",
+        "type": "uint256"
+      }
+    ],
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
@@ -124,6 +271,15 @@ const abi = [
     "outputs": [],
     "payable": true,
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "becomeEvaluator",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -147,6 +303,41 @@ const abi = [
     ],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "meanCompletness",
+        "type": "uint256"
+      },
+      {
+        "name": "meanQuality",
+        "type": "uint256"
+      },
+      {
+        "name": "complStandDev",
+        "type": "uint256"
+      },
+      {
+        "name": "qualtStandDev",
+        "type": "uint256"
+      },
+      {
+        "name": "agreementId",
+        "type": "uint256"
+      }
+    ],
+    "name": "consensus",
+    "outputs": [
+      {
+        "name": "noNodesConsensus",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -187,6 +378,18 @@ const abi = [
       {
         "name": "encryptionkeyAddress",
         "type": "string"
+      },
+      {
+        "name": "availableForEvaluation",
+        "type": "bool"
+      },
+      {
+        "name": "becomeEvaluator",
+        "type": "bool"
+      },
+      {
+        "name": "assignedEvaluation",
+        "type": "bool"
       }
     ],
     "payable": false,
@@ -237,6 +440,70 @@ const abi = [
     "constant": false,
     "inputs": [
       {
+        "name": "agreementID",
+        "type": "uint256"
+      }
+    ],
+    "name": "getEvaluators",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "agreementId",
+        "type": "uint256"
+      },
+      {
+        "name": "meanCompletnessVar",
+        "type": "uint256"
+      },
+      {
+        "name": "meanQualityVar",
+        "type": "uint256"
+      }
+    ],
+    "name": "varianceCal",
+    "outputs": [
+      {
+        "name": "compStandDev",
+        "type": "uint256"
+      },
+      {
+        "name": "qualStandDev",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "x",
+        "type": "uint256"
+      }
+    ],
+    "name": "sqrt",
+    "outputs": [
+      {
+        "name": "y",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
         "name": "_num",
         "type": "uint256"
       }
@@ -256,6 +523,28 @@ const abi = [
       }
     ],
     "name": "AgreementTerminate",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_no1",
+        "type": "uint256"
+      },
+      {
+        "name": "_no2",
+        "type": "uint256"
+      },
+      {
+        "name": "_no3",
+        "type": "uint256"
+      }
+    ],
+    "name": "_maths",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -369,6 +658,25 @@ const abi = [
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "agreementID",
+        "type": "uint256"
+      }
+    ],
+    "name": "notSubmitted",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "constant": true,
     "inputs": [
       {
@@ -452,6 +760,61 @@ const abi = [
     "constant": false,
     "inputs": [
       {
+        "name": "_modulus",
+        "type": "uint256"
+      }
+    ],
+    "name": "randomNumberGen",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "finalCompletnessU",
+        "type": "uint256"
+      },
+      {
+        "name": "finalQualityU",
+        "type": "uint256"
+      },
+      {
+        "name": "agreementId",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateRepEvaluators",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "avgRep",
+    "outputs": [
+      {
+        "name": "avgRepScore",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
         "name": "_id",
         "type": "uint256"
       }
@@ -528,6 +891,10 @@ const abi = [
     "name": "agreements",
     "outputs": [
       {
+        "name": "fee",
+        "type": "uint256"
+      },
+      {
         "name": "taskId",
         "type": "uint256"
       },
@@ -562,6 +929,29 @@ const abi = [
       {
         "name": "solutionHash",
         "type": "string"
+      },
+      {
+        "name": "toEvalluateTaskCount",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "isRegistered",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
       }
     ],
     "payable": false,
@@ -597,25 +987,6 @@ const abi = [
     "type": "function"
   },
   {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_agreementId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getEvaluatorAddress",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "constant": true,
     "inputs": [
       {
@@ -639,24 +1010,6 @@ const abi = [
     "type": "function"
   },
   {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "evaluationScore",
-        "type": "uint256"
-      },
-      {
-        "name": "_agreementId",
-        "type": "uint256"
-      }
-    ],
-    "name": "evaluationCompleted",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "constant": true,
     "inputs": [
       {
@@ -677,6 +1030,48 @@ const abi = [
     ],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "agreementToRecievedEvaluatorCount",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "agreementId",
+        "type": "uint256"
+      }
+    ],
+    "name": "finalScore",
+    "outputs": [
+      {
+        "name": "finalCompletness",
+        "type": "uint256"
+      },
+      {
+        "name": "finalQuality",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -744,6 +1139,28 @@ const abi = [
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "finalCompletnessW",
+        "type": "uint256"
+      },
+      {
+        "name": "finalQualityW",
+        "type": "uint256"
+      },
+      {
+        "name": "agreementIdW",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateRepWorkers",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "constant": true,
     "inputs": [
       {
@@ -772,6 +1189,18 @@ const abi = [
       {
         "name": "encryptionkeyAddress",
         "type": "string"
+      },
+      {
+        "name": "availableForEvaluation",
+        "type": "bool"
+      },
+      {
+        "name": "becomeEvaluator",
+        "type": "bool"
+      },
+      {
+        "name": "assignedEvaluation",
+        "type": "bool"
       }
     ],
     "payable": false,
@@ -909,4 +1338,6 @@ const abi = [
     "type": "event"
   }
 ]
+
+
 export default new web3.eth.Contract(abi, address);

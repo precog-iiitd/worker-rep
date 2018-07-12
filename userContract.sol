@@ -52,6 +52,9 @@ contract UserContract is Ownable{
 
     mapping (address => uint) public addressToIdTaskPoster; //public for testing
     //mapping (uint => uint256) IdToBalanceTaskPoster;
+    
+    
+     mapping (address => bool) public isRegistered;
 
     //constructor to initialize class variables
     function makeWorker(string _userName, string _fileHash, string _key) public payable {
@@ -65,7 +68,7 @@ contract UserContract is Ownable{
         addressToBalance[msg.sender] = msg.value; 
 
         isTaskPoster[msg.sender] = false;
-
+        isRegistered[msg.sender] = true;
         //CAN ADD EVENT HERE FOR FRONT END
      }
 
@@ -81,6 +84,7 @@ contract UserContract is Ownable{
         addressToBalance[msg.sender] = msg.value; 
 
         isTaskPoster[msg.sender] = true;
+        isRegistered[msg.sender] = true;
 
         //CAN ADD EVENT HERE FOR FRONT END
      }
@@ -131,6 +135,3 @@ function withdrawDarkBalance() external onlyOwner {
 
 
 }
-
-
-

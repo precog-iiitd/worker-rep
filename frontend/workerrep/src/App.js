@@ -11,19 +11,23 @@ import RegistrationForm from './RegistrationForm';
 import TaskPost from './taskPost';
 import Tasklets from './Tasklets';
 import AvailableTasks from './AvailableTasks';
+import NavTabs from './NavTabs';
+import Agreement from './Agreement';
+import Profile from './Profile';
 
-// import ethjs-util from '../node_modules/ethjs-util/';
 
 
-/*    const App1 = () => (
+    const App1 = () => (
     <Button variant="contained" color="primary">
       Submit
     </Button>
-  );*/
+  );
 
 class App extends Component {
 
    state = {
+      CurrentactiveTab:1,
+      defaultUserType:'',
       name:null,
       ipfsHash:null,
       buffer:'',
@@ -66,6 +70,69 @@ loadWorkers = (c) => {
     })
     ;
 };
+
+
+setUserType = async(this1) => {
+  var defaultUserType = '';
+  var isTaskPoster,isWorker;
+  const accounts = await web3.eth.getAccounts();
+  
+  storehash.methods.isTaskPoster(accounts[0]).call()
+    .then(function(result) {
+      console.log("isTaskPoster is ");
+      console.log(result);
+      isTaskPoster = result;
+  //this.setState({workers});
+
+
+    if (isTaskPoster == true){
+      defaultUserType = 'TaskPoster';
+    
+      this1.setState({defaultUserType});
+    }
+    else {
+
+  storehash.methods.isRegistered(accounts[0]).call()
+    .then(function(result) {
+      console.log("is worker is ",result);
+      isWorker = result;
+      console.log(isWorker);
+  //this.setState({workers});
+
+    if (isWorker == true){
+        defaultUserType = "Worker";
+        console.log("isWorker is true");
+      }
+      else{
+        defaultUserType = "unregistered"
+      }
+
+      this1.setState({defaultUserType});
+    });
+
+      
+
+    }
+console.log("defaultUserType is ", defaultUserType);    
+
+//this.setState({defaultUserType});
+
+    });
+
+
+
+
+    
+};
+
+
+
+
+setCurrentTab = (tabvalue) =>{
+  this.setState({CurrentactiveTab: tabvalue});
+};
+
+
 
 
         onClick = async () => {
@@ -180,7 +247,9 @@ const privateKey = Buffer.from("87ce67769a37527d0ad2859f6650a1f6cde3aba6bbc41485
 const value = util.privateToPublic(privateKey);
 console.log("--------------------------------------------------------------")
 console.log(value);
-console.log("--------------------------------------------------------------")*/
+console.log("--------------------------------------------------------------")
+*/
+
 
 
     return (
@@ -188,11 +257,14 @@ console.log("--------------------------------------------------------------")*/
 
 
       <div className="App">
+
+
+
       
   <section className="hero is-primary">
   <div className="hero-body">
     <div className="container">
-      <h1 className="title">
+      <h1 className="title is-1">
         Worker Rep
       </h1>
       <h2 className="subtitle">
@@ -202,11 +274,23 @@ console.log("--------------------------------------------------------------")*/
   </div>
 </section>
 
-
+{this.state.defaultUserType != '' ? <NavTabs type={this.state.defaultUserType} activeTab={this.state.CurrentactiveTab} setCurrentTab={this.setCurrentTab} /> : null}
 
 
 
 <br />
+{ this.state.CurrentactiveTab==2 ? <AvailableTasks /> : null }
+
+<section type={this.state.defaultUserType} className={this.state.CurrentactiveTab==1?"is-medium":"is-invisible"}>
+
+{this.state.defaultUserType != ''? <Profile type={this.state.defaultUserType}/> : "" }
+
+</section>
+
+<br />
+
+
+{/*
 User Registration Form
 <RegistrationForm />
 <br />
@@ -215,13 +299,29 @@ Post Task
 
 
 AvailableTasks
-<AvailableTasks />
-       
 
+
+
+
+       Agreement
+       <Agreement />
+
+
+*/}
 
       </div>
     );
   }
+
+componentDidMount(){
+  console.log("componentDidmount");
+  this.setUserType(this);
 }
+
+
+}
+
+
+
 
 export default App;

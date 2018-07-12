@@ -143,10 +143,10 @@
 
                 <div className="field">
                     <div className="control">
-                        <label className="label">Public Key </label>
+                        <label className="label">Public Key Hash</label>
 
 
-                        <input className="input" name="publicKey" type={ "text"} value={this.state.publicKey} onChange={this.handleChange}/>
+                        <input className="input" name="publicKey" type={ "text"} value={this.state.publicKey} onChange={this.handleChange} disabled/>
                     </div>
                 </div>
 
