@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import web3 from './web3';
 import storehash from './storehash';
 import RegistrationForm from './RegistrationForm' ;
+import Agreement from './Agreement' ;
 
 class Profile extends Component {
 
@@ -72,7 +73,8 @@ render(){
 /*if(this.props.type == "Worker"){*/
 return (
 
-
+<div>
+<Agreement type="taskPoster1" agreementId={0} />
 <div className="box">
 <h1 className="title is-3">{this.state.name}</h1><h1 className="title is-2">{this.state.Reputation}</h1>
 Profile Link: {this.state.ipfs_hash}<br />
@@ -81,7 +83,7 @@ public key : {this.state.encryption_address}<br />
 
 
 </div>
-
+</div>
 
 );
 /*}*/

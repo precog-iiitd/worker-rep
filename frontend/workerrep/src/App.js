@@ -275,7 +275,7 @@ console.log("--------------------------------------------------------------")
   </div>
 </section>
 
-<AvailableWorkers />
+{/*<AvailableWorkers />*/}
 {this.state.defaultUserType != '' ? <NavTabs type={this.state.defaultUserType} activeTab={this.state.CurrentactiveTab} setCurrentTab={this.setCurrentTab} /> : null}
 
 
