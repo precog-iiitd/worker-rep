@@ -7,6 +7,7 @@
     "@material-ui/icons": "^1.1.0",
     "browserify": "^16.2.2",
     "bulma": "^0.7.1",
+    "eth-crypto": "^1.2.3",
     "ethereumjs-util": "^5.2.0",
     "ethjs-util": "^0.1.6",
     "fs-extra": "^6.0.1",

@@ -229,7 +229,7 @@ console.log("--------------------------------------------------------------")
 	                    <br />
 	                    </div></div>
 
-                        <input className="input" name="publicKey" type={ "text"} value={this.state.publicKey} onChange={this.handleChange} disabled/>
+                        <input className="input" name="publicKey" type={ "text"} value={this.state.publicKey} onChange={this.handleChange} />
                     </div>
                 </div>
 

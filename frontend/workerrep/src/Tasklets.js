@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import web3 from './web3';
 import storehash from './storehash';
+import AgreementRegister from './AgreementRegister';
 
 class Tasklets extends Component {
 
@@ -11,8 +12,9 @@ super(props);
 			taskTitle:"",
 			taskHash:"",
 			taskReward:0,
-			isTaskPoster:false
-			
+			isTaskPoster:false,
+      taskId:0,
+      modal_state:"modal"			
 
 		}
 
@@ -34,20 +36,23 @@ applyTask = async (event)=>{
 
 }
 
-/*
+
 makeAgreement = async (event) => {
 	event.preventDefault();
-	const accounts = await web3.eth.getAccounts();
-	     
-	console.log('Sending from Metamask account: ' + accounts[0]);
+  this.open_modal()
 
-
-	storehash.methods.//addfunction.send({from: accounts[0]})
-	.then(function(result){
-    console.log(result);
-	});
 }
-*/
+
+
+open_modal = ()=>{
+  this.setState({modal_state:"modal is-active"});
+}
+
+close_modal = ()=>{
+  this.setState({modal_state:"modal"});
+
+}
+
 
 loadTasklet = async (props1,this1) => {
 	console.log("loading tasklet");
@@ -63,7 +68,8 @@ loadTasklet = async (props1,this1) => {
     this1.setState({
     	taskReward: (result.taskReward/Math.pow(10,18)),
     	taskTitle: result.taskTitle,
-    	taskHash: result.taskMaterialsHash
+    	taskHash: result.taskMaterialsHash,
+      taskId: props1.taskId
     });//setState
 });//function(result)
 
@@ -88,7 +94,23 @@ if(this.state.isTaskPoster)
 
 
 	return(
+
+
+
+
 <div className="box">
+
+
+<div className={this.state.modal_state}>
+  <div className="modal-background" onClick={this.close_modal} ></div>
+    <div className="modal-content">
+    <AgreementRegister taskId={this.state.taskId} taskTitle={this.state.taskTitle} />
+    </div>
+<button className="modal-close is-large" onClick={this.close_modal} aria-label="close"></button>
+  </div>
+
+
+
 <div className="card">
   <div className="card-content">
     <p className="title">
@@ -104,10 +126,6 @@ if(this.state.isTaskPoster)
         View on <a href={"https://ipfs.io/ipfs/"+this.state.taskHash}>View Task Details</a>
       </span>
     </p>
-
-
-
-    
   
      <p className="card-footer-item">
       <span>

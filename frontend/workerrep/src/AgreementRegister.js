@@ -5,16 +5,18 @@
 	import '../node_modules/bulma/css/bulma.css'
 	import './App.css';
 	
-	class TaskPost extends Component {
+	class AgreementRegister extends Component {
 
 	constructor (props) {
 super(props);
 	      this.state = {
+			taskId:"",
 			taskTitle:"",
 			taskHash:"",
 			taskReward:0,
 			buffer:"",
 			ipfsHash:"",
+			workerId:"",
 			button:"button is-primary"
 
 		}
@@ -35,7 +37,7 @@ f1 = async(this1) => {
 
 };
 
- captureFile = (event) => {
+/* captureFile = (event) => {
         event.stopPropagation()
         event.preventDefault()
         const file = event.target.files[0]
@@ -52,7 +54,7 @@ f1 = async(this1) => {
         this.setState({buffer});
          this.f1(this); 
     };
-
+*/
 
 	  handleChange(event) {
 
@@ -83,9 +85,9 @@ console.log('Sending from Metamask account: ' + accounts[0]);
 
 
 
-storehash.methods.postTask(this1.state.taskTitle,this1.state.ipfsHash,this1.state.taskReward).send({
+storehash.methods.createAgreement(this1.state.taskId,this1.state.workerId,this1.state.taskTime).send({
 	          from: accounts[0],
-	          value: 0
+	          value: this1.state.taskReward*1000000000
 	        })
 			.on('error', function(error){ 
 				this1.setState({button: "button is-danger "});
@@ -131,7 +133,7 @@ f(this);
 	    return (
 	    <div className="container box">
     <div className="columns">
-        <div className="column is-9">
+        <div className="column">
 
 
 
@@ -139,15 +141,23 @@ f(this);
 
                 <div className="field">
                     <div className="control">
-                        <label className="label">Task Title</label>
+                        <label className="label">Task</label>
 
 
-                        <input className="input" name="taskTitle" type={ "text"} value={this.state.taskTitle} onChange={this.handleChange}/>
+                        <input className="input" name="taskTitle" type={ "text"} value={this.props.taskTitle} onChange={this.handleChange} disabled/>
                     </div>
                 </div>
 
+                <div className="field">
+                    <div className="control">
+                        <label className="label">Worker Id</label>
 
 
+                        <input className="input" name="workerId" type={ "text"} value={this.state.workerId} onChange={this.handleChange}/>
+                    </div>
+                </div>
+
+{/*
 <div className="field">
 <div className="control">
 
@@ -175,12 +185,12 @@ f(this);
   </label>
 </div>
 </div>
-
+*/}
                 
 
                 <div className="field">
                     <div className="control">
-                        <label className="label">Reward Amount offered </label>
+                        <label className="label">Reward to Send (must be greater than or equal to offered Reward)</label>
 
                         <input className="input" name="taskReward" type={ "number"} value={this.state.taskReward} onChange={this.handleChange} /> Giga-Wei
                     </div>
@@ -188,8 +198,16 @@ f(this);
 
                 <div className="field">
                     <div className="control">
+                        <label className="label">Approximate Task Time (in hours) </label>
+
+                        <input className="input" name="taskTime" type={ "number"} value={this.state.taskTime} onChange={this.handleChange} /> 
+                    </div>
+                </div>
+
+                <div className="field">
+                    <div className="control">
                         <button type="submit" className={this.state.button}>
-	                      {"Create Task"}
+	                      {"Create Agreement"}
 	                      
 	                    </button></div>
                 </div>
@@ -202,6 +220,15 @@ f(this);
 	    );
 	}
 
+
+
+componentDidMount(){
+	console.log("componentDidmount, task id is ",this.props.taskId);
+
+	this.setState({taskId:this.props.taskId});
 }
 
-export default TaskPost;
+}
+
+
+export default AgreementRegister;

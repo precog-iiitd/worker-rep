@@ -14,7 +14,8 @@ import AvailableTasks from './AvailableTasks';
 import NavTabs from './NavTabs';
 import Agreement from './Agreement';
 import Profile from './Profile';
-
+import AgreementRegister from './AgreementRegister';
+import AvailableWorkers from './AvailableWorkers';
 
 
     const App1 = () => (
@@ -274,14 +275,20 @@ console.log("--------------------------------------------------------------")
   </div>
 </section>
 
-
+<AvailableWorkers />
 {this.state.defaultUserType != '' ? <NavTabs type={this.state.defaultUserType} activeTab={this.state.CurrentactiveTab} setCurrentTab={this.setCurrentTab} /> : null}
-
 
 
 <br />
 { (this.state.CurrentactiveTab==2 && this.state.defaultUserType=="Worker") ? <AvailableTasks /> : null }
 
+{ (this.state.CurrentactiveTab==3 && this.state.defaultUserType=="TaskPoster") ? <div><TaskPost /><AvailableTasks /></div> : null }
+
+
+{/*
+  <section className={(this.state.CurrentactiveTab==3 && this.state.defaultUserType=="TaskPoster")?"is-medium":"is-invisible"}><TaskPost /><AvailableTasks /></section>
+*/
+}
 <section type={this.state.defaultUserType} className={this.state.CurrentactiveTab==1?"is-medium":"is-invisible"}>
 
 {(this.state.defaultUserType != '' && this.state.defaultUserType != 'unregistered')? <Profile type={this.state.defaultUserType}/> : "" }

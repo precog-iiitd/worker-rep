@@ -72,15 +72,16 @@ render(){
 /*if(this.props.type == "Worker"){*/
 return (
 
-<div>
+
+<div className="box">
 <h1 className="title is-3">{this.state.name}</h1><h1 className="title is-2">{this.state.Reputation}</h1>
 Profile Link: {this.state.ipfs_hash}<br />
 Address : {this.state.public_address}<br />
 public key : {this.state.encryption_address}<br />
 
 
-
 </div>
+
 
 );
 /*}*/
