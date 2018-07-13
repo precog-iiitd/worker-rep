@@ -85,8 +85,6 @@ contract AgreementContract is TaskContract {
 
 	}
 
-
-
 	/* function requestEvaluation(uint _agreementId, string _hash) external {
 
 	} 
@@ -114,6 +112,35 @@ contract AgreementContract is TaskContract {
 		//terminates agreement
 		agreements[_agreementId].isTerminated  = true;
 	}
+
+	function showAgreement() public view returns(uint[]) {
+
+        uint counter = 0;
+        uint i = 0;
+        uint noOfAgreement = agreements.length;
+
+        uint[] memory ids_of_agreement = new uint[](noOfAgreement);
+        
+        if (isTaskPoster[msg.sender]){
+
+        	for(i = 0; i<agreements.length;i++){
+            if (agreements[i].taskPosterId == addressToIdTaskPoster[msg.sender]) {
+                ids_of_agreement[counter] = i;
+                counter++;
+                }
+            }
+        }
+        else{
+        	for(i = 0; i<agreements.length;i++){
+            if (agreements[i].workerId == addressToIdWorker[msg.sender]) {
+                ids_of_agreement[counter] = i;
+                counter++;
+                }
+            }
+        }
+        
+            return ids_of_agreement;
+        }
 
 
 	//testing mojo jojo just test
