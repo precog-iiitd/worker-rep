@@ -62,7 +62,7 @@ agreementDelete = async(event)=>{
 	storehash.methods.AgreementTerminate(this.props.agreementId).send({from: accounts[0]})
 	.then(function(result){
     console.log(result);
-    this.setState({isTerminated:true,agreementClass:"message is-danger",agreementStatus:"Terminated"});
+    //this.setState({isTerminated:true,agreementClass:"message is-danger",agreementStatus:"Terminated"});
 	});
 
 }
@@ -78,7 +78,7 @@ agreementAccept = async(event)=>{
 	storehash.methods.acceptAgreement(this.props.agreementId).send({from: accounts[0]})
 	.then(function(result){
     console.log(result);
-    this.setState({isAccepted:true,agreementClass:"message is-success",agreementStatus:"Accepted by worker"});
+    //this.setState({isAccepted:true,agreementClass:"message is-success",agreementStatus:"Accepted by worker"});
 	});
 
 }
@@ -89,9 +89,7 @@ loadAgreement = async (props1,this1) => {
 
 	const accounts = await web3.eth.getAccounts();
 	     
-	console.log('Sending from Metamask account: ' + accounts[0]);
-
-		storehash.methods.agreements(props1.agreementId).call({from: accounts[0] })
+			storehash.methods.agreements(props1.agreementId).call({from: accounts[0] })
 .then(function(result){
     console.log("result obtained from agreement is ",result);
     this1.setState({
@@ -108,11 +106,12 @@ loadAgreement = async (props1,this1) => {
 			toEvalluateTaskCount:result.toEvalluateTaskCount
     });//setState
 
-    if(result.isAccepted){
-    	this1.setState({agreementClass:"message is-success",agreementStatus:"Accepted by worker"});
-    }
-    else if(result.isTerminated){
+    
+    if(result.isTerminated){
     	this1.setState({agreementClass:"message is-danger",agreementStatus:"Terminated"});	
+    }
+    else if(result.isAccepted){
+    	this1.setState({agreementClass:"message is-success",agreementStatus:"Accepted by worker"});
     }
     else {
     	this1.setState({agreementClass:"message is-info",agreementStatus:"Proposed"});		
@@ -124,7 +123,7 @@ loadAgreement = async (props1,this1) => {
     console.log(result);
     this1.setState({taskTitle: result.taskTitle})});
 
-if(this1.props.type == "taskPoster")
+if(this1.props.type == "TaskPoster")
 
     {
     	storehash.methods.workers(result.workerId).call({from: accounts[0] })
@@ -157,7 +156,7 @@ else{
 render(){
 
 
-if(this.state.type == "taskPoster")
+if(this.state.type == "TaskPoster")
 {
 
 
@@ -198,7 +197,9 @@ End Time : {this.state.taskEnd_time}<br />
      </div>
      </div>
 <br />
+<div className="container">
    <button className={this.state.agreementStatus == "Proposed"?"button is-danger":"is-invisible"} onClick={this.agreementDelete} >Terminate Agreement</button>
+</div>
 <br />  
 
 </article>
@@ -252,10 +253,11 @@ End Time : {this.state.taskEnd_time}<br />
 
 {this.state.agreementStatus == "Proposed"?<div className="is-info">By accepting you agree to pay the acceptance fees. These will be refunded based on level of completion of the task.</div>:""}
 <br />
-
+<div className="container">
    <button className={this.state.agreementStatus == "Proposed"?"button is-success":"is-invisible"} onClick={this.agreementAccept} >Accept Agreement</button>
-<br />  
-
+  
+</div>
+<br />
 
 </article>
 

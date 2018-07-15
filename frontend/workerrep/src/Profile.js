@@ -74,7 +74,6 @@ render(){
 return (
 
 <div>
-<Agreement type="taskPoster1" agreementId={0} />
 <div className="box">
 <h1 className="title is-3">{this.state.name}</h1><h1 className="title is-2">{this.state.Reputation}</h1>
 Profile Link: {this.state.ipfs_hash}<br />

@@ -16,6 +16,7 @@ import Agreement from './Agreement';
 import Profile from './Profile';
 import AgreementRegister from './AgreementRegister';
 import AvailableWorkers from './AvailableWorkers';
+import AvailableAgreements from './AvailableAgreements';
 
 
     const App1 = () => (
@@ -284,6 +285,7 @@ console.log("--------------------------------------------------------------")
 
 { (this.state.CurrentactiveTab==3 && this.state.defaultUserType=="TaskPoster") ? <div><TaskPost /><AvailableTasks /></div> : null }
 
+{ (this.state.CurrentactiveTab == 4) ? <AvailableAgreements type={this.state.defaultUserType} />: null }
 
 {/*
   <section className={(this.state.CurrentactiveTab==3 && this.state.defaultUserType=="TaskPoster")?"is-medium":"is-invisible"}><TaskPost /><AvailableTasks /></section>
@@ -293,9 +295,15 @@ console.log("--------------------------------------------------------------")
 
 {(this.state.defaultUserType != '' && this.state.defaultUserType != 'unregistered')? <Profile type={this.state.defaultUserType}/> : "" }
 
+
+
+
+
 </section>
 
 <br />
+
+
 
 
 {/*

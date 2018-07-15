@@ -25,14 +25,44 @@ load_Avail_Tasks = async (this1) => {
 	storehash.methods.showAvailableTasks().call({from: accounts[0] })
 .then(function(result){
     console.log(result);
+    	//this1.setState({avail_tasks_id: result});
+
+    	var i=0,not_zero=0,not_zero_r = result.length;
+    	for(;i<=result.length;i++){
+    		if(result[i]==0){
+    			not_zero = i+1;
+    		}
+    		else{
+    			break;
+    		}
+
+    	}
+
+
+    	for(var j = not_zero;j<result.length;j++){
+    		if(result[j]==0){
+    			not_zero_r =j;
+    			break;
+    		}
+    	}
+    		result = result.slice(not_zero,not_zero_r);
+    		console.log("result slice is ",not_zero,result)
+    	
+
     	this1.setState({avail_tasks_id: result});
+    	if(this1.state.avail_tasks_id.length == 0){
+    		console.log("No tasks !!!");
+    	}
+
+
     });//function(result)
 }
 
 render()
 {	
-
+	console.log("available tasks are : ",this.state.avail_tasks_id);
 	var TaskletList = this.state.avail_tasks_id.map(function(id){
+						console.log("rendering task");
                         return <Tasklets taskId={id}/>;
                       })
 
