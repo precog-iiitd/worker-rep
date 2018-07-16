@@ -12,6 +12,7 @@
     "ethjs-util": "^0.1.6",
     "fs-extra": "^6.0.1",
     "ipfs-api": "^22.0.1",
+    "keccak": "^1.4.0",
     "react": "^16.4.0",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.4.0",

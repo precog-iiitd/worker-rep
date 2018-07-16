@@ -3,6 +3,7 @@ import web3 from './web3';
 import storehash from './storehash';
 import RegistrationForm from './RegistrationForm' ;
 import Agreement from './Agreement' ;
+import SubmitSolution from './SubmitSolution';
 
 class Profile extends Component {
 
@@ -67,8 +68,27 @@ storehash.methods.addressToIdTaskPoster(accounts[0]).call()
 	}
 }
 
+encr = async()=>{
+/*	const EthCrypto = require('eth-crypto');
+const secretMessage = 'My name is Satoshi Buterin';
+const payload = {message: secretMessage};
+
+
+const encrypted = await EthCrypto.encryptWithPublicKey(
+    '16ab49361b03d89ee49890ed0eabb3e55b7157408a29da9f9bf915d742d5c864f52ef88e3e63eb3557160a5e923173908863602c6a77166165b7585b433b8b92', // by encryping with bobs publicKey, only bob can decrypt the payload with his privateKey
+    JSON.stringify(payload) // we have to stringify the payload before we can encrypt it
+);
+
+console.log("encrypted string ooo... ",encrypted);
+const encryptedString = EthCrypto.cipher.stringify(encrypted);
+console.log("encrypted string PPP ... ",encryptedString);*/
+
+
+}
+
 render(){
 
+this.encr();
 
 /*if(this.props.type == "Worker"){*/
 return (

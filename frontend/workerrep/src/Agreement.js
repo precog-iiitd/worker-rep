@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import web3 from './web3';
 import storehash from './storehash';
+import SubmitSolution from './SubmitSolution';
 
 class Agreement extends Component {
 
@@ -27,7 +28,9 @@ super(props);
 			toEvalluateTaskCount:0,
 			taskTitle:"",
 			workerName:"",
-			TaskPosterName:""
+			TaskPosterName:"",
+			modal_state:"modal",
+			already_submitted:false	
 			
 
 		}
@@ -82,6 +85,25 @@ agreementAccept = async(event)=>{
 	});
 
 }
+
+open_modal = ()=>{
+  this.setState({modal_state:"modal is-active"});
+}
+
+close_modal = ()=>{
+  this.setState({modal_state:"modal"});
+
+}
+
+submitSolutionFunc = async(event)=>{
+	console.log("in submit solution");
+	event.preventDefault();
+	
+	//open modal
+	this.open_modal();
+
+}
+
 
 loadAgreement = async (props1,this1) => {
 	
@@ -141,6 +163,16 @@ else{
 .then(function(result){
     console.log("22222",result);
     this1.setState({TaskPosterName:result.userName});
+
+    storehash.methods.workers(this1.state.workerId).call({from: accounts[0] })
+.then(function(result1){
+    console.log("worker is ",result1);
+    this1.setState({already_submitted:result1.availableForEvaluation});
+	});
+
+
+
+
 });
 
 }
@@ -164,7 +196,6 @@ if(this.state.type == "TaskPoster")
 	return(
     //JSX for agreement Task Poster
 <div className="box">
-
 <article className={this.state.agreementClass}>
   <div className="message-header">
     <p>Agreement: {this.state.agreementStatus}</p>
@@ -216,6 +247,16 @@ else{
 		return(
          //JSX for agreement worker
 <div className="box">
+<div className={this.state.modal_state}>
+  <div className="modal-background" onClick={this.close_modal} ></div>
+    <div className="modal-content">
+  
+    <SubmitSolution agreementId={this.props.agreementId}  />
+    
+    </div>
+<button className="modal-close is-large" onClick={this.close_modal} aria-label="close"></button>
+  </div>
+
 
 <article className={this.state.agreementClass}>
   <div className="message-header">
@@ -254,7 +295,8 @@ End Time : {this.state.taskEnd_time}<br />
 {this.state.agreementStatus == "Proposed"?<div className="is-info">By accepting you agree to pay the acceptance fees. These will be refunded based on level of completion of the task.</div>:""}
 <br />
 <div className="container">
-   <button className={this.state.agreementStatus == "Proposed"?"button is-success":"is-invisible"} onClick={this.agreementAccept} >Accept Agreement</button>
+   <button className={this.state.agreementStatus == "Proposed"?"button is-success":"is-invisible"} onClick={this.agreementAccept} >Accept Agreement</button><br />
+   <button className={(this.state.agreementStatus == "Accepted by worker" && !this.state.already_submitted)?"button is-success":"is-invisible"} onClick={this.submitSolutionFunc } >Submit Solution Hash</button>
   
 </div>
 <br />

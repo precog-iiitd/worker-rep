@@ -4,18 +4,16 @@
 	import storehash from './storehash';
 	import '../node_modules/bulma/css/bulma.css'
 	import './App.css';
-	
-	class TaskPost extends Component {
+class SubmitSolution extends Component {
 
 	constructor (props) {
 super(props);
 	      this.state = {
-			taskTitle:"",
-			taskHash:"",
-			taskReward:0,
 			buffer:"",
 			ipfsHash:"",
-			button:"button is-primary"
+			agreementId:"",
+			button:"button is-primary",
+            keccakHash:""
 
 		}
 
@@ -23,7 +21,7 @@ super(props);
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	  }
 
-f1 = async(this1) => {
+/*f1 = async(this1) => {
 		this1.setState({ button:" button is-primary is-loading" });
 	await ipfs.add(this1.state.buffer, (err, ipfsHash) => {
         console.log(err,ipfsHash);
@@ -33,7 +31,7 @@ f1 = async(this1) => {
 }
 )//ipfs add
 
-};
+};*/
 
  captureFile = (event) => {
         event.stopPropagation()
@@ -48,13 +46,12 @@ f1 = async(this1) => {
     convertToBuffer = async(reader) => {
       //file is converted to a buffer to prepare for uploading to IPFS
         const buffer = await Buffer.from(reader.result);
-        console.log("FILE BUFFER IS ",JSON.stringify(buffer));
-
-
-
       //set this buffer -using es6 syntax
-        this.setState({buffer});
-         this.f1(this); 
+const createKeccakHash = require('keccak');
+this.setState({keccakHash:createKeccakHash('keccak256').update(buffer).digest('hex')});
+console.log("Shubham is awsome Dude",this.state.keccakHash);
+
+         /*this.f1(this); */
     };
 
 
@@ -87,9 +84,8 @@ console.log('Sending from Metamask account: ' + accounts[0]);
 
 
 
-storehash.methods.postTask(this1.state.taskTitle,this1.state.ipfsHash,this1.state.taskReward).send({
-	          from: accounts[0],
-	          value: 0
+storehash.methods.submitHash(this1.state.keccakHash,this1.state.agreementId).send({
+	          from: accounts[0]
 	        })
 			.on('error', function(error){ 
 				this1.setState({button: "button is-danger "});
@@ -135,27 +131,12 @@ f(this);
 	    return (
 	    <div className="container box">
     <div className="columns">
-        <div className="column is-9">
-
-
-
+        <div className="column">
             <form className="form" onSubmit={this.handleSubmit}>
-
-                <div className="field">
-                    <div className="control">
-                        <label className="label">Task Title</label>
-
-
-                        <input className="input" name="taskTitle" type={ "text"} value={this.state.taskTitle} onChange={this.handleChange}/>
-                    </div>
-                </div>
-
-
-
 <div className="field">
 <div className="control">
 
-                <label className="label">Upload Task details to IPFS </label>
+                <label className="label">Upload Solution Hash to IPFS </label>
 </div>
 </div>
 
@@ -174,26 +155,18 @@ f(this);
       </span>
     </span>
     <span className="file-name">
-      {this.state.ipfsHash}
+      {this.state.keccakHash}
     </span>
   </label>
 </div>
-</div>
+</div>             
 
-                
-
-                <div className="field">
-                    <div className="control">
-                        <label className="label">Reward Amount offered </label>
-
-                        <input className="input" name="taskReward" type={ "number"} value={this.state.taskReward} onChange={this.handleChange} /> Giga-Wei
-                    </div>
-                </div>
+            
 
                 <div className="field">
                     <div className="control">
                         <button type="submit" className={this.state.button}>
-	                      {"Create Task"}
+	                      {"Submit Solution hash"}
 	                      
 	                    </button></div>
                 </div>
@@ -206,6 +179,14 @@ f(this);
 	    );
 	}
 
+
+
+componentDidMount(){
+	console.log("componentDidmount, agrrement ID is ",this.props.taskId);
+	this.setState({agreementId:this.props.agreementId});
 }
 
-export default TaskPost;
+}
+
+
+export default SubmitSolution;
