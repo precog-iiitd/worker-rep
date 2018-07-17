@@ -90,7 +90,7 @@ render(){
 
 
 storehash.events.pleaseEvaluate()
-.on("data", function(event) {
+.on("pleaseEvaluate", function(event) {
   let zombie = event.returnValues;
   // We can access this event's 3 return values on the `event.returnValues` object:
   console.log("xgfdffcfgcfcgfgcfc",zombie);
@@ -101,17 +101,17 @@ storehash.getPastEvents("pleaseEvaluate", { fromBlock: 0, toBlock: "latest" })
 .then(function(events) {
   // `events` is an array of `event` objects that we can iterate, like we did above
   // This code will get us a list of every zombie that was ever created
-  console.log(events);
+  console.log(events.length);
 });
 
-this.encr();
+//this.encr();
 
 /*if(this.props.type == "Worker"){*/
 return (
 
 <div>
 
-<SubmitToEval />
+{/*<SubmitToEval agreementId={1} />*/}
 
 <div className="box">
 <h1 className="title is-3">{this.state.name}</h1><h1 className="title is-2">{this.state.Reputation}</h1>

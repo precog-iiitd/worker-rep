@@ -12,6 +12,7 @@ super(props);
 			buffer:{},
 			ipfsHashCommaSeperated:"",
 			addresses:[],
+			walletAddresses:[],
 			agreementId:1,
 			button:"button is-primary",
             
@@ -27,6 +28,7 @@ f1 = async(this1,bufferId) => {
 		console.log("BUffer ID is ",this1.state.buffer[bufferId],bufferId,this.state.buffer);	
 		this1.setState({ button:" button is-primary is-loading" });
 	await ipfs.add(this1.state.buffer[bufferId], (err, ipfsHash) => {
+		console.log("case is buffer ID",bufferId);
         console.log(err,ipfsHash);
         //setState by setting ipfsHash to ipfsHash[0].hash 
        	const addHash = this1.state.ipfsHashCommaSeperated;
@@ -46,7 +48,7 @@ f1 = async(this1,bufferId) => {
       
        // this1.setState({ ipfsHashCommaSeperated:addHash1, button:" button is-success" });
         console.log("ipfsHashCommaSeperated is ",this1.state.ipfsHashCommaSeperated);
-        console.log("ipfs hash 2 ",ipfsHash[0].hash);
+        console.log("ADDRESSES ",this1.state.addresses);
 }
 );//ipfs add
 
@@ -73,10 +75,11 @@ f1 = async(this1,bufferId) => {
 this.setState({keccakHash:createKeccakHash('keccak256').update(buffer).digest('hex')});
 console.log("Shubham is awsome Dude",this.state.keccakHash);*/
 		
+		
 		this.getEvalPubAddressesEncrypt(this,0,buffer);
 		this.getEvalPubAddressesEncrypt(this,1,buffer);
 		this.getEvalPubAddressesEncrypt(this,2,buffer);
-		
+	
 
          /*this.f1(this); */
     };
@@ -90,10 +93,17 @@ getEvalPubAddressesEncrypt = async(this1,evalId,buffer)=>{
 				storehash.methods.workers(receipt1).call().then(
 					function(result){
 						console.log(result.encryptionkeyAddress);
+
 						var addresses1= this1.state.addresses;
 						addresses1.push(result.encryptionkeyAddress);
 						this1.setState({addresses:addresses1});
+						
+						var WallAddresses= this1.state.walletAddresses;
+						WallAddresses.push(result.publicAddress );
+						this1.setState({walletAddresses:WallAddresses});
+						
 						console.log("addresses array ",addresses1);
+						console.log("wallet addresses array ",WallAddresses);
 						this1.encryptFile(buffer,result.encryptionkeyAddress,evalId);
 
 
@@ -174,15 +184,16 @@ console.log('Sending from Metamask account: ' + accounts[0]);
 
 
 
-storehash.methods.submitToEvaluators(this1.state.ipfsHashCommaSeperated,this1.addresses,this1.state.agreementId).send({
+storehash.methods.submitToEvaluators(this1.state.ipfsHashCommaSeperated,this1.state.walletAddresses,this1.state.agreementId).send({
 	          from: accounts[0]
 	        })
 			.on('error', function(error){ 
 				this1.setState({button: "button is-danger "});
+				console.log("error is 1 :",error)
 			})
 			.on('confirmation', function(confNumber, receipt){ 
 				this1.setState({button: "button is-success "});
-               
+              	console.log("reciept is 1 :",receipt) 
          	 })
 			.then(function(receipt){
 
@@ -274,7 +285,7 @@ f(this);
 
 componentDidMount(){
 	console.log("componentDidmount, agrrement ID is ",this.props.taskId);
-	//this.setState({agreementId:this.props.agreementId});
+	this.setState({agreementId:this.props.agreementId});
 }
 
 }

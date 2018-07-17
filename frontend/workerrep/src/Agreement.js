@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import web3 from './web3';
 import storehash from './storehash';
 import SubmitSolution from './SubmitSolution';
+import SubmitToEval from './SubmitToEval';
 
 class Agreement extends Component {
 
@@ -282,8 +283,8 @@ else{
 <div className={this.state.modal_state_2}>
   <div className="modal-background" onClick={this.close_modal_2} ></div>
     <div className="modal-content">
-  
-   LOLOLOL
+  {this.props.agreementId}
+   <SubmitToEval agreementId={this.props.agreementId} />
     
     </div>
 <button className="modal-close is-large" onClick={this.close_modal_2} aria-label="close"></button>
