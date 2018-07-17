@@ -57,7 +57,7 @@
 	async function f(state_obj,this1){
 	const accounts = await web3.eth.getAccounts();
 	     
-	console.log('Sending from Metamask account: ' + accounts[0]);
+	console.log('Sending from Metamask account: handle submit in REG FORM' + accounts[0]);
 
 	if(state_obj.isWorker == "Yes"){
 	storehash.methods.makeWorker(state_obj.username,state_obj.profileHash,state_obj.publicKey).send({
@@ -96,7 +96,8 @@
 
 
 
-pubHash = ()=>{
+pubHash = (event)=>{
+	event.preventDefault()
 	this.setState({modal_state:"modal is-active",button_pubKeyHash:"button is-primary is-loading"});
 }
 
@@ -126,8 +127,11 @@ console.log("--------------------------------------------------------------")
         //setState by setting ipfsHash to ipfsHash[0].hash 
         this.setState({ button_pubKeyHash:" button is-success" });
         console.log(this.state.ipfsHash);
-        this.setState({ privateKey:"" , publicKey:ipfsHash[0].hash});//remove private key from state
-        console.log("ipfs hash of stored public keys is",this.state.publicKey);
+        //Don't send public key to IPFS, just send it to smart contract instead.
+        //this.setState({ privateKey:"" , publicKey:ipfsHash[0].hash});//remove private key from state
+        this.setState({ privateKey:"" , publicKey:Buffer.from(value).toString('hex')});//replaced aboove comment with this
+        //console.log("ipfs hash of stored public keys is",this.state.publicKey);
+        console.log("Calculated public keys is",this.state.publicKey);
         this.setState({modal_state:"modal",button_pubKeyHash:"button is-primary"});
 });
 

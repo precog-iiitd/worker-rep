@@ -30,6 +30,7 @@ super(props);
 			workerName:"",
 			TaskPosterName:"",
 			modal_state:"modal",
+			modal_state_2:"modal",
 			already_submitted:false	
 			
 
@@ -95,12 +96,31 @@ close_modal = ()=>{
 
 }
 
+open_modal_2 = ()=>{
+  this.setState({modal_state_2:"modal is-active"});
+}
+
+close_modal_2 = ()=>{
+  this.setState({modal_state_2:"modal"});
+
+}
+
 submitSolutionFunc = async(event)=>{
 	console.log("in submit solution");
 	event.preventDefault();
 	
 	//open modal
 	this.open_modal();
+
+}
+
+
+submitSolutionToEval = async(event)=>{
+	console.log("in submit solution to eval");
+	event.preventDefault();
+	
+	//open modal
+	this.open_modal_2();
 
 }
 
@@ -167,7 +187,8 @@ else{
     storehash.methods.workers(this1.state.workerId).call({from: accounts[0] })
 .then(function(result1){
     console.log("worker is ",result1);
-    this1.setState({already_submitted:result1.availableForEvaluation});
+    this1.setState({already_submitted:result1.availableForEvaluation});//checks if already submitted for evaluation
+	
 	});
 
 
@@ -258,6 +279,19 @@ else{
   </div>
 
 
+<div className={this.state.modal_state_2}>
+  <div className="modal-background" onClick={this.close_modal_2} ></div>
+    <div className="modal-content">
+  
+   LOLOLOL
+    
+    </div>
+<button className="modal-close is-large" onClick={this.close_modal_2} aria-label="close"></button>
+  </div>
+
+
+
+
 <article className={this.state.agreementClass}>
   <div className="message-header">
     <p>Agreement: {this.state.agreementStatus}</p>
@@ -296,7 +330,8 @@ End Time : {this.state.taskEnd_time}<br />
 <br />
 <div className="container">
    <button className={this.state.agreementStatus == "Proposed"?"button is-success":"is-invisible"} onClick={this.agreementAccept} >Accept Agreement</button><br />
-   <button className={(this.state.agreementStatus == "Accepted by worker" && !this.state.already_submitted)?"button is-success":"is-invisible"} onClick={this.submitSolutionFunc } >Submit Solution Hash</button>
+   <button className={(this.state.agreementStatus == "Accepted by worker" && !this.state.already_submitted)?"button is-success":"is-invisible"} onClick={this.submitSolutionFunc } >Submit Solution Hash</button><br />
+   <button className={(this.state.already_submitted)?"button is-success":"is-invisible"} onClick={this.submitSolutionToEval } >Submit Solution To Evaluators</button><br />
   
 </div>
 <br />

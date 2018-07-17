@@ -3,7 +3,7 @@ import web3 from './web3';
 import storehash from './storehash';
 import RegistrationForm from './RegistrationForm' ;
 import Agreement from './Agreement' ;
-import SubmitSolution from './SubmitSolution';
+import SubmitToEval from './SubmitToEval';
 
 class Profile extends Component {
 
@@ -88,12 +88,31 @@ console.log("encrypted string PPP ... ",encryptedString);*/
 
 render(){
 
+
+storehash.events.pleaseEvaluate()
+.on("data", function(event) {
+  let zombie = event.returnValues;
+  // We can access this event's 3 return values on the `event.returnValues` object:
+  console.log("xgfdffcfgcfcgfgcfc",zombie);
+}).on("error", console.error);
+
+
+storehash.getPastEvents("pleaseEvaluate", { fromBlock: 0, toBlock: "latest" })
+.then(function(events) {
+  // `events` is an array of `event` objects that we can iterate, like we did above
+  // This code will get us a list of every zombie that was ever created
+  console.log(events);
+});
+
 this.encr();
 
 /*if(this.props.type == "Worker"){*/
 return (
 
 <div>
+
+<SubmitToEval />
+
 <div className="box">
 <h1 className="title is-3">{this.state.name}</h1><h1 className="title is-2">{this.state.Reputation}</h1>
 Profile Link: {this.state.ipfs_hash}<br />
