@@ -9,7 +9,7 @@ class SubmitToEval extends Component {
 	constructor (props) {
 super(props);
 	      this.state = {
-			buffer:"",
+			buffer:{},
 			ipfsHashCommaSeperated:"",
 			addresses:[],
 			agreementId:1,
@@ -22,17 +22,35 @@ super(props);
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	  }
 
-/*f1 = async(this1) => {
+f1 = async(this1,bufferId) => {
+
+		console.log("BUffer ID is ",this1.state.buffer[bufferId],bufferId,this.state.buffer);	
 		this1.setState({ button:" button is-primary is-loading" });
-	await ipfs.add(this1.state.buffer, (err, ipfsHash) => {
+	await ipfs.add(this1.state.buffer[bufferId], (err, ipfsHash) => {
         console.log(err,ipfsHash);
         //setState by setting ipfsHash to ipfsHash[0].hash 
-        this1.setState({ ipfsHash:ipfsHash[0].hash, button:" button is-success" });
-        console.log(this1.state.ipfsHash);
-}
-)//ipfs add
+       	const addHash = this1.state.ipfsHashCommaSeperated;
+       	let addhash1;
+       	console.log("add hash is ",addHash,"ipfs is ",ipfsHash[0].hash);
+       	if(addHash == "")
 
-};*/
+       	{
+       		/*addhash1 = addHash.concat(ipfsHash[0].hash);*/
+       	this1.setState({ ipfsHashCommaSeperated:addHash.concat(ipfsHash[0].hash), button:" button is-success" });
+       	}
+       else {
+       	this1.setState({ ipfsHashCommaSeperated:addHash.concat(",").concat(ipfsHash[0].hash), button:" button is-success" });
+       	/*var temp = addHash.concat(",");
+       	addhash1 = temp.concat(ipfsHash[0].hash);*/
+       }
+      
+       // this1.setState({ ipfsHashCommaSeperated:addHash1, button:" button is-success" });
+        console.log("ipfsHashCommaSeperated is ",this1.state.ipfsHashCommaSeperated);
+        console.log("ipfs hash 2 ",ipfsHash[0].hash);
+}
+);//ipfs add
+
+};
 
  captureFile = (event) => {
  	console.log("in capture file");
@@ -49,20 +67,21 @@ super(props);
     	console.log("converting to buffer");
       //file is converted to a buffer to prepare for uploading to IPFS
         const buffer = await Buffer.from(reader.result);
+        console.log(buffer);
       //set this buffer -using es6 syntax
 /*const createKeccakHash = require('keccak');
 this.setState({keccakHash:createKeccakHash('keccak256').update(buffer).digest('hex')});
 console.log("Shubham is awsome Dude",this.state.keccakHash);*/
 		
-		this.getEvalPubAddresses(this,0);
-		this.getEvalPubAddresses(this,1);
-		this.getEvalPubAddresses(this,2);
+		this.getEvalPubAddressesEncrypt(this,0,buffer);
+		this.getEvalPubAddressesEncrypt(this,1,buffer);
+		this.getEvalPubAddressesEncrypt(this,2,buffer);
 		
 
          /*this.f1(this); */
     };
 
-getEvalPubAddresses = async(this1,evalId)=>{
+getEvalPubAddressesEncrypt = async(this1,evalId,buffer)=>{
 
 	storehash.methods.agreementToEvaluators(this1.state.agreementId,evalId).call()
 			.then(function(receipt1){
@@ -75,7 +94,8 @@ getEvalPubAddresses = async(this1,evalId)=>{
 						addresses1.push(result.encryptionkeyAddress);
 						this1.setState({addresses:addresses1});
 						console.log("addresses array ",addresses1);
-						return addresses1;
+						this1.encryptFile(buffer,result.encryptionkeyAddress,evalId);
+
 
 					}
 
@@ -83,11 +103,44 @@ getEvalPubAddresses = async(this1,evalId)=>{
 
 			});
 
+
 }
 
 
-encryptFile = async(fileBuffer,pubkey)=>{
-	return "console.log()"
+encryptFile = async(fileBuffer,pubkey,evaluatorId)=>{
+	//console.log(JSON.stringify(fileBuffer), pubkey);
+
+	 	const EthCrypto = require('eth-crypto');
+        const secretMessage = JSON.stringify(fileBuffer);
+        const pubKeyBob = pubkey;
+
+
+
+        const encrypted = await EthCrypto.encryptWithPublicKey(
+            pubKeyBob, // by encryping with bobs publicKey, only bob can decrypt the payload with his privateKey
+            secretMessage // we have to stringify the payload before we can encrypt it
+        );
+
+        const encryptedString = EthCrypto.cipher.stringify(encrypted);
+        
+        const buffer1 = await Buffer.from(encryptedString);
+
+        var bufferObj = this.state.buffer;
+        bufferObj[evaluatorId] = buffer1;
+        this.setState({buffer:bufferObj});//.then(function(){console.log("here here");this.f1(this);});
+        this.f1(this,evaluatorId);
+
+        //console.log("buffer to str",buffer1.toString(),buffer1);
+        //this.setState({buffer:buffer1});
+        
+        //to decrypt
+/*
+        console.log("encrypted string file",encrypted,"public key",pubkey);
+
+        const test_decrypted = await EthCrypto.decryptWithPrivateKey('dca2385363d0827163951d3fc9ad4aa9848cf559190e3753949a2baac94eb1e2',encrypted);
+        console.log("DECRYPTED STUFF ",test_decrypted);
+        */
+        //end to decrypt
 }    
 
 
