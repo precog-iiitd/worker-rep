@@ -4,6 +4,7 @@ import storehash from './storehash';
 import RegistrationForm from './RegistrationForm' ;
 import Agreement from './Agreement' ;
 import SubmitToEval from './SubmitToEval';
+import EvaluLets from './EvaluLets';
 
 class Profile extends Component {
 
@@ -101,7 +102,7 @@ storehash.getPastEvents("pleaseEvaluate", { fromBlock: 0, toBlock: "latest" })
 .then(function(events) {
   // `events` is an array of `event` objects that we can iterate, like we did above
   // This code will get us a list of every zombie that was ever created
-  console.log(events.length);
+  console.log(events[0]);
 });
 
 //this.encr();
@@ -111,6 +112,7 @@ return (
 
 <div>
 
+< EvaluLets taskId={1} agreementId={1} submissionHash={"QmXiGWeFrowHo9QXs8UoeZiLmYsZSeUw7airjRYnmZe2Eb"} />
 {/*<SubmitToEval agreementId={1} />*/}
 
 <div className="box">
