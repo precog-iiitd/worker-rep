@@ -69,7 +69,7 @@ f1 = async(this1,bufferId) => {
     	console.log("converting to buffer");
       //file is converted to a buffer to prepare for uploading to IPFS
         const buffer = await Buffer.from(reader.result);
-        console.log(buffer);
+        console.log("buffer is ",buffer,"original is ",buffer.toString());
       //set this buffer -using es6 syntax
 /*const createKeccakHash = require('keccak');
 this.setState({keccakHash:createKeccakHash('keccak256').update(buffer).digest('hex')});
@@ -132,7 +132,7 @@ encryptFile = async(fileBuffer,pubkey,evaluatorId)=>{
         );
 
         const encryptedString = EthCrypto.cipher.stringify(encrypted);
-        
+        console.log("ENCRYPTED STRING ",encryptedString);
         const buffer1 = await Buffer.from(encryptedString);
 
         var bufferObj = this.state.buffer;

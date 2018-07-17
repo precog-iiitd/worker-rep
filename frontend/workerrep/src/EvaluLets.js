@@ -18,7 +18,9 @@ super(props);
       buttonScore:"button is-success",
       qualityScore:0,
       completenessScore:0,
-      agreementId:0			
+      agreementId:0,
+      modal_state_2:"modal",
+      privateKey:"dca2385363d0827163951d3fc9ad4aa9848cf559190e3753949a2baac94eb1e2"			
 
 		}
 
@@ -97,33 +99,56 @@ open_modal = ()=>{
   this.setState({modal_state:"modal is-active"});
 }
 
+open_modal_2 = ()=>{
+  this.setState({modal_state_2:"modal is-active"});
+}
+
 close_modal = ()=>{
-  this.setState({modal_state:"modal"});
+  this.setState({modal_state:"modal",modal_state_2:"modal",buttonClass:"button is-success"});
 
 }
 
-decryptDownload = async()=>{
-
+decryptDownload = async(event)=>{
+  event.preventDefault();
   this.setState({buttonClass: "button is-success is-loading"});
   var submissionLink = "https://ipfs.io/ipfs/".concat(this.props.submissionHash);
 
 
   var dataRecieved ;
+
   var request = new XMLHttpRequest();
 request.open('GET', submissionLink, true);
 request.responseType = 'blob';
 request.onload = function() {
     var reader = new FileReader();
     reader.readAsDataURL(request.response);
-    reader.onload =  function(e){
-        console.log('DataURL:', e.target.result);
+    reader.onload =  async(e)=>{
+        console.log('DataURL:', e);
         dataRecieved = e.target.result;
         //this.decrypt(dataRecieved);
 
          const EthCrypto = require('eth-crypto');
-        const encrypted = dataRecieved;
-        const test_decrypted = EthCrypto.decryptWithPrivateKey('dca2385363d0827163951d3fc9ad4aa9848cf559190e3753949a2baac94eb1e2',encrypted);
-        console.log("DECRYPTED STUFF ",test_decrypted);
+
+         console.log("data recieved",dataRecieved);
+        const encrypted = atob(dataRecieved.slice(23));//base64 data begins from 23rd char
+        //console.log("encrypted-->",encrypted)
+        const test_decrypted = await EthCrypto.decryptWithPrivateKey(this.state.privateKey,encrypted);
+        const bufferDataFile = JSON.parse(test_decrypted).data;
+        
+
+        var buff = new Uint8Array(bufferDataFile.length);
+        for(var i=0;i<bufferDataFile.length;i++){
+          buff[i]=parseInt(bufferDataFile[i]);
+        }
+
+        console.log("DECRYPTED STUFF ",buff.toString());
+        
+        var blob = new Blob([bufferDataFile], {type: "text/plain"});
+        var link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "myFileName";
+        link.click();        
+
 
        
 
@@ -131,8 +156,13 @@ request.onload = function() {
 
 
 };
+ 
 request.send();
   
+}
+
+stopLoading = ()=>{
+  this.setState({buttonClass: "button is-success"});
 }
 
 /*
@@ -188,6 +218,49 @@ render(){
 
 
 <div className="box">
+
+<div className={this.state.modal_state_2}>
+  <div className="modal-background" onClick={this.close_modal} ></div>
+    <div className="modal-content">
+
+
+     {/*BEGIN MODAL*/}
+<div className="container box">
+    <div className="columns">
+        <div className="column">
+            <form className="form" onSubmit={this.decryptDownload}>
+            
+
+                <div className="field">
+                    <div className="control">
+                        <label className="label">Completeness Score (out of 100) </label>
+
+                        <input className="input" name="completenessScore" type={ "number"} value={this.state.completenessScore} onChange={this.handleChange} required />
+                    </div>
+                </div>
+
+                    <div className="field">
+                    <div className="control">
+                        <button type="submit" className={this.state.buttonScore}>
+                        {"Submit Scores"}
+                        
+                      </button>
+                      </div>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
+  {/*END MODAL CONTENT*/}
+
+
+
+
+        </div>
+    
+    <button className="modal-close is-large" onClick={this.close_modal} aria-label="close"></button>
+    }
+  </div>
 
 
 <div className={this.state.modal_state}>
@@ -260,7 +333,7 @@ render(){
     
     <p className="card-footer-item">
       <span>
-        <button className={this.state.buttonClass} onClick={this.decryptDownload}>Decrypt and Download Submission</button>
+        <button className={this.state.buttonClass} onClick={this.open_modal_2}>Decrypt and Download Submission</button>
       </span>
     </p>
   
