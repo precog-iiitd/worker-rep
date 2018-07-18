@@ -120,9 +120,15 @@ console.log("--------------------------------------------------------------")
 console.log(Buffer.from(value).toString('hex'));
 console.log("--------------------------------------------------------------")
 
+//removed IPFS
+this.setState({ button_pubKeyHash:" button is-success" });
+console.log("Calculated public keys is",this.state.publicKey);
+this.setState({ privateKey:"" , publicKey:Buffer.from(value).toString('hex')});
+ this.setState({modal_state:"modal",button_pubKeyHash:"button is-primary"});
+//removed IPFS end
 
 
-	await ipfs.add(Buffer.from(Buffer.from(value).toString('hex')), (err, ipfsHash) => {
+/*	await ipfs.add(Buffer.from(Buffer.from(value).toString('hex')), (err, ipfsHash) => {
         console.log(err,ipfsHash);
         //setState by setting ipfsHash to ipfsHash[0].hash 
         this.setState({ button_pubKeyHash:" button is-success" });
@@ -133,7 +139,7 @@ console.log("--------------------------------------------------------------")
         //console.log("ipfs hash of stored public keys is",this.state.publicKey);
         console.log("Calculated public keys is",this.state.publicKey);
         this.setState({modal_state:"modal",button_pubKeyHash:"button is-primary"});
-});
+});*/
 
 }
 

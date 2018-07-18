@@ -73,19 +73,25 @@ super(props);
   }
 
 
-applyTask = async (event)=>{
+/*applyTask = async (event)=>{
 	event.preventDefault();
 	const accounts = await web3.eth.getAccounts();
 	     
 	console.log('Sending from Metamask account: ' + accounts[0]);
 
 
-	storehash.methods.registerForTask(this.props.taskId).send({from: accounts[0]})
-	.then(function(result){
-    console.log(result);
-	});
+  storehash.methods.agreements(this.props.agreementId).call({from: accounts[0]})
+  .then(function(result){
+    console.log(result); 
 
-}
+  storehash.methods.registerForTask(result.taskId).send({from: accounts[0]})
+  .then(function(result1){
+    console.log(result1);
+  });
+  });
+
+
+}*/
 
 
 giveScore = async (event) => {
@@ -181,7 +187,13 @@ loadEvaluLet = async (props1,this1) => {
 	console.log('Sending from Metamask account: ' + accounts[0]);
 
 
-	storehash.methods.tasks(props1.taskId).call({from: accounts[0] })
+
+  storehash.methods.agreements(this.props.agreementId).call({from: accounts[0]})
+  .then(function(result1){
+    console.log(result1); 
+
+
+	storehash.methods.tasks(result1.taskId).call({from: accounts[0] })
 .then(function(result){
     console.log(result);
     this1.setState({
@@ -192,7 +204,7 @@ loadEvaluLet = async (props1,this1) => {
     });//setState
 });//function(result)
 
-
+});
 
 
 /*	storehash.methods.isTaskPoster(accounts[0]).call({from: accounts[0] })

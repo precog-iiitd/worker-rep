@@ -185,12 +185,16 @@ else{
     console.log("22222",result);
     this1.setState({TaskPosterName:result.userName});
 
-    storehash.methods.workers(this1.state.workerId).call({from: accounts[0] })
+    /*storehash.methods.workers(this1.state.workerId).call({from: accounts[0] })
 .then(function(result1){
     console.log("worker is ",result1);
     this1.setState({already_submitted:result1.availableForEvaluation});//checks if already submitted for evaluation
 	
-	});
+	});*/
+
+	if(this1.state.solutionHash != ""){
+		this1.setState({already_submitted:true});
+	}
 
 
 

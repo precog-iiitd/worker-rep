@@ -15,6 +15,7 @@ super(props);
 			walletAddresses:[],
 			agreementId:1,
 			button:"button is-primary",
+			bufferArg:{}
             
 
 		}
@@ -75,8 +76,9 @@ f1 = async(this1,bufferId) => {
 this.setState({keccakHash:createKeccakHash('keccak256').update(buffer).digest('hex')});
 console.log("Shubham is awsome Dude",this.state.keccakHash);*/
 		
-		
-		this.getEvalPubAddressesEncrypt(this,0,buffer);
+		//this.setState({bufferArg:buffer});
+		//console.log("STate buffer is ",this.state.bufferArg);
+		this.getEvalPubAddressesEncrypt(this,0,buffer);		
 		this.getEvalPubAddressesEncrypt(this,1,buffer);
 		this.getEvalPubAddressesEncrypt(this,2,buffer);
 	
@@ -85,7 +87,7 @@ console.log("Shubham is awsome Dude",this.state.keccakHash);*/
     };
 
 getEvalPubAddressesEncrypt = async(this1,evalId,buffer)=>{
-
+	console.log("entered getEvalPubAddressesEncrypt",this1.state.agreementId,evalId,buffer);
 	storehash.methods.agreementToEvaluators(this1.state.agreementId,evalId).call()
 			.then(function(receipt1){
 				console.log(receipt1);
@@ -284,7 +286,7 @@ f(this);
 
 
 componentDidMount(){
-	console.log("componentDidmount, agrrement ID is ",this.props.taskId);
+	console.log("componentDidmount, agreement ID is ",this.props.agreementId);
 	this.setState({agreementId:this.props.agreementId});
 }
 
