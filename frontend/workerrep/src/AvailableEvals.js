@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import web3 from './web3';
 import storehash from './storehash';
-import Tasklets from './Tasklets';
+import EvaluLets from './EvaluLets';
 
 class AvailableEvals extends Component {
 	constructor (props) {
@@ -10,29 +10,29 @@ super(props);
  this.state = {
  	agreementIds: [],
     solutionHashes:[],
-    ethAddress:props.ethAddress;
+    ethAddress:""//add by props??
 
  }
 
- this.load_Avail_Evals(this);
+ //this.load_Avail_Evals(this);
 
 }
 
 
-load_Avail_Tasks = async (this1) => {
-	console.log("loading available tasks");
+load_Avail_Evals = async (this1) => {
+	console.log("loading available EVALS");
 
 	const accounts = await web3.eth.getAccounts();
 	     
 	console.log('Sending from Metamask account: ' + accounts[0]);
 
 
-    cryptoZombies.events.Transfer({ filter: { _evaluatorAddress: this1.state.ethAddress } })
+/*storehash.events.Transfer({ filter: { _evaluatorAddress: this1.state.ethAddress } })
 .on("pleaseEvaluate", function(event) {
   let data = event.returnValues;
     console.log(data);
 }).on("error", console.error);
-
+*/
         }
 /*	storehash.methods.showAvailableTasks().call({from: accounts[0] })
 .then(function(result){
@@ -71,14 +71,14 @@ load_Avail_Tasks = async (this1) => {
 
 render()
 {	
-	console.log("available tasks are : ",this.state.avail_tasks_id);
-	var TaskletList = this.state.avail_tasks_id.map(function(id){
+	console.log("available EVALS are : ",this.state.agreementIds);
+	var EvaluLetsList = this.state.agreementIds.map(function(id){
 						console.log("rendering task");
-                        return <Tasklets taskId={id}/>;
+                        return <EvaluLets agreementId={id}/>;
                       })
 
 	
-	return(<div>{TaskletList}</div>
+	return(<div>{EvaluLetsList}</div>
 
 		
 
@@ -87,6 +87,16 @@ render()
 
 		);
 }
+
+componentDidMount(){
+    console.log("componentDidmount");
+    //this.loadTasklet(this.props,this);
+    this.setState({ethAddress:this.props.ethAddress});
+    console.log(this.state.ethAddress);
+    this.load_Avail_Evals(this);
+}
+
+
 }
 
 export default AvailableEvals;

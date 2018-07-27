@@ -17,6 +17,8 @@ import Profile from './Profile';
 import AgreementRegister from './AgreementRegister';
 import AvailableWorkers from './AvailableWorkers';
 import AvailableAgreements from './AvailableAgreements';
+import AvailableEvals from './AvailableEvals';
+
 
 
     const App1 = () => (
@@ -276,16 +278,20 @@ console.log("--------------------------------------------------------------")
   </div>
 </section>
 
-{/*<AvailableWorkers />*/}
+
 {this.state.defaultUserType != '' ? <NavTabs type={this.state.defaultUserType} activeTab={this.state.CurrentactiveTab} setCurrentTab={this.setCurrentTab} /> : null}
 
 
 <br />
+
+{/*<AvailableWorkers />*/}
+
 { (this.state.CurrentactiveTab==2 && this.state.defaultUserType=="Worker") ? <AvailableTasks /> : null }
 
 { (this.state.CurrentactiveTab==3 && this.state.defaultUserType=="TaskPoster") ? <div><TaskPost /><AvailableTasks /></div> : null }
 
 { (this.state.CurrentactiveTab == 4) ? <AvailableAgreements type={this.state.defaultUserType} />: null }
+{ (this.state.CurrentactiveTab==3 && this.state.defaultUserType=="Worker") ? <AvailableEvals ethAddress={this.state.ethAddress} /> : null }
 
 {/*
   <section className={(this.state.CurrentactiveTab==3 && this.state.defaultUserType=="TaskPoster")?"is-medium":"is-invisible"}><TaskPost /><AvailableTasks /></section>
@@ -329,9 +335,23 @@ AvailableTasks
     );
   }
 
+
+  f=async()=>{
+
+  const accounts = await web3.eth.getAccounts();
+     
+      
+      //obtain contract address from storehash.js
+      const ethAddress= await storehash.options.address;
+      this.setState({ethAddress});
+    }
+
+
 componentDidMount(){
   console.log("componentDidmount");
   this.setUserType(this);
+  this.f;
+
 }
 
 

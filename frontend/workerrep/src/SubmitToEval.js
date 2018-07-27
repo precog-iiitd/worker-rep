@@ -83,18 +83,27 @@ console.log("Shubham is awsome Dude",this.state.keccakHash);*/
 		this.getEvalPubAddressesEncrypt(this,2,buffer);
 	
 
-         /*this.f1(this); */
+        /* this.f1(this);*/ 
     };
 
 getEvalPubAddressesEncrypt = async(this1,evalId,buffer)=>{
+	console.log("-------------------");
 	console.log("entered getEvalPubAddressesEncrypt",this1.state.agreementId,evalId,buffer);
+	console.log("-------------------");
+
 	storehash.methods.agreementToEvaluators(this1.state.agreementId,evalId).call()
+
 			.then(function(receipt1){
+
+				console.log("++++++++++");
 				console.log(receipt1);
 
 				storehash.methods.workers(receipt1).call().then(
 					function(result){
+						
 						console.log(result.encryptionkeyAddress);
+
+
 
 						var addresses1= this1.state.addresses;
 						addresses1.push(result.encryptionkeyAddress);
@@ -115,12 +124,12 @@ getEvalPubAddressesEncrypt = async(this1,evalId,buffer)=>{
 
 			});
 
-
+			console.log(evalId," Encryption process completed");
 }
 
 
 encryptFile = async(fileBuffer,pubkey,evaluatorId)=>{
-	//console.log(JSON.stringify(fileBuffer), pubkey);
+	console.log(evaluatorId," PUB KEY IS " ,pubkey);
 
 	 	const EthCrypto = require('eth-crypto');
         const secretMessage = JSON.stringify(fileBuffer);
@@ -140,7 +149,9 @@ encryptFile = async(fileBuffer,pubkey,evaluatorId)=>{
         var bufferObj = this.state.buffer;
         bufferObj[evaluatorId] = buffer1;
         this.setState({buffer:bufferObj});//.then(function(){console.log("here here");this.f1(this);});
+        console.log(evaluatorId," calling F1");
         this.f1(this,evaluatorId);
+        console.log(evaluatorId," COMPLETED calling F1");
 
         //console.log("buffer to str",buffer1.toString(),buffer1);
         //this.setState({buffer:buffer1});
@@ -182,7 +193,7 @@ handleSubmit(event) {
 
 console.log('Sending from Metamask account: ' + accounts[0]);
 
-
+console.log("whats being sent you ask ?\n","\n IPFS hash: ",this1.state.ipfsHashCommaSeperated,"Wallet address: ",this1.state.walletAddresses,"agreementId :",this1.state.agreementId)
 
 
 

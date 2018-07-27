@@ -123,7 +123,7 @@ if(this.state.isTaskPoster)
   <footer className="card-footer">
     <p className="card-footer-item">
       <span>
-        View on <a href={"https://ipfs.io/ipfs/"+this.state.taskHash}>View Task Details</a>
+        View on <a href={"https://ipfs.io/ipfs/"+this.state.taskHash} target="_blank">View Task Details</a>
       </span>
     </p>
   

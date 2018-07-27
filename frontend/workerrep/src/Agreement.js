@@ -192,7 +192,9 @@ else{
 	
 	});*/
 
+	console.log("gfcfccggcvhbhjbhjhjb---------",this1.state.solutionHash);
 	if(this1.state.solutionHash != ""){
+
 		this1.setState({already_submitted:true});
 	}
 

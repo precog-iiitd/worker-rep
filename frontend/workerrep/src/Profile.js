@@ -95,7 +95,7 @@ storehash.events.pleaseEvaluate()
   let zombie = event.returnValues;
   // We can access this event's 3 return values on the `event.returnValues` object:
   console.log("xgfdffcfgcfcgfgcfc",zombie);
-}).on("error", console.error);
+})
 
 
 storehash.getPastEvents("pleaseEvaluate", { fromBlock: 0, toBlock: "latest" })
@@ -112,7 +112,7 @@ return (
 
 <div>
 
-< EvaluLets agreementId={1} submissionHash={"QmZVcbc9sd8dHfKQFEa8GQbnraPSaERhTo7XtNvf6SQNTZ"} />
+< EvaluLets agreementId={1} submissionHash={"QmXnsoBW4DKPScvVnz6gn6feqZDMDdAZciUTzZnCbHXJSG"} />
 {/*<SubmitToEval agreementId={1} />*/}
 
 <div className="box">

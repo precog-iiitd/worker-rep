@@ -16,6 +16,7 @@ super(props);
       submissionHash:"",
       buttonClass:"button is-success",
       buttonScore:"button is-success",
+      buttonDnD:"button is-success",
       qualityScore:0,
       completenessScore:0,
       agreementId:0,
@@ -116,18 +117,26 @@ close_modal = ()=>{
 
 decryptDownload = async(event)=>{
   event.preventDefault();
-  this.setState({buttonClass: "button is-success is-loading"});
+  this.setState({buttonClass: "button is-success is-loading",buttonDnD:"button is-success is-loading"});
   var submissionLink = "https://ipfs.io/ipfs/".concat(this.props.submissionHash);
 
+  console.log("Submission work url ",submissionLink);
 
-  var dataRecieved ;
-
+  var dataRecieved;
+  var tempPrivateKey=this.state.privateKey ;
+  var tempHash = this.props.submissionHash;
   var request = new XMLHttpRequest();
-request.open('GET', submissionLink, true);
-request.responseType = 'blob';
-request.onload = function() {
+    
+    request.open('GET', submissionLink, true);
+    
+    request.responseType = 'blob';
+    
+    request.onload = function() {
+    
     var reader = new FileReader();
+    
     reader.readAsDataURL(request.response);
+    
     reader.onload =  async(e)=>{
         console.log('DataURL:', e);
         dataRecieved = e.target.result;
@@ -135,24 +144,35 @@ request.onload = function() {
 
          const EthCrypto = require('eth-crypto');
 
-         console.log("data recieved",dataRecieved);
+        //console.log("data recieved",dataRecieved);
         const encrypted = atob(dataRecieved.slice(23));//base64 data begins from 23rd char
-        //console.log("encrypted-->",encrypted)
-        const test_decrypted = await EthCrypto.decryptWithPrivateKey(this.state.privateKey,encrypted);
-        const bufferDataFile = JSON.parse(test_decrypted).data;
+        console.log("encrypted-->",encrypted," private key is ", tempPrivateKey);
+
+        const test_decrypted = await EthCrypto.decryptWithPrivateKey(tempPrivateKey,encrypted);
         
+        const bufferDataFile = Buffer.from( JSON.parse(test_decrypted).data);
+        
+        /*console.log(" test_decrypted ", test_decrypted);
+
+        
+        const buff1 = Buffer.from(bufferDataFile) 
 
         var buff = new Uint8Array(bufferDataFile.length);
+
+
+        const buffer = await Buffer.from("THIS IS A TEST");
+        console.log("buffer is ",buffer,"original is ",buffer.toString());
+
         for(var i=0;i<bufferDataFile.length;i++){
           buff[i]=parseInt(bufferDataFile[i]);
         }
 
         console.log("DECRYPTED STUFF ",buff.toString());
-        
-        var blob = new Blob([bufferDataFile], {type: "text/plain"});
+        */
+        var blob = new Blob([bufferDataFile]);//, {type: "text/plain"});
         var link = document.createElement("a");
         link.href = window.URL.createObjectURL(blob);
-        link.download = "myFileName";
+        link.download = tempHash.toString();
         link.click();        
 
 
@@ -164,7 +184,10 @@ request.onload = function() {
 };
  
 request.send();
-  
+
+this.stopLoading();
+this.close_modal();
+this.setState({buttonDnD:"button is-success"});  
 }
 
 stopLoading = ()=>{
@@ -245,16 +268,16 @@ render(){
 
                 <div className="field">
                     <div className="control">
-                        <label className="label">Completeness Score (out of 100) </label>
+                        <label className="label">Enter Private Key to decrypt data</label>
 
-                        <input className="input" name="completenessScore" type={ "number"} value={this.state.completenessScore} onChange={this.handleChange} required />
+                        <input className="input" name="privateKey" type={"text"} value={this.state.privateKey} onChange={this.handleChange} required />
                     </div>
                 </div>
 
                     <div className="field">
                     <div className="control">
-                        <button type="submit" className={this.state.buttonScore}>
-                        {"Submit Scores"}
+                        <button type="submit" className={this.state.buttonDnD}>
+                        {"Decrypt and Download Now"}
                         
                       </button>
                       </div>

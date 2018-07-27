@@ -60,15 +60,29 @@ contract TaskContract is UserContract {
     function showAvailableTasks() public view returns(uint[]) {
 
         uint counter = 0;
+        uint i = 0;
         
         uint[] memory ids_of_unassignedTasks = new uint[](tasksCount);
         
-        for(uint i = 0; i<tasks.length;i++){
+        
+        if(isTaskPoster[msg.sender]){
+            uint temp = addressToIdTaskPoster[msg.sender];
+            for(; i<tasks.length;i++){
+            if (tasks[i].TP_creator_id == temp && !tasks[i].isTaskComplete) {
+                ids_of_unassignedTasks[counter] = i;
+                counter++;
+                }
+            }
+        }
+
+        else            {
+        for(; i<tasks.length;i++){
             if (tasks[i].isTaskAssigned == false) {
                 ids_of_unassignedTasks[counter] = i;
                 counter++;
                 }
             }
+                         }
             return ids_of_unassignedTasks;
         }
   
