@@ -242,20 +242,6 @@ getAccAddress = async() => {
 
   render() {
 
-
-/*const util = require('ethereumjs-util');
-
-const privateKey = Buffer.from("87ce67769a37527d0ad2859f6650a1f6cde3aba6bbc41485dcf4f92b927fcd42", 'hex')
-
- 
-const value = util.privateToPublic(privateKey);
-console.log("--------------------------------------------------------------")
-console.log(value);
-console.log("--------------------------------------------------------------")
-*/
-
-
-
     return (
 
 
@@ -291,7 +277,7 @@ console.log("--------------------------------------------------------------")
 { (this.state.CurrentactiveTab==3 && this.state.defaultUserType=="TaskPoster") ? <div><TaskPost /><AvailableTasks /></div> : null }
 
 { (this.state.CurrentactiveTab == 4) ? <AvailableAgreements type={this.state.defaultUserType} />: null }
-{ (this.state.CurrentactiveTab==3 && this.state.defaultUserType=="Worker") ? <AvailableEvals ethAddress={this.state.ethAddress} /> : null }
+{ (this.state.CurrentactiveTab==3 && this.state.defaultUserType=="Worker") ? <AvailableEvals /> : null }
 
 {/*
   <section className={(this.state.CurrentactiveTab==3 && this.state.defaultUserType=="TaskPoster")?"is-medium":"is-invisible"}><TaskPost /><AvailableTasks /></section>

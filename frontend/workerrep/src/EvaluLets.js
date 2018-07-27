@@ -21,12 +21,12 @@ super(props);
       completenessScore:0,
       agreementId:0,
       modal_state_2:"modal",
-      privateKey:"dca2385363d0827163951d3fc9ad4aa9848cf559190e3753949a2baac94eb1e2"			
+      privateKey:""			
 
 		}
 
 	    
-	 
+	   
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -57,7 +57,7 @@ super(props);
        
   console.log('Sending from Metamask account: handle submit in REG FORM' + accounts[0]);
 
- 
+  console.log("Sending data is ",state_obj.completenessScore,state_obj.qualityScore,state_obj.agreementId);
   storehash.methods.evaluationCompleted(state_obj.completenessScore,state_obj.qualityScore,state_obj.agreementId).send({
             from: accounts[0]
           }, (error, transactionHash) => {
@@ -204,6 +204,7 @@ decrypt = aync(dataRecieved)=>{
 
 loadEvaluLet = async (props1,this1) => {
 	console.log("loading EvaluLet");
+  this1.setState({agreementId:props1.agreementId});
 
 	const accounts = await web3.eth.getAccounts();
 	     
@@ -223,7 +224,7 @@ loadEvaluLet = async (props1,this1) => {
     	
     	taskTitle: result.taskTitle,
     	taskHash: result.taskMaterialsHash,
-      taskId: props1.taskId
+      taskId: result1.taskId//props1.taskId
     });//setState
 });//function(result)
 
@@ -387,7 +388,9 @@ render(){
 
 componentDidMount(){
 	console.log("componentDidmount");
+
 	this.loadEvaluLet(this.props,this);
+   console.log("oooooooooooooo",this.props.agreementId);
 }
 
 

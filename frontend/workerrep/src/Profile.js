@@ -112,8 +112,8 @@ return (
 
 <div>
 
-< EvaluLets agreementId={1} submissionHash={"QmXnsoBW4DKPScvVnz6gn6feqZDMDdAZciUTzZnCbHXJSG"} />
-{/*<SubmitToEval agreementId={1} />*/}
+{/*< EvaluLets agreementId={1} submissionHash={"QmXnsoBW4DKPScvVnz6gn6feqZDMDdAZciUTzZnCbHXJSG"} />
+<SubmitToEval agreementId={1} />*/}
 
 <div className="box">
 <h1 className="title is-3">{this.state.name}</h1><h1 className="title is-2">{this.state.Reputation}</h1>
