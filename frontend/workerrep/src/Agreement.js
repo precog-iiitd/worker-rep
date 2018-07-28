@@ -94,11 +94,15 @@ agreementAccept = async(event)=>{
 	     
 	console.log('Sending from Metamask account: ' + accounts[0]);
 
-	storehash.methods.acceptAgreement(this.props.agreementId).send({from: accounts[0]})
+let agId = this.props.agreementId;
+
+	storehash.methods.acceptAgreement(parseInt(agId)).send({from: accounts[0], value: this.state.fee * (10**18)})
 	.then(function(result){
     console.log(result);
     //this.setState({isAccepted:true,agreementClass:"message is-success",agreementStatus:"Accepted by worker"});
 	});
+
+
 
 }
 
@@ -325,7 +329,7 @@ else{
 
   <div className="column">
   	
-  	<strong>Fee to Accept : {(this.state.AgreementReward * 0.25)} ETH</strong><br />
+  	<strong>Fee to Accept : {this.state.fee} ETH</strong><br />
   	Start Time : {this.state.creation_time}<br />
 
 </div>

@@ -84,10 +84,10 @@ console.log('Sending from Metamask account: ' + accounts[0]);
 
 
 
-
+console.log("the stuff being sent for agreement register is ",this1.state.taskId,this1.state.workerId,this1.state.taskTime);
 storehash.methods.createAgreement(this1.state.taskId,this1.state.workerId,this1.state.taskTime).send({
 	          from: accounts[0],
-	          value: this1.state.taskReward*1000000000
+	          value: this1.state.taskReward*(10**18)
 	        })
 			.on('error', function(error){ 
 				this1.setState({button: "button is-danger "});
@@ -192,7 +192,7 @@ f(this);
                     <div className="control">
                         <label className="label">Reward to Send (must be greater than or equal to offered Reward)</label>
 
-                        <input className="input" name="taskReward" type={ "number"} value={this.state.taskReward} onChange={this.handleChange} /> Giga-Wei
+                        <input className="input" name="taskReward" type={ "number"} value={this.state.taskReward} onChange={this.handleChange} />Ether
                     </div>
                 </div>
 

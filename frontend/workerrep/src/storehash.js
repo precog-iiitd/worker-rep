@@ -4,7 +4,7 @@ import web3 from './web3';
 //use your own contract address
 const address = '0x4040e3b8c52f439d598bccee93cab1d794dc2721';
 //use the ABI from your contract
-const abi = [
+const abi =[
   {
     "anonymous": false,
     "inputs": [
@@ -1352,6 +1352,5 @@ const abi = [
     "type": "function"
   }
 ]
-
 
 export default new web3.eth.Contract(abi, address);

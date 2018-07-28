@@ -87,7 +87,7 @@ console.log('Sending from Metamask account: ' + accounts[0],"the task reward is 
 
 
 
-storehash.methods.postTask(this1.state.taskTitle,this1.state.ipfsHash,this1.state.taskReward).send({
+storehash.methods.postTask(this1.state.taskTitle,this1.state.ipfsHash,this1.state.taskReward*(10**18)).send({
 	          from: accounts[0],
 	          value: 0
 	        })

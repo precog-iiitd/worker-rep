@@ -159,12 +159,15 @@ return (
 {/*< EvaluLets agreementId={1} submissionHash={"QmXnsoBW4DKPScvVnz6gn6feqZDMDdAZciUTzZnCbHXJSG"} />
 <SubmitToEval agreementId={1} />*/}
 
+
+
 <div className="container">
-<h1 className="title is-3">{this.state.name}</h1>
+<h1 className="title is-1">{this.state.name}</h1>
+
+
 <div className="columns">
   <div className="column">
-  
-  <a className="button" href={"http://ipfs.io/ipfs/"+this.state.ipfs_hash} target="_blank"> View Profile</a><br />
+    <a className="button" href={"http://ipfs.io/ipfs/"+this.state.ipfs_hash} target="_blank"> View Profile</a><br />
     
   </div>
 
@@ -181,9 +184,8 @@ return (
 </div>
 
  </div>
-
-
 </div>
+
 
 <div className="section">
 <nav className="level">
@@ -212,6 +214,7 @@ return (
     </div>
   </div>
 </nav>
+
 </div>
 </div>
 
