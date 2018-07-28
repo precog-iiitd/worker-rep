@@ -6,9 +6,7 @@ import Agreement from './Agreement' ;
 import SubmitToEval from './SubmitToEval';
 import EvaluLets from './EvaluLets';
 
-import 'font-awesome/css/font-awesome.css';
 
-import FontAwesome from 'react-fontawesome';
 
 class Profile extends Component {
 
