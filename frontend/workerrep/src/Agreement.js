@@ -55,7 +55,22 @@ super(props);
 
 }*/
 
+getEvaluators = async(event)=>{
+	console.log("get Evaluators called");
+	event.preventDefault();
+	const accounts = await web3.eth.getAccounts();
+	     
+	console.log('Sending from Metamask account: ' + accounts[0]);
 
+	storehash.methods.getEvaluators(this.props.agreementId).send({from: accounts[0]})
+	.then(function(result){
+		console.log("get Evaluators called");
+    console.log(result);
+    //this.setState({isTerminated:true,agreementClass:"message is-danger",agreementStatus:"Terminated"});
+	});
+
+
+}
 
 agreementDelete = async(event)=>{
 	console.log("in delete");
@@ -182,7 +197,7 @@ else{
 
     	storehash.methods.taskPosters(result.taskPosterId).call({from: accounts[0] })
 .then(function(result){
-    console.log("22222",result);
+    console.log("gettiing taskposter username for agreement",result);
     this1.setState({TaskPosterName:result.userName});
 
     /*storehash.methods.workers(this1.state.workerId).call({from: accounts[0] })
@@ -192,7 +207,7 @@ else{
 	
 	});*/
 
-	console.log("gfcfccggcvhbhjbhjhjb---------",this1.state.solutionHash);
+	console.log("checking length of solution hash !=0 ?",this1.state.solutionHash);
 	if(this1.state.solutionHash != ""){
 
 		this1.setState({already_submitted:true});
@@ -338,7 +353,11 @@ End Time : {this.state.taskEnd_time}<br />
 <div className="container">
    <button className={this.state.agreementStatus == "Proposed"?"button is-success":"is-invisible"} onClick={this.agreementAccept} >Accept Agreement</button><br />
    <button className={(this.state.agreementStatus == "Accepted by worker" && !this.state.already_submitted)?"button is-success":"is-invisible"} onClick={this.submitSolutionFunc } >Submit Solution Hash</button><br />
+   
+<button className={(this.state.already_submitted)?"button is-success":"is-invisible"} onClick={this.getEvaluators } >Get Evaluators</button><br />
+ <br />
    <button className={(this.state.already_submitted)?"button is-success":"is-invisible"} onClick={this.submitSolutionToEval } >Submit Solution To Evaluators</button><br />
+  
   
 </div>
 <br />
