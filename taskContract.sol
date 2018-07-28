@@ -57,12 +57,33 @@ contract TaskContract is UserContract {
 
     mapping (uint => uint[]) public taskIdToRegisteredWorkersId; //people who have applied for this task //public for testing
 
+
+    function showRegisteredWorkers(uint taskID) public view returns(uint[]){
+
+
+        uint i = 0 ; 
+        uint counter = 0;
+        uint noOfRegistered = taskIdToRegisteredWorkersId[taskID].length;
+        uint[] memory ids_of_registered_workers = new uint[](noOfRegistered);
+
+        for(i; i<noOfRegistered;i++){
+                ids_of_registered_workers[counter] = i;
+                counter++;
+            }
+                         /* } */
+            return ids_of_registered_workers;
+
+
+    }
+
     function showAvailableTasks() public view returns(uint[]) {
 
         uint counter = 0;
         uint i = 0;
         
         uint[] memory ids_of_unassignedTasks = new uint[](tasksCount);
+
+
         
         
 /*         if(isTaskPoster[msg.sender]){
