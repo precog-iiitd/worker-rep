@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import web3 from './web3';
 import storehash from './storehash';
-import Tasklets from './Tasklets';
+
 
 
 class AvailableWorkers extends Component {
@@ -42,7 +42,7 @@ load_Avail_Workers = async (this1) => {
             .then(function(result1){
               
               temp.push(result1);
-              console.log("popopopopop",temp);
+              console.log("worker ",i,"data is ",temp);
               
               console.log("details for worker ",i," are : ",result1);
             }
@@ -90,46 +90,40 @@ load_tasks_applied = async(this1)=>{
           this1.setState({avail_tasks:result});
 
 
-/*          for(let i = 0;i<result.length;i++) {
-           storehash.methods.taskIdToRegisteredWorkersId(result[i]).call({from: accounts[0] })
-          
-    .then(function(result1){
-      console.log("workers registered for task",result[i]," are ",result1);
 
 
-        });
-
-  }*/
+          for(var k = 0;k<result.length;k++){
 
 
-          });  
+//uncomment below
+/*             storehash.methods.taskIdToRegisteredWorkersId(result[k]).call({from: accounts[0] })
+    .then(function(result){
+       console.log("------------------------------------------");
+          console.log("task details :  ",result);});
+
+
+          }
+
+
+          });  */
 
 }
 
 
 render()
 {	
-console.log("workers data is....,.......... ",this.state.workers_data[0]);
-/*	var TaskletList = this.state.avail_workers_id.map(function(id){
-                        return <Tasklets taskId={id}/>;
-                      })*/
 
 
-      /*var TaskletList = () => {
-      	for(var i = 0;i<3;i++){
-      		return <Tasklets taskId={i}/>;
-      	}
-      }
-      console.log("tasklet list",TaskletList);
 
-	return(<div>{TaskletList}</div>);*/
+var WorkerList = this.state.workers_data.map(function(wd){
+            console.log("rendering task");
+                        return (
 
-  return(
-    <div className="box">
+                          <div className="box">
       <div className="card">
   <div className="card-content">
     <p className="title">
-      /*{this.state.workers_data[0]}*/
+      {wd[0]}
     </p>
     <p className="subtitle">
       {""} ether
@@ -152,16 +146,26 @@ console.log("workers data is....,.......... ",this.state.workers_data[0]);
 </div>
 
     </div>
-    );
+
+                          );
+                      })
+
+  
+  return(<div>{WorkerList}</div>);
+
+    
+
+
+
 }
 
 
 componentDidMount(){
-  console.log("componentDidmount");
+  console.log("mounting available workers");
    
 this.load_Avail_Workers(this);
-//this.load_tasks_applied(this);
-console.log(this.workers_data[0]);
+this.load_tasks_applied(this);
+console.log(this.workers_data);
 
   
 }

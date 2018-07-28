@@ -270,11 +270,14 @@ getAccAddress = async() => {
 
 <br />
 
-{/*<AvailableWorkers />*/}
+<AvailableWorkers />
+{ /*(this.state.CurrentactiveTab==2 && this.state.defaultUserType=="TaskPoster") ? <AvailableWorkers /> : null*/ }
 
 { (this.state.CurrentactiveTab==2 && this.state.defaultUserType=="Worker") ? <AvailableTasks /> : null }
 
 { (this.state.CurrentactiveTab==3 && this.state.defaultUserType=="TaskPoster") ? <div><TaskPost /><AvailableTasks /></div> : null }
+
+
 
 { (this.state.CurrentactiveTab == 4) ? <AvailableAgreements type={this.state.defaultUserType} />: null }
 { (this.state.CurrentactiveTab==3 && this.state.defaultUserType=="Worker") ? <AvailableEvals /> : null }

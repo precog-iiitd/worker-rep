@@ -156,8 +156,6 @@ return (
 
 <div className="box">
 
-{/*< EvaluLets agreementId={1} submissionHash={"QmXnsoBW4DKPScvVnz6gn6feqZDMDdAZciUTzZnCbHXJSG"} />
-<SubmitToEval agreementId={1} />*/}
 
 
 
