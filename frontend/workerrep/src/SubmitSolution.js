@@ -136,7 +136,7 @@ f(this);
 <div className="field">
 <div className="control">
 
-                <label className="label">Upload Solution Hash to IPFS </label>
+                <label className="label">Upload Solution Hash </label>
 </div>
 </div>
 
