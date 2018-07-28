@@ -59,7 +59,7 @@ else if(this.props.type == "TaskPoster") {
 <span className="icon has-text-info">
   <i className="fas fa-info-circle"></i>
 </span>
-				You are not registered. Register Now 
+				You are not registered, register now 
 				</h3>
 			  </div>		
 			</div>

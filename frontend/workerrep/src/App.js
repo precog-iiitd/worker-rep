@@ -255,10 +255,10 @@ getAccAddress = async() => {
   <div className="hero-body">
     <div className="container">
       <h1 className="title is-1">
-        Worker Rep
+        WorkerRep
       </h1>
       <h2 className="subtitle">
-        Crowd sourcing Re-imagined
+        Crowd Sourcing Re-imagined
       </h2>
     </div>
   </div>

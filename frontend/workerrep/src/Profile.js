@@ -116,8 +116,9 @@ return (
 <SubmitToEval agreementId={1} />*/}
 
 <div className="box">
-<h1 className="title is-3">{this.state.name}</h1><h1 className="title is-2">{this.state.Reputation}</h1>
-Profile Link: {this.state.ipfs_hash}<br />
+<h1 className="title is-3">{this.state.name}</h1>
+<h1 className="title is-2">{this.state.Reputation}</h1>
+Profile Link: <a href={"http://ipfs.io/ipfs/"+this.state.ipfs_hash} target="_blank">{"http://ipfs.io/ipfs/"+this.state.ipfs_hash}</a><br />
 Address : {this.state.public_address}<br />
 public key : {this.state.encryption_address}<br />
 

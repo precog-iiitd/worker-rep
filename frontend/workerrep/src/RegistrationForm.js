@@ -41,6 +41,34 @@
 	  }
 
 
+f1 = async(this1) => {
+		this1.setState({ button:" button is-primary is-loading" });
+	await ipfs.add(this1.state.buffer, (err, ipfsHash) => {
+        console.log(err,ipfsHash);
+        //setState by setting ipfsHash to ipfsHash[0].hash 
+        this1.setState({ ipfsHash:ipfsHash[0].hash, button:" button is-success" });
+        console.log(this1.state.ipfsHash);
+}
+)//ipfs add 
+};
+
+
+ captureFile = (event) => {
+        event.stopPropagation()
+        event.preventDefault()
+        const file = event.target.files[0]
+        let reader = new window.FileReader()
+        reader.readAsArrayBuffer(file)
+        reader.onloadend = () => this.convertToBuffer(reader)   
+        
+      };
+
+    convertToBuffer = async(reader) => {
+        const buffer = await Buffer.from(reader.result);
+        this.setState({buffer});
+         this.f1(this); 
+    };
+
 
 
 
@@ -60,7 +88,7 @@
 	console.log('Sending from Metamask account: handle submit in REG FORM' + accounts[0]);
 
 	if(state_obj.isWorker == "Yes"){
-	storehash.methods.makeWorker(state_obj.username,state_obj.profileHash,state_obj.publicKey).send({
+	storehash.methods.makeWorker(state_obj.username,state_obj.ipfsHash,state_obj.publicKey).send({
 	          from: accounts[0],
 	          value: state_obj.deposit*1000000000
 	        }, (error, transactionHash) => {
@@ -71,7 +99,7 @@
 		else {
 
 
-	storehash.methods.makeTaskPoster(state_obj.username,state_obj.profileHash,state_obj.publicKey).send({
+	storehash.methods.makeTaskPoster(state_obj.username,state_obj.ipfsHash,state_obj.publicKey).send({
 	          from: accounts[0],
 	          value: state_obj.deposit*1000000000
 	        }).on('error', function(error){ 
@@ -219,13 +247,41 @@ this.setState({ privateKey:"" , publicKey:Buffer.from(value).toString('hex')});
                     </div>
                 </div>
 
+<div className="field">
+                    <div className="control">
+                        <label className="label">Profile Hash/Link</label>
+                        </div></div>
 
+<div className="field">
+                <div className="file has-name is-fullwidth">
+                
+  <label className="file-label">
+
+    <input className="file-input" type="file" name="buffer" onChange = {this.captureFile} />
+    <span className="file-cta">
+      <span className="file-icon">
+        <i className="fas fa-upload"></i>
+      </span>
+      <span className="file-label">
+        Choose a file…
+      </span>
+    </span>
+    <span className="file-name">
+      {this.state.ipfsHash}
+    </span>
+  </label>
+</div>
+</div>
+
+{/* old profile hash
                 <div className="field">
                     <div className="control">
                         <label className="label">Profile Hash/Link</label>
                         <input className="input" name="profileHash" type={ "text"} value={this.state.profileHash} onChange={this.handleChange} required />
                     </div>
                 </div>
+*/}
+
 
                 <div className="field">
                     <div className="control">
