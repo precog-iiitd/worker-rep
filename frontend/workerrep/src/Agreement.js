@@ -26,8 +26,7 @@ super(props);
 		    isAccepted:false,
 		    isTerminated:false, 
 			solutionHash:"",
-			toEvalluateTaskCount:0,
-			taskTitle:"",
+			toEvalluateTaskCount:0,// removed extra taskTitle
 			workerName:"",
 			TaskPosterName:"",
 			modal_state:"modal",
@@ -149,7 +148,7 @@ loadAgreement = async (props1,this1) => {
 	     
 			storehash.methods.agreements(props1.agreementId).call({from: accounts[0] })
 .then(function(result){
-    console.log("result obtained from agreement is ",result);
+    console.log("result obtained from agreement ",props1.agreementId," is ",result);
     this1.setState({
     	AgreementReward: (result.reward/Math.pow(10,18)),
 			fee:(result.fee/Math.pow(10,18)),
@@ -176,7 +175,7 @@ loadAgreement = async (props1,this1) => {
     }
 
 
-    storehash.methods.tasks(result.taskId).call({from: accounts[0] })
+    storehash.methods.tasks(this1.state.taskId).call({from: accounts[0] })
 .then(function(result){
     console.log(result);
     this1.setState({taskTitle: result.taskTitle})});
@@ -375,6 +374,7 @@ componentDidMount(){
 	console.log("agreement componentDidmount");
 	this.setState({type:this.props.type});
 	this.loadAgreement(this.props,this);
+	console.log("The props I got are ",this.props);
 }
 
 

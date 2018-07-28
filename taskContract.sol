@@ -65,7 +65,7 @@ contract TaskContract is UserContract {
         uint[] memory ids_of_unassignedTasks = new uint[](tasksCount);
         
         
-        if(isTaskPoster[msg.sender]){
+/*         if(isTaskPoster[msg.sender]){
             uint temp = addressToIdTaskPoster[msg.sender];
             for(; i<tasks.length;i++){
             if (tasks[i].TP_creator_id == temp && !tasks[i].isTaskComplete) {
@@ -75,14 +75,14 @@ contract TaskContract is UserContract {
             }
         }
 
-        else            {
+        else            { */
         for(; i<tasks.length;i++){
             if (tasks[i].isTaskAssigned == false) {
                 ids_of_unassignedTasks[counter] = i;
                 counter++;
                 }
             }
-                         }
+                         /* } */
             return ids_of_unassignedTasks;
         }
   

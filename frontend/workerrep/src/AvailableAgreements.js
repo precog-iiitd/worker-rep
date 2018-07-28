@@ -63,6 +63,7 @@ render()
 	console.log(typeOfUser);
 	
 	var TaskletList = this.state.avail_agreement_id.map(function(id){
+                        console.log("the agreement's Id passed is ",id)
                         return <Agreement type={typeOfUser} agreementId={id} />;
                       })
 
