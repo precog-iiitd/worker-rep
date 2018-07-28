@@ -11,7 +11,7 @@ super(props);
 	      this.state = {
 			taskTitle:"",
 			taskHash:"",
-			taskReward:0,
+			taskReward:"",
 			isTaskPoster:false,
       taskId:0,
       modal_state:"modal"			
@@ -65,8 +65,19 @@ loadTasklet = async (props1,this1) => {
 	storehash.methods.tasks(props1.taskId).call({from: accounts[0] })
 .then(function(result){
     console.log(result);
+
+if(result.taskReward >= 10**15){
+    this1.setState({taskReward:(result.taskReward/10**18).toString()+" Ether"});
+      }
+    else if(result.taskReward >= 10**6){
+      this1.setState({taskReward:(result.taskReward/10**9).toString()+" GWei"});
+    }
+    else{
+      this1.setState({taskReward:(result.taskReward).toString()+" Wei"});
+    }
+
+
     this1.setState({
-    	taskReward: (result.taskReward/Math.pow(10,18)),
     	taskTitle: result.taskTitle,
     	taskHash: result.taskMaterialsHash,
       taskId: props1.taskId
@@ -113,11 +124,11 @@ if(this.state.isTaskPoster)
 
 <div className="card">
   <div className="card-content">
-    <p className="title">
+    <p className="title is-2">
       {this.state.taskTitle}
     </p>
-    <p className="subtitle">
-      {this.state.taskReward} ether
+    <p className="title is-3">
+      {this.state.taskReward} 
     </p>
   </div>
   <footer className="card-footer">
@@ -146,11 +157,11 @@ else{
 <div className="box">
 <div className="card">
   <div className="card-content">
-    <p className="title">
+    <p className="title is-2">
       {this.state.taskTitle}
     </p>
-    <p className="subtitle">
-      {this.state.taskReward} ether
+    <p className="title is-3">
+      {this.state.taskReward} 
     </p>
   </div>
   <footer className="card-footer">

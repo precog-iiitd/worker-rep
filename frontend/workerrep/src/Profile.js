@@ -6,6 +6,10 @@ import Agreement from './Agreement' ;
 import SubmitToEval from './SubmitToEval';
 import EvaluLets from './EvaluLets';
 
+import 'font-awesome/css/font-awesome.css';
+
+import FontAwesome from 'react-fontawesome';
+
 class Profile extends Component {
 
 	constructor (props) {
@@ -16,7 +20,11 @@ super(props);
 			ipfs_hash:"",
 			Reputation:0,
 			public_address:"",
-			encryption_address:""
+			encryption_address:"",
+			TaskCount:0,
+			user_id:0,
+			agreementCounts:0
+
 		}	    
 	  }
 
@@ -27,21 +35,76 @@ getProfileData = async(this1)=>{
 	console.log('Sending from Metamask account: ' + accounts[0]);
 
 
+	//improve to get user's count
+	storehash.methods.getTasksCount().call()
+	.then(function(result){
+		this1.setState({TaskCount:result});
+	})
+
+	//improve to get user's agreements
+	storehash.methods.getAgreementsCount().call()
+	.then(function(result){
+		this1.setState({agreementCounts:result});
+	})
+
+storehash.methods.addressToBalance(accounts[0]).call()
+	.then(function(result){
+		
+		if(result >= 10**15){
+		this1.setState({Balance:(result/10**18).toString()+" Ether"});
+			}
+		else if(result >= 10**6){
+			this1.setState({Balance:(result/10**9).toString()+" GWei"});
+		}
+		else{
+			this1.setState({Balance:(result).toString()+" Wei"});
+		}	
+	});	
+
+
 
 	console.log("got usertype as: ",this1.props.type);
 	if(this1.props.type == "Worker"){
 
-	storehash.methods.addressToIdWorker(accounts[0]).call()
-	.then(function(result){	
-		console.log("the worker id is", result);
 
-	storehash.methods.workers(result).call()
+
+	storehash.methods.addressToIdWorker(accounts[0]).call()
+	.then(function(result_id){	
+		console.log("the worker id is", result_id);
+		this1.setState({user_id:result_id});
+
+	storehash.methods.workers(result_id).call()
 	.then(function(result){
 		console.log(result);
 		this1.setState({name:result.userName,ipfs_hash:result.fileHash,Reputation:result.repScore,public_address:result.publicAddress,
 			encryption_address:result.encryptionkeyAddress});
 	}
 		);
+
+
+/*
+		storehash.methods.getAgreementsCount().call()
+	.then(function(result){
+		console.log(result);
+		const agreementCount = result;
+		var workerAgreementCount = 0;
+		for(let i = 0;i<agreementCount;i++){
+			storehash.methods.agreements(i).call()
+				.then(function(agreement_obj){
+					console.log("workerAgreementCount is ", this1.state.user_id, agreement_obj);
+					if(agreement_obj.workerId == this1.state.user_id ){
+						console.log("here");
+						workerAgreementCount = workerAgreementCount + 1;
+					}
+
+				});
+		}
+
+		this1.setState({TaskCount:workerAgreementCount});
+
+	}
+		);*/
+
 
 });
 	
@@ -69,23 +132,6 @@ storehash.methods.addressToIdTaskPoster(accounts[0]).call()
 	}
 }
 
-encr = async()=>{
-/*	const EthCrypto = require('eth-crypto');
-const secretMessage = 'My name is Satoshi Buterin';
-const payload = {message: secretMessage};
-
-
-const encrypted = await EthCrypto.encryptWithPublicKey(
-    '16ab49361b03d89ee49890ed0eabb3e55b7157408a29da9f9bf915d742d5c864f52ef88e3e63eb3557160a5e923173908863602c6a77166165b7585b433b8b92', // by encryping with bobs publicKey, only bob can decrypt the payload with his privateKey
-    JSON.stringify(payload) // we have to stringify the payload before we can encrypt it
-);
-
-console.log("encrypted string ooo... ",encrypted);
-const encryptedString = EthCrypto.cipher.stringify(encrypted);
-console.log("encrypted string PPP ... ",encryptedString);*/
-
-
-}
 
 render(){
 
@@ -110,19 +156,64 @@ storehash.getPastEvents("pleaseEvaluate", { fromBlock: 0, toBlock: "latest" })
 /*if(this.props.type == "Worker"){*/
 return (
 
-<div>
+<div className="box">
 
 {/*< EvaluLets agreementId={1} submissionHash={"QmXnsoBW4DKPScvVnz6gn6feqZDMDdAZciUTzZnCbHXJSG"} />
 <SubmitToEval agreementId={1} />*/}
 
-<div className="box">
+<div className="container">
 <h1 className="title is-3">{this.state.name}</h1>
-<h1 className="title is-2">{this.state.Reputation}</h1>
-Profile Link: <a href={"http://ipfs.io/ipfs/"+this.state.ipfs_hash} target="_blank">{"http://ipfs.io/ipfs/"+this.state.ipfs_hash}</a><br />
-Address : {this.state.public_address}<br />
-public key : {this.state.encryption_address}<br />
+<div className="columns">
+  <div className="column">
+  
+  <a className="button" href={"http://ipfs.io/ipfs/"+this.state.ipfs_hash} target="_blank"> View Profile</a><br />
+    
+  </div>
+
+  <div className="column">
+ <div className="is-pulled-right">
+ Address
+
+ <a class="" href={"https://etherscan.io/address/" + this.state.public_address} target="_blank">{"  "+this.state.public_address}</a><br />
+</div>
+</div>
+
+<div className="column">
+<span class="tag is-info is-large">{this.props.type}</span>
+</div>
+
+ </div>
 
 
+</div>
+
+<div className="section">
+<nav className="level">
+  <div className="level-item has-text-centered">
+    <div>
+      <p className="heading">Reputation</p>
+      <p className="title">{this.state.Reputation}</p>
+    </div>
+  </div>
+  <div className="level-item has-text-centered">
+    <div>
+      <p className="heading">Tasks</p>
+      <p className="title">{this.state.TaskCount}</p>
+    </div>
+  </div>
+  <div className="level-item has-text-centered">
+    <div>
+      <p className="heading">agreements</p>
+      <p className="title">{this.state.agreementCounts}</p>
+    </div>
+  </div>
+  <div className="level-item has-text-centered">
+    <div>
+      <p className="heading">Rewards Earned</p>
+      <p className="title">{this.state.Balance}</p>
+    </div>
+  </div>
+</nav>
 </div>
 </div>
 

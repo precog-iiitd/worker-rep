@@ -82,7 +82,7 @@ handleSubmit(event) {
 	async function f(this1){
 	const accounts = await web3.eth.getAccounts();
 
-console.log('Sending from Metamask account: ' + accounts[0]);
+console.log('Sending from Metamask account: ' + accounts[0],"the task reward is ",this1.state.taskReward);
 
 
 
@@ -186,7 +186,7 @@ f(this);
                     <div className="control">
                         <label className="label">Reward Amount offered </label>
 
-                        <input className="input" name="taskReward" type={ "number"} value={this.state.taskReward} onChange={this.handleChange} /> Giga-Wei
+                        <input className="input" name="taskReward" type={ "number"} value={this.state.taskReward} onChange={this.handleChange} /> {" Ether "}
                     </div>
                 </div>
 

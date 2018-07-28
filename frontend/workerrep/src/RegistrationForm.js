@@ -90,7 +90,7 @@ f1 = async(this1) => {
 	if(state_obj.isWorker == "Yes"){
 	storehash.methods.makeWorker(state_obj.username,state_obj.ipfsHash,state_obj.publicKey).send({
 	          from: accounts[0],
-	          value: state_obj.deposit*1000000000
+	          value: state_obj.deposit*1000000000*1000000000
 	        }, (error, transactionHash) => {
 	          console.log(transactionHash);
 	          this1.setState({button: "button is-primary "});
@@ -101,7 +101,7 @@ f1 = async(this1) => {
 
 	storehash.methods.makeTaskPoster(state_obj.username,state_obj.ipfsHash,state_obj.publicKey).send({
 	          from: accounts[0],
-	          value: state_obj.deposit*1000000000
+	          value: state_obj.deposit*1000000000*1000000000
 	        }).on('error', function(error){ 
 				this1.setState({button: "button is-danger "});
 			})
@@ -285,11 +285,11 @@ this.setState({ privateKey:"" , publicKey:Buffer.from(value).toString('hex')});
 
                 <div className="field">
                     <div className="control">
-                        <label className="label">Public Key Hash</label>
+                        <label className="label">Public Key</label>
                         <div className="field">
                         <div className="control">
                         <button onClick={this.pubHash} className={this.state.button_pubKeyHash}>
-	                      {"Click to generate this hash"}
+	                      {"Click to generate public key"}
 	                      
 	                    </button>
 	                    <br />
@@ -301,9 +301,9 @@ this.setState({ privateKey:"" , publicKey:Buffer.from(value).toString('hex')});
 
                 <div className="field">
                     <div className="control">
-                        <label className="label">Deposit Amount {"(Min 10 Gwei)"}</label>
+                        <label className="label">Deposit Amount {"( Minimum 0.125 Ether )"}</label>
 
-                        <input className="input" name="deposit" type={ "number"} value={this.state.deposit} onChange={this.handleChange} required/>{"Giga-Wei"}
+                        <input className="input" name="deposit" type={ "number"} value={this.state.deposit} onChange={this.handleChange} required/>{" Ether "}
                     </div>
                 </div>
 
