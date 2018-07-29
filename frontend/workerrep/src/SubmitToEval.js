@@ -214,16 +214,7 @@ storehash.methods.submitToEvaluators(this1.state.ipfsHashCommaSeperated,this1.st
 				this1.setState(this1.state); //added for re-render
 				console.log(receipt);
 
-			});
-
-
-
-
-
-
-
-
-	        
+			});   
 
 
 }

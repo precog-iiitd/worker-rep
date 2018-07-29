@@ -26,6 +26,28 @@ super(props);
 		}	    
 	  }
 
+f3 = async(this1)=>{
+	const accounts = await web3.eth.getAccounts();
+	     
+	console.log('Sending from Metamask account: ' + accounts[0]);
+const result  = await web3.eth.getBalance(accounts[0]);
+//let result = (result2 *100).parseInt;
+storehash.methods.addressToBalance(accounts[0]).call()
+	.then(function(result1){
+		 
+		if(result >= 10**15){
+		this1.setState({Balance:(result/10**18).toFixed(3).toString()+" Ether"});
+			}
+		else if(result >= 10**6){
+			this1.setState({Balance:(result/10**9).toFixed(3).toString()+" GWei"});
+		}
+		else{
+			this1.setState({Balance:(result).toFixed(3).toString()+" Wei"});
+		}	
+	});	
+}
+
+
 getProfileData = async(this1)=>{
 	
 	const accounts = await web3.eth.getAccounts();
@@ -45,9 +67,12 @@ getProfileData = async(this1)=>{
 		this1.setState({agreementCounts:result});
 	})
 
+	this1.f3(this1);
+
+/*f3 = async(this1)=>{
 storehash.methods.addressToBalance(accounts[0]).call()
 	.then(function(result){
-		
+		 result  = await web3.eth.getBalance(accounts[0]);
 		if(result >= 10**15){
 		this1.setState({Balance:(result/10**18).toString()+" Ether"});
 			}
@@ -58,8 +83,8 @@ storehash.methods.addressToBalance(accounts[0]).call()
 			this1.setState({Balance:(result).toString()+" Wei"});
 		}	
 	});	
-
-
+}
+*/
 
 	console.log("got usertype as: ",this1.props.type);
 	if(this1.props.type == "Worker"){
@@ -221,7 +246,7 @@ return (
   <div className="level-item has-text-centered">
     <div>
       <p className="heading">Rewards Earned</p>
-      <p className="title">{this.state.Balance}</p>
+      <p className="title">{(this.state.Balance)}</p>
     </div>
   </div>
 </nav>
