@@ -2,32 +2,31 @@ import web3 from './web3';
 
 //access our local copy to contract deployed on rinkeby testnet
 //use your own contract address
-const address = '0xa1bd9889d876496af23824c5162152431715e3c2';
+const address = '0x4040e3b8c52f439d598bccee93cab1d794dc2721';
 //use the ABI from your contract
 const abi =[
   {
-    "constant": true,
-    "inputs": [],
-    "name": "getAgreementsCount",
-    "outputs": [
+    "anonymous": false,
+    "inputs": [
       {
-        "name": "count",
-        "type": "uint256"
+        "indexed": true,
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "newOwner",
+        "type": "address"
       }
     ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
+    "name": "OwnershipTransferred",
+    "type": "event"
   },
   {
     "constant": false,
     "inputs": [
       {
-        "name": "_completeness",
-        "type": "uint256"
-      },
-      {
-        "name": "_quality",
+        "name": "_numberOfEvalutor",
         "type": "uint256"
       },
       {
@@ -35,7 +34,29 @@ const abi =[
         "type": "uint256"
       }
     ],
-    "name": "evaluationCompleted",
+    "name": "_findingEvaluator",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_no1",
+        "type": "uint256"
+      },
+      {
+        "name": "_no2",
+        "type": "uint256"
+      },
+      {
+        "name": "_no3",
+        "type": "uint256"
+      }
+    ],
+    "name": "_maths",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -61,242 +82,6 @@ const abi =[
     "type": "function"
   },
   {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "_agreementId",
-        "type": "uint256"
-      },
-      {
-        "name": "_evalNumber",
-        "type": "uint256"
-      }
-    ],
-    "name": "getEvaluatorPublicKeys",
-    "outputs": [
-      {
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "addressToBalance",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "addressToIdWorker",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [],
-    "name": "withdrawDarkBalance",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "evaluationScoreMapping",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_num",
-        "type": "uint256"
-      }
-    ],
-    "name": "makeNWorkers_t",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "taskID",
-        "type": "uint256"
-      }
-    ],
-    "name": "showRegisteredWorkers",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256[]"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_agreementId",
-        "type": "uint256"
-      },
-      {
-        "name": "_tpSolution",
-        "type": "string"
-      }
-    ],
-    "name": "submitToTP",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "workerID",
-        "type": "uint256"
-      },
-      {
-        "name": "rep",
-        "type": "uint256"
-      }
-    ],
-    "name": "extraRepUpdate",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "agreementToRecievedEvaluatorID",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "workerID",
-        "type": "uint256"
-      }
-    ],
-    "name": "makingAvailableForEvaluation",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "stdDev",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "agreementId",
-        "type": "uint256"
-      }
-    ],
-    "name": "meanCal",
-    "outputs": [
-      {
-        "name": "meanCompletness",
-        "type": "uint256"
-      },
-      {
-        "name": "meanQuality",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "constant": false,
     "inputs": [
       {
@@ -312,8 +97,13 @@ const abi =[
   },
   {
     "constant": false,
-    "inputs": [],
-    "name": "becomeEvaluator",
+    "inputs": [
+      {
+        "name": "_agreementId",
+        "type": "uint256"
+      }
+    ],
+    "name": "AgreementTerminate",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -322,38 +112,24 @@ const abi =[
   {
     "constant": false,
     "inputs": [],
-    "name": "withdraw",
-    "outputs": [],
+    "name": "avgRep",
+    "outputs": [
+      {
+        "name": "avgRepScore",
+        "type": "uint256"
+      }
+    ],
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "constant": true,
+    "constant": false,
     "inputs": [],
-    "name": "getTaskPostersCount",
-    "outputs": [
-      {
-        "name": "count",
-        "type": "uint256"
-      }
-    ],
+    "name": "becomeEvaluator",
+    "outputs": [],
     "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "showAgreement",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256[]"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -393,6 +169,105 @@ const abi =[
   },
   {
     "constant": false,
+    "inputs": [
+      {
+        "name": "_taskId",
+        "type": "uint256"
+      },
+      {
+        "name": "_workerId",
+        "type": "uint256"
+      },
+      {
+        "name": "time_in_hours",
+        "type": "uint256"
+      }
+    ],
+    "name": "createAgreement",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_completeness",
+        "type": "uint256"
+      },
+      {
+        "name": "_quality",
+        "type": "uint256"
+      },
+      {
+        "name": "_agreementId",
+        "type": "uint256"
+      }
+    ],
+    "name": "evaluationCompleted",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "workerID",
+        "type": "uint256"
+      },
+      {
+        "name": "rep",
+        "type": "uint256"
+      }
+    ],
+    "name": "extraRepUpdate",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "agreementId",
+        "type": "uint256"
+      }
+    ],
+    "name": "finalScore",
+    "outputs": [
+      {
+        "name": "finalCompletness",
+        "type": "uint256"
+      },
+      {
+        "name": "finalQuality",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "agreementID",
+        "type": "uint256"
+      }
+    ],
+    "name": "getEvaluators",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
     "inputs": [],
     "name": "kill",
     "outputs": [],
@@ -401,50 +276,31 @@ const abi =[
     "type": "function"
   },
   {
-    "constant": true,
+    "constant": false,
     "inputs": [
       {
-        "name": "",
+        "name": "_num",
         "type": "uint256"
       }
     ],
-    "name": "taskPosters",
-    "outputs": [
-      {
-        "name": "userName",
-        "type": "string"
-      },
-      {
-        "name": "repScore",
-        "type": "uint256"
-      },
-      {
-        "name": "fileHash",
-        "type": "string"
-      },
-      {
-        "name": "publicAddress",
-        "type": "address"
-      },
-      {
-        "name": "encryptionkeyAddress",
-        "type": "string"
-      },
-      {
-        "name": "availableForEvaluation",
-        "type": "bool"
-      },
-      {
-        "name": "becomeEvaluator",
-        "type": "bool"
-      },
-      {
-        "name": "assignedEvaluation",
-        "type": "bool"
-      }
-    ],
+    "name": "makeNTaskposters_t",
+    "outputs": [],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_num",
+        "type": "uint256"
+      }
+    ],
+    "name": "makeNWorkers_t",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -473,6 +329,153 @@ const abi =[
     "constant": false,
     "inputs": [
       {
+        "name": "_userName",
+        "type": "string"
+      },
+      {
+        "name": "_fileHash",
+        "type": "string"
+      },
+      {
+        "name": "_key",
+        "type": "string"
+      }
+    ],
+    "name": "makeWorker",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "workerID",
+        "type": "uint256"
+      }
+    ],
+    "name": "makingAvailableForEvaluation",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "markTaskAssigned",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "markTaskComplete",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "agreementId",
+        "type": "uint256"
+      }
+    ],
+    "name": "meanCal",
+    "outputs": [
+      {
+        "name": "meanCompletness",
+        "type": "uint256"
+      },
+      {
+        "name": "meanQuality",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "agreementID",
+        "type": "uint256"
+      }
+    ],
+    "name": "notSubmitted",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_taskTitle",
+        "type": "string"
+      },
+      {
+        "name": "_taskHash",
+        "type": "string"
+      },
+      {
+        "name": "_taskReward",
+        "type": "uint256"
+      }
+    ],
+    "name": "postTask",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_modulus",
+        "type": "uint256"
+      }
+    ],
+    "name": "randomNumberGen",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
         "name": "_rating",
         "type": "uint256"
       },
@@ -491,15 +494,186 @@ const abi =[
     "constant": false,
     "inputs": [
       {
-        "name": "agreementID",
+        "name": "_taskId",
         "type": "uint256"
       }
     ],
-    "name": "getEvaluators",
+    "name": "registerForTask",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_joiningFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "setjoiningFee",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "x",
+        "type": "uint256"
+      }
+    ],
+    "name": "sqrt",
+    "outputs": [
+      {
+        "name": "y",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_solutionHash",
+        "type": "string"
+      },
+      {
+        "name": "_agreementId",
+        "type": "uint256"
+      }
+    ],
+    "name": "submitHash",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_solutions_mergerd",
+        "type": "string"
+      },
+      {
+        "name": "_evaluatorAddresses",
+        "type": "address[]"
+      },
+      {
+        "name": "_agreementId",
+        "type": "uint256"
+      }
+    ],
+    "name": "submitToEvaluators",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_agreementId",
+        "type": "uint256"
+      },
+      {
+        "name": "_tpSolution",
+        "type": "string"
+      }
+    ],
+    "name": "submitToTP",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "finalCompletnessU",
+        "type": "uint256"
+      },
+      {
+        "name": "finalQualityU",
+        "type": "uint256"
+      },
+      {
+        "name": "agreementId",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateRepEvaluators",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "finalCompletnessW",
+        "type": "uint256"
+      },
+      {
+        "name": "finalQualityW",
+        "type": "uint256"
+      },
+      {
+        "name": "agreementIdW",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateRepWorkers",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "_solutionHash",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "name": "_agreementId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "_evaluatorAddress",
+        "type": "address"
+      }
+    ],
+    "name": "pleaseEvaluate",
+    "type": "event"
   },
   {
     "constant": false,
@@ -534,195 +708,18 @@ const abi =[
   },
   {
     "constant": false,
-    "inputs": [
-      {
-        "name": "x",
-        "type": "uint256"
-      }
-    ],
-    "name": "sqrt",
-    "outputs": [
-      {
-        "name": "y",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_num",
-        "type": "uint256"
-      }
-    ],
-    "name": "makeNTaskposters_t",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_agreementId",
-        "type": "uint256"
-      }
-    ],
-    "name": "AgreementTerminate",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_no1",
-        "type": "uint256"
-      },
-      {
-        "name": "_no2",
-        "type": "uint256"
-      },
-      {
-        "name": "_no3",
-        "type": "uint256"
-      }
-    ],
-    "name": "_maths",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_joiningFee",
-        "type": "uint256"
-      }
-    ],
-    "name": "setjoiningFee",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_userName",
-        "type": "string"
-      },
-      {
-        "name": "_fileHash",
-        "type": "string"
-      },
-      {
-        "name": "_key",
-        "type": "string"
-      }
-    ],
-    "name": "makeWorker",
-    "outputs": [],
-    "payable": true,
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_solutionHash",
-        "type": "string"
-      },
-      {
-        "name": "_agreementId",
-        "type": "uint256"
-      }
-    ],
-    "name": "submitHash",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "tasks",
-    "outputs": [
-      {
-        "name": "taskTitle",
-        "type": "string"
-      },
-      {
-        "name": "taskMaterialsHash",
-        "type": "string"
-      },
-      {
-        "name": "isTaskComplete",
-        "type": "bool"
-      },
-      {
-        "name": "isTaskAssigned",
-        "type": "bool"
-      },
-      {
-        "name": "taskReward",
-        "type": "uint256"
-      },
-      {
-        "name": "TP_creator_id",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
     "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "name": "withdraw",
+    "outputs": [],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "constant": false,
-    "inputs": [
-      {
-        "name": "agreementID",
-        "type": "uint256"
-      }
-    ],
-    "name": "notSubmitted",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
+    "inputs": [],
+    "name": "withdrawDarkBalance",
+    "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
@@ -735,57 +732,15 @@ const abi =[
         "type": "address"
       }
     ],
-    "name": "isTaskPoster",
+    "name": "addressToBalance",
     "outputs": [
       {
         "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "getTasksCount",
-    "outputs": [
-      {
-        "name": "count",
         "type": "uint256"
       }
     ],
     "payable": false,
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_id",
-        "type": "uint256"
-      }
-    ],
-    "name": "markTaskAssigned",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_taskId",
-        "type": "uint256"
-      }
-    ],
-    "name": "registerForTask",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -808,123 +763,18 @@ const abi =[
     "type": "function"
   },
   {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_modulus",
-        "type": "uint256"
-      }
-    ],
-    "name": "randomNumberGen",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "finalCompletnessU",
-        "type": "uint256"
-      },
-      {
-        "name": "finalQualityU",
-        "type": "uint256"
-      },
-      {
-        "name": "agreementId",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateRepEvaluators",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [],
-    "name": "avgRep",
-    "outputs": [
-      {
-        "name": "avgRepScore",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_id",
-        "type": "uint256"
-      }
-    ],
-    "name": "markTaskComplete",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_taskTitle",
-        "type": "string"
-      },
-      {
-        "name": "_taskHash",
-        "type": "string"
-      },
-      {
-        "name": "_taskReward",
-        "type": "uint256"
-      }
-    ],
-    "name": "postTask",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "tasksCount",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "constant": true,
     "inputs": [
       {
-        "name": "_agreementId",
-        "type": "uint256"
+        "name": "",
+        "type": "address"
       }
     ],
-    "name": "getEvaluatorAddresses",
+    "name": "addressToIdWorker",
     "outputs": [
       {
         "name": "",
-        "type": "address[]"
+        "type": "uint256"
       }
     ],
     "payable": false,
@@ -1003,53 +853,6 @@ const abi =[
     "inputs": [
       {
         "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "isRegistered",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "getWorkersCount",
-    "outputs": [
-      {
-        "name": "count",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "showAvailableTasks",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256[]"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
         "type": "uint256"
       },
       {
@@ -1097,48 +900,6 @@ const abi =[
       {
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "name": "agreementToRecievedEvaluatorCount",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "agreementId",
-        "type": "uint256"
-      }
-    ],
-    "name": "finalScore",
-    "outputs": [
-      {
-        "name": "finalCompletness",
-        "type": "uint256"
-      },
-      {
-        "name": "finalQuality",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "uint256"
       },
       {
         "name": "",
@@ -1157,21 +918,312 @@ const abi =[
     "type": "function"
   },
   {
-    "constant": false,
+    "constant": true,
     "inputs": [
       {
-        "name": "_numberOfEvalutor",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "agreementToRecievedEvaluationsCount",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "agreementToRecievedEvaluatorCount",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
         "type": "uint256"
       },
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "agreementToRecievedEvaluatorID",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "darkBalance",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "evaluationScoreMapping",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getAgreementsCount",
+    "outputs": [
+      {
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
       {
         "name": "_agreementId",
         "type": "uint256"
       }
     ],
-    "name": "_findingEvaluator",
-    "outputs": [],
+    "name": "getEvaluatorAddresses",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address[]"
+      }
+    ],
     "payable": false,
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_agreementId",
+        "type": "uint256"
+      },
+      {
+        "name": "_evalNumber",
+        "type": "uint256"
+      }
+    ],
+    "name": "getEvaluatorPublicKeys",
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getTaskPostersCount",
+    "outputs": [
+      {
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getTasksCount",
+    "outputs": [
+      {
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getWorkersCount",
+    "outputs": [
+      {
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "isRegistered",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "isTaskPoster",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "showAgreement",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "showAvailableTasks",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "taskID",
+        "type": "uint256"
+      }
+    ],
+    "name": "showRegisteredWorkers",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "stdDev",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1198,25 +1250,103 @@ const abi =[
     "type": "function"
   },
   {
-    "constant": false,
+    "constant": true,
     "inputs": [
       {
-        "name": "finalCompletnessW",
-        "type": "uint256"
-      },
-      {
-        "name": "finalQualityW",
-        "type": "uint256"
-      },
-      {
-        "name": "agreementIdW",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "updateRepWorkers",
-    "outputs": [],
+    "name": "taskPosters",
+    "outputs": [
+      {
+        "name": "userName",
+        "type": "string"
+      },
+      {
+        "name": "repScore",
+        "type": "uint256"
+      },
+      {
+        "name": "fileHash",
+        "type": "string"
+      },
+      {
+        "name": "publicAddress",
+        "type": "address"
+      },
+      {
+        "name": "encryptionkeyAddress",
+        "type": "string"
+      },
+      {
+        "name": "availableForEvaluation",
+        "type": "bool"
+      },
+      {
+        "name": "becomeEvaluator",
+        "type": "bool"
+      },
+      {
+        "name": "assignedEvaluation",
+        "type": "bool"
+      }
+    ],
     "payable": false,
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "tasks",
+    "outputs": [
+      {
+        "name": "taskTitle",
+        "type": "string"
+      },
+      {
+        "name": "taskMaterialsHash",
+        "type": "string"
+      },
+      {
+        "name": "isTaskComplete",
+        "type": "bool"
+      },
+      {
+        "name": "isTaskAssigned",
+        "type": "bool"
+      },
+      {
+        "name": "taskReward",
+        "type": "uint256"
+      },
+      {
+        "name": "TP_creator_id",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "tasksCount",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1265,136 +1395,6 @@ const abi =[
     "payable": false,
     "stateMutability": "view",
     "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "agreementToRecievedEvaluationsCount",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_solutions_mergerd",
-        "type": "string"
-      },
-      {
-        "name": "_evaluatorAddresses",
-        "type": "address[]"
-      },
-      {
-        "name": "_agreementId",
-        "type": "uint256"
-      }
-    ],
-    "name": "submitToEvaluators",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "darkBalance",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_taskId",
-        "type": "uint256"
-      },
-      {
-        "name": "_workerId",
-        "type": "uint256"
-      },
-      {
-        "name": "time_in_hours",
-        "type": "uint256"
-      }
-    ],
-    "name": "createAgreement",
-    "outputs": [],
-    "payable": true,
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "name": "_solutionHash",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "name": "_agreementId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "name": "_evaluatorAddress",
-        "type": "address"
-      }
-    ],
-    "name": "pleaseEvaluate",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
   }
 ]
 export default new web3.eth.Contract(abi, address);
