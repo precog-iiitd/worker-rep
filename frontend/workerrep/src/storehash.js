@@ -2,7 +2,7 @@ import web3 from './web3';
 
 //access our local copy to contract deployed on rinkeby testnet
 //use your own contract address
-const address = '0x4040e3b8c52f439d598bccee93cab1d794dc2721';
+const address = '0x75754eece382a4f536d1d31dada7fbe0a7e0f9f0';
 //use the ABI from your contract
 const abi = [
   {
@@ -538,28 +538,6 @@ const abi = [
     "type": "function"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "name": "_solutionHash",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "name": "_agreementId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "name": "_evaluatorAddress",
-        "type": "address"
-      }
-    ],
-    "name": "pleaseEvaluate",
-    "type": "event"
-  },
-  {
     "constant": false,
     "inputs": [
       {
@@ -594,6 +572,24 @@ const abi = [
       }
     ],
     "name": "submitToEvaluators",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_agreementId",
+        "type": "uint256"
+      },
+      {
+        "name": "_tpSolution",
+        "type": "string"
+      }
+    ],
+    "name": "submitToTP",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -656,6 +652,28 @@ const abi = [
     "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "_solutionHash",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "name": "_agreementId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "_evaluatorAddress",
+        "type": "address"
+      }
+    ],
+    "name": "pleaseEvaluate",
+    "type": "event"
   },
   {
     "constant": false,
@@ -816,6 +834,14 @@ const abi = [
       {
         "name": "toEvalluateTaskCount",
         "type": "uint256"
+      },
+      {
+        "name": "submittedToEvaluator",
+        "type": "bool"
+      },
+      {
+        "name": "tpSolution",
+        "type": "string"
       }
     ],
     "payable": false,
@@ -1157,6 +1183,25 @@ const abi = [
     "constant": true,
     "inputs": [],
     "name": "showAvailableTasks",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "taskID",
+        "type": "uint256"
+      }
+    ],
+    "name": "showRegisteredWorkers",
     "outputs": [
       {
         "name": "",
