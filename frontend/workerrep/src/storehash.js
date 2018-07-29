@@ -2,7 +2,7 @@ import web3 from './web3';
 
 //access our local copy to contract deployed on rinkeby testnet
 //use your own contract address
-const address = '0x4040e3b8c52f439d598bccee93cab1d794dc2721';
+const address = '0xa1bd9889d876496af23824c5162152431715e3c2';
 //use the ABI from your contract
 const abi =[
   {
@@ -184,6 +184,24 @@ const abi =[
     ],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_agreementId",
+        "type": "uint256"
+      },
+      {
+        "name": "_tpSolution",
+        "type": "string"
+      }
+    ],
+    "name": "submitToTP",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -924,10 +942,6 @@ const abi =[
     "name": "agreements",
     "outputs": [
       {
-        "name": "tpSolution",
-        "type": "string"
-      },
-      {
         "name": "fee",
         "type": "uint256"
       },
@@ -970,6 +984,14 @@ const abi =[
       {
         "name": "toEvalluateTaskCount",
         "type": "uint256"
+      },
+      {
+        "name": "submittedToEvaluator",
+        "type": "bool"
+      },
+      {
+        "name": "tpSolution",
+        "type": "string"
       }
     ],
     "payable": false,
@@ -1147,24 +1169,6 @@ const abi =[
       }
     ],
     "name": "_findingEvaluator",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_agreementId",
-        "type": "uint256"
-      },
-      {
-        "name": "_tpSolution",
-        "type": "string"
-      }
-    ],
-    "name": "acceptAgreement",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
