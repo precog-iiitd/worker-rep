@@ -245,7 +245,7 @@ return (
   </div>
   <div className="level-item has-text-centered">
     <div>
-      <p className="heading">Rewards Earned</p>
+      <p className="heading">Balance</p>
       <p className="title">{(this.state.Balance)}</p>
     </div>
   </div>
