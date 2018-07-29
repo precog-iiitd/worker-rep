@@ -20,9 +20,11 @@ contract AgreementContract is TaskContract {
 		//the hash of the solution intially sent by the worker is stored in this variable 
 		string solutionHash;
 		uint toEvalluateTaskCount;
+		bool submittedToEvaluator; 
 		mapping (uint => uint)  evaluatorToCompletness;
 	    mapping (uint => uint) evaluatorToQuality;
 	    mapping(uint => bool) outlier;
+
 	    
 
 
@@ -55,7 +57,7 @@ contract AgreementContract is TaskContract {
         uint fee = tasks[_taskId].taskReward/4;
 		uint now_time = now;
 		uint end_time = now_time + (time_in_hours * 3600);
-		uint id = agreements.push(agreement(fee,_taskId,_workerId,addressToIdTaskPoster[msg.sender],now_time,end_time,msg.value,false,false, "",0)) - 1;
+		uint id = agreements.push(agreement(fee,_taskId,_workerId,addressToIdTaskPoster[msg.sender],now_time,end_time,msg.value,false,false, "",0,false)) - 1;
 
 		//no longer available for others// will not show in available tasks
 		tasks[_taskId].isTaskAssigned = true; 

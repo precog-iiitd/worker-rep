@@ -36,8 +36,7 @@ function submitToEvaluators(string _solutions_mergerd,address[] _evaluatorAddres
         }*/
         
     require( parts.length == agreementToEvaluators[_agreementId].length );
-    
-    
+    agreements[_agreementId].submittedToEvaluator = true;
 
     
     for(i = 0;i<parts.length;i++){
