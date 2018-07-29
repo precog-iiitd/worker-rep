@@ -267,10 +267,9 @@ getAccAddress = async() => {
 
 {this.state.defaultUserType != '' ? <NavTabs type={this.state.defaultUserType} activeTab={this.state.CurrentactiveTab} setCurrentTab={this.setCurrentTab} /> : null}
 
-
 <br />
 
-<AvailableWorkers />
+{/*<AvailableWorkers />*/}
 { /*(this.state.CurrentactiveTab==2 && this.state.defaultUserType=="TaskPoster") ? <AvailableWorkers /> : null*/ }
 
 { (this.state.CurrentactiveTab==2 && this.state.defaultUserType=="Worker") ? <AvailableTasks /> : null }
@@ -286,9 +285,13 @@ getAccAddress = async() => {
   <section className={(this.state.CurrentactiveTab==3 && this.state.defaultUserType=="TaskPoster")?"is-medium":"is-invisible"}><TaskPost /><AvailableTasks /></section>
 */
 }
+<section>
+{ (this.state.CurrentactiveTab==2 && this.state.defaultUserType=="TaskPoster") ? <AvailableWorkers /> : null }
+</section>
 <section type={this.state.defaultUserType} className={this.state.CurrentactiveTab==1?"is-medium":"is-invisible"}>
 
 {(this.state.defaultUserType != '' && this.state.defaultUserType != 'unregistered')? <Profile type={this.state.defaultUserType}/> : "" }
+
 
 
 

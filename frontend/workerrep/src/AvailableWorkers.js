@@ -54,6 +54,7 @@ load_Avail_Workers = async (this1) => {
 
     });//function(result)
 
+this1.load_tasks_applied(this1);
   
 }
   
@@ -96,16 +97,19 @@ load_tasks_applied = async(this1)=>{
 
 
 //uncomment below
-/*             storehash.methods.taskIdToRegisteredWorkersId(result[k]).call({from: accounts[0] })
+             storehash.methods.showRegisteredWorkers(result[k]).call({from: accounts[0] })
     .then(function(result){
        console.log("------------------------------------------");
-          console.log("task details :  ",result);});
+          console.log("registeres worker fpr tasks :  ",result);
+          //comeback
+
+        });
 
 
           }
 
 
-          });  */
+          });  
 
 }
 
@@ -113,9 +117,11 @@ load_tasks_applied = async(this1)=>{
 render()
 {	
 
+console.log("inside render");
 
-
-var WorkerList = this.state.workers_data.map(function(wd){
+let count = -1;
+let WorkerList = this.state.workers_data.map(function(wd){
+            count++;
             console.log("rendering task");
                         return (
 
@@ -123,23 +129,31 @@ var WorkerList = this.state.workers_data.map(function(wd){
       <div className="card">
   <div className="card-content">
     <p className="title">
-      {wd[0]}
+      {wd.userName} 
     </p>
-    <p className="subtitle">
-      {""} ether
-    </p>
+    {/*<p className="subtitle">
+      Worker ID : <b>{count}</b>
+    </p>*/}
   </div>
   <footer className="card-footer">
+     <p className="card-footer-item">
+      <span>
+       Reputation is <b>{wd.repScore}</b> 
+      </span>
+    </p>
+
     <p className="card-footer-item">
       <span>
-        View on <a href={""} target="_blank">View Task Details</a>
+        View <a href={"http://ipfs.io/ipfs/"+wd.fileHash} target="_blank"> Worker Details</a>
       </span>
     </p>
   
-     <p className="card-footer-item">
-      <span>
-        Create  <a href="#" onClick={""}>Agreement</a> 
-      </span>
+     
+
+    <p className="card-footer-item">
+    <span>
+      Worker ID : <b>{count}</b>
+    </span>
     </p>
   
   </footer>
@@ -161,11 +175,11 @@ var WorkerList = this.state.workers_data.map(function(wd){
 
 
 componentDidMount(){
-  console.log("mounting available workers");
+  console.log("mounting available workers HERE");
    
 this.load_Avail_Workers(this);
-this.load_tasks_applied(this);
-console.log(this.workers_data);
+
+console.log(this.state.workers_data);
 
   
 }
