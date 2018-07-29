@@ -40,7 +40,7 @@ load_Avail_Workers = async (this1) => {
 
           storehash.methods.workers(i).call({from: accounts[0] })
             .then(function(result1){
-              
+              result1["taskApplied"] = [];
               temp.push(result1);
               console.log("worker ",i,"data is ",temp);
               
@@ -49,6 +49,7 @@ load_Avail_Workers = async (this1) => {
               );
   
       }
+
 
       this1.setState({workers_data:temp});
 
@@ -92,20 +93,37 @@ load_tasks_applied = async(this1)=>{
 
 
 
+          let tempResult = result;
 
-          for(var k = 0;k<result.length;k++){
+          for(var k = 0; k<result.length; k++){
 
+            console.log("wtf   ",k)
 
 //uncomment below
-             storehash.methods.showRegisteredWorkers(result[k]).call({from: accounts[0] })
+/*     storehash.methods.showRegisteredWorkers(result[k]).call({from: accounts[0] })
     .then(function(result){
-       console.log("------------------------------------------");
-          console.log("registeres worker fpr tasks :  ",result);
+       console.log(k,"------------------------------------------");
+          console.log("registered worker for tasks :  ",result);
           //comeback
+          let workers_data_temp = this1.state.workers_data;
+          for(var n = 0; n<result.length; n++){
 
-        });
+          
+            let wdta = workers_data_temp[n]["taskApplied"];
+            wdta.push(tempResult[k]);//
+            console.log("wdta is",wdta);
+            //wdta = wdta.push(k)
+            workers_data_temp[n]["taskApplied"] = wdta;
+          
+          }
+
+          this1.setState({workers_data : workers_data_temp});
+
+        });*/
 
 
+        console.log("");
+          
           }
 
 
@@ -131,9 +149,9 @@ let WorkerList = this.state.workers_data.map(function(wd){
     <p className="title">
       {wd.userName} 
     </p>
-    {/*<p className="subtitle">
-      Worker ID : <b>{count}</b>
-    </p>*/}
+    <p className="subtitle">
+      {wd.taskApplied}
+    </p>
   </div>
   <footer className="card-footer">
      <p className="card-footer-item">

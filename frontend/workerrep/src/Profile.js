@@ -64,8 +64,19 @@ storehash.methods.addressToBalance(accounts[0]).call()
 	console.log("got usertype as: ",this1.props.type);
 	if(this1.props.type == "Worker"){
 
+		console.log("00000000000000000",this1.props.workerId)
+	if(typeof this1.props.workerId != "undefined"){
 
-
+		storehash.methods.workers(this1.props.workerId).call()
+	.then(function(result){
+		console.log(result);
+		this1.setState({name:result.userName,ipfs_hash:result.fileHash,Reputation:result.repScore,public_address:result.publicAddress,
+			encryption_address:result.encryptionkeyAddress});
+	}
+		);	
+	}
+	
+	else{	
 	storehash.methods.addressToIdWorker(accounts[0]).call()
 	.then(function(result_id){	
 		console.log("the worker id is", result_id);
@@ -105,6 +116,7 @@ storehash.methods.addressToBalance(accounts[0]).call()
 
 
 });
+}
 	
 
 	}
@@ -226,7 +238,9 @@ return (
 
 componentDidMount(){
   console.log("componentDidmount");
+  console.log("props I got are",this.props);
   this.getProfileData(this);
+
 }
 
 
