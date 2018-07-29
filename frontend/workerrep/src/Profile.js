@@ -164,6 +164,7 @@ storehash.getPastEvents("pleaseEvaluate", { fromBlock: 0, toBlock: "latest" })
 //this.encr();
 
 /*if(this.props.type == "Worker"){*/
+	if(this.props.renderIt){//experimentalAdd
 return (
 
 <div className="box">
@@ -229,6 +230,9 @@ return (
 </div>
 
 );
+
+}
+else{return(<div></div>);}
 /*}*/
 
 

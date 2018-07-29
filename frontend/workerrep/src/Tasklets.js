@@ -18,6 +18,7 @@ super(props);
       modal_state:"modal",
       modal_state_2:"modal",
       appliedWorkers:[],
+      renderIt:false
       //viewProfileId:0		
 
 		}
@@ -52,7 +53,7 @@ View_profile = async(ViewWorkerID)=>{
   //event.preventDefault();
 
 function setId(this1,callback){
-  this1.setState({viewProfileId:ViewWorkerID});
+  this1.setState({viewProfileId:ViewWorkerID,renderIt:true});
   console.log("HERE",ViewWorkerID)
   callback(this1);
   //this1.setState({modal_state_2:"modal is-active"});
@@ -178,7 +179,7 @@ if(this.state.isTaskPoster)
   <div className="modal-background" onClick={this.close_modal} >
   </div>
     <div className="modal-content">
-      <Profile type={"Worker"} workerId={this.state.viewProfileId} />
+      <Profile type={"Worker"} renderIt={this.state.renderIt} workerId={this.state.viewProfileId} />
     </div>
   <button className="modal-close is-large" onClick={this.close_modal} aria-label="close"></button>
 </div>

@@ -31,7 +31,8 @@ super(props);
 			TaskPosterName:"",
 			modal_state:"modal",
 			modal_state_2:"modal",
-			already_submitted:false	
+			already_submitted:false,
+			ipfsSolutionHashUne:"QJHBQBHBHB"	
 			
 
 		}

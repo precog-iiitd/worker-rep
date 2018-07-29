@@ -290,7 +290,7 @@ getAccAddress = async() => {
 </section>
 <section type={this.state.defaultUserType} className={this.state.CurrentactiveTab==1?"is-medium":"is-invisible"}>
 
-{(this.state.defaultUserType != '' && this.state.defaultUserType != 'unregistered')? <Profile type={this.state.defaultUserType}/> : "" }
+{(this.state.defaultUserType != '' && this.state.defaultUserType != 'unregistered')? <Profile renderIt={true} type={this.state.defaultUserType}/> : "" }
 
 
 
