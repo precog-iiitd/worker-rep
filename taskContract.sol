@@ -1,70 +1,131 @@
 pragma solidity ^0.4.2;
 
+import "./userContract.sol";
+contract TaskContract is UserContract {
 
 
-contract TaskContract {
-    uint reward;
-    address workerAddress ;
-    address taskContractOwner;
-    bool shouldKill ;
-    bool satisfied ;
-    uint256 contractCreationTime;
+    // groups together various information regarding the task contracts created by the task poster
+    
+    // struct taskContractStruct{
+    //     address contractAddress ;
+    //     address workerAddress ;
+    //     string taskTitle;
+    //     }
 
-    modifier onlyOwner {
-        if (msg.sender != taskContractOwner ){
-          /* build in function in sol that means the transaction wont be executed */
-          revert() ;
-          }
+    
+    //stores information related to the task registrations received by the task poster
+    /* struct registrationStruct{
+        uint taskId ;
+        address workerAddress;
+        }
+ */
+    // stores various information of the task
 
-        else{
-    			_;
-    		  }
+    struct taskStruct{
+        //uint taskId ;
+        string taskTitle ;
+        string taskMaterialsHash ;
+        //string taskSkills;
+        bool isTaskComplete; //asses requirement of this param
+        bool isTaskAssigned;
+        uint256 taskReward ; //stored in wei
+        uint TP_creator_id;
+    }
 
+
+
+     
+    taskStruct[] public tasks;
+    
+    uint public tasksCount = 0;
+    
+    //mapping (taskposterID => uint[] ) taskposter_to_tasks  //could need
+
+        function getTasksCount() public constant returns(uint count) {
+    return tasks.length;
+}
+
+
+
+    // called when task poster wants to post a task
+      function postTask( string _taskTitle , string _taskHash, uint256 _taskReward) external {
+        require(isTaskPoster[msg.sender] == true);
+        uint id = tasks.push(taskStruct(_taskTitle, _taskHash, false, false, _taskReward, addressToIdTaskPoster[msg.sender])) - 1;
+        tasksCount++;
+        
         }
 
-    modifier selectedWorker {
-        if (msg.sender != workerAddress ){
-          /* build in function in sol that means the transaction wont be executed */
-          revert() ;
-          }
-        else{
-    			_;
-    		  }
-        }
+    mapping (uint => uint[]) public taskIdToRegisteredWorkersId; //people who have applied for this task //public for testing
 
-    function TaskContract(address _workerAddress, uint _reward) payable{
-        taskContractOwner = msg.sender ;
-        workerAddress = _workerAddress ;
-        reward = _reward ;
-        shouldKill = true;
-        satisfied = false ;
-        contractCreationTime = now;
-        }
 
-    function kill(uint daysAfter) onlyOwner{
-        if (shouldKill && now >= contractCreationTime + daysAfter * 1 days){
-            suicide(taskContractOwner);
+    function showRegisteredWorkers(uint taskID) public view returns(uint[]){
+
+
+        uint i = 0 ; 
+        uint counter = 0;
+        uint noOfRegistered = taskIdToRegisteredWorkersId[taskID].length;
+        uint[] memory ids_of_registered_workers = new uint[](noOfRegistered);
+
+        for(i; i<noOfRegistered;i++){
+                ids_of_registered_workers[counter] = i;
+                counter++;
             }
-        else{
-            revert();
+                         /* } */
+            return ids_of_registered_workers;
+
+
+    }
+
+    function showAvailableTasks() public view returns(uint[]) {
+
+        uint counter = 0;
+        uint i = 0;
+        
+        uint[] memory ids_of_unassignedTasks = new uint[](tasksCount);
+
+
+        
+        
+/*         if(isTaskPoster[msg.sender]){
+            uint temp = addressToIdTaskPoster[msg.sender];
+            for(; i<tasks.length;i++){
+            if (tasks[i].TP_creator_id == temp && !tasks[i].isTaskComplete) {
+                ids_of_unassignedTasks[counter] = i;
+                counter++;
+                }
             }
         }
 
-    function workerAccept () selectedWorker payable {
-        shouldKill = false;
-        }
-
-  //function workerSubmit selectedWorker(){}
-
-    function evaluate(bool _satisfied){
-        if (_satisfied){
-            workerAddress.transfer(reward);
-            shouldKill = true ;
+        else            { */
+        for(; i<tasks.length;i++){
+            if (tasks[i].isTaskAssigned == false) {
+                ids_of_unassignedTasks[counter] = i;
+                counter++;
+                }
             }
+                         /* } */
+            return ids_of_unassignedTasks;
         }
+  
 
-    function notifyTaskPoster() selectedWorker {
-        taskPoster acceptedTaskPoster = taskPoster(taskContractOwner);
-        acceptedTaskPoster.acceptanceNotification(this);
-        }
+
+    function markTaskComplete(uint _id) public { //public for testing
+        //require(isTaskPoster[msg.sender]);  //BEWARE: any task poster can do this
+        tasks[_id].isTaskComplete = true;
+    }
+
+    function markTaskAssigned(uint _id) public { //public for testing
+        //require(isTaskPoster[msg.sender] ); //BEWARE: any task poster can do this
+        tasks[_id].isTaskAssigned = true;
+        tasksCount--;
+    }
+
+
+
+    function registerForTask(uint _taskId) external {
+        require(isTaskPoster[msg.sender] == false);
+        //tasks[_taskId].registeredWorkersId.push(addressToIdWorker[msg.sender]);
+        taskIdToRegisteredWorkersId[_taskId].push(addressToIdWorker[msg.sender]);
+    } 
+
 }

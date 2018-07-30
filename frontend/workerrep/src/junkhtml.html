@@ -1,0 +1,31 @@
+        <Grid>
+          <h3> Choose file to send to IPFS </h3>
+          <Form onSubmit={this.onSubmit}>
+            <input 
+              type = "file"
+              onChange = {this.captureFile}
+            />
+            <br />
+
+            <input 
+              type = "text"
+              onChange = {this.captureName}
+            />
+
+            <br />
+
+             <Button 
+             bsStyle="primary" 
+             type="submit" onClick={this.onSubmit}> 
+             Send  
+             </Button>
+          </Form>
+          <button onClick={()=>this.getTasks()}>call Workers</button>
+
+          <hr/>
+          <p>{this.state.workers}</p>
+
+          </Grid>
+
+          <hr />
+          <hr />
