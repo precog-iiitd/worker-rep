@@ -17,6 +17,3 @@ framework. Our system utilizes IOTA’s consensus mechanism which reduces the co
 evaluation to almost zero. The cost incurred for complete cycle that is from posting task to
 updating reputation is $ 0.631. Where in the cost for task poster comes out to be $0.195 and for
 the worker its $ 0.436.
-
-----
-### Screen grabs of Demo
